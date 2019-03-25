@@ -24,12 +24,14 @@
 	    <div class="left-panel-index col-5 mx-auto mt-3 h-auto">
 	        <img class="avatar center-content" src="/img/snow.png">
 	
-	        <form id="modifyProfileForm" class="form" th:action="@{/modifyProfile}" th:object="${user}" method="POST" th:if="${user != null}">
+	        <form id="modifyProfileForm" class="form" th:action="@{/user/modifyProfile}" th:object="${user}" method="POST" th:if="${user != null}">
 	            <div class="form-row justify-content-center">
 	                <p class="nick text-center" th:text="${'@'+user.nickname}"></p>
 	            </div>
-	            <div class="form-row justify-content-center">
-	            	<p class="text-center" th:text="${user.email}"></p>
+	            <div class="form-row">
+	                <div class="form-group col-12">
+	                    <input type="email" class="form-control" placeholder="Email" th:id="email" th:name="email" th:value="${user.email}">
+	                </div>
 	            </div>
 	            <div class="form-row">
 	                <div class="form-group col-6">
@@ -39,16 +41,9 @@
 	                    <input type="text" class="form-control" placeholder="LastName" th:id="lastName" th:name="lastName" th:value="${user.lastName}">
 	                </div>
 	            </div>
-	            <!-- 
 	            <div class="form-row">
 	                <div class="form-group col-12">
-	                    <input type="email" class="form-control" placeholder="Email" th:id="email" th:name="email" th:value="${user.email}">
-	                </div>
-	            </div>
-	             -->
-	            <div class="form-row">
-	                <div class="form-group col-12">
-	                    <input type="date" class="form-control" th:id="birthdate" th:name="birthdate" th:if="${user.birthdate != null}"th:value="${#date.format(user.birthdate, 'yyyy-MM-dd')}">
+	                    <input type="date" class="form-control" th:id="birthdate" th:name="birthdate" th:value="${(user.birthdate != null ? #dates.format(user.birthdate, 'yyyy-MM-dd') : #dates.format(#dates.createNow(), 'yyyy-MM-dd') )}">
 	                </div>
 	            </div>
 	            <div class="form-row">
@@ -61,7 +56,7 @@
             <div class="d-flex flex-column align-items-center"> 
                 <button class="btn button content-button mt-3" data-toggle="modal" data-target="#exampleModal"><i class="material-icons mr-3">settings_backup_restore</i>Modify password</button>
                 
-                <form id="deleteForm" th:action="@{/delete}" method="POST">
+                <form id="deleteForm" th:action="@{/user/delete}" method="POST">
 					<input type="hidden" id="userId" name="userId" th:value="${user.id}"/>
 					<button type="submit" form="deleteForm" class="btn button content-button mt-3"><i class="material-icons p-1">delete</i>Delete profile</button>
 				</form>
