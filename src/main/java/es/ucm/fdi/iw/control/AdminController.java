@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.service.UserService;
-import es.ucm.fdi.util.StringUtil;
+import es.ucm.fdi.iw.util.StringUtil;
 
 @Controller()
 @RequestMapping("admin")

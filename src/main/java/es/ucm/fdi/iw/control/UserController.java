@@ -26,9 +26,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.parser.UserParser;
+import es.ucm.fdi.iw.serializer.UserSerializer;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.session.MySession;
-import es.ucm.fdi.util.StringUtil;
+import es.ucm.fdi.iw.transfer.UserTransfer;
+import es.ucm.fdi.iw.util.DateUtil;
+import es.ucm.fdi.iw.util.StringUtil;
 
 @Controller()
 @RequestMapping("user")
@@ -56,40 +60,6 @@ public class UserController {
 			modelAndView.addObject("title", StringUtil.convertToTitleCaseSplitting(title));
 			modelAndView.addObject("msg", msg);
 		}
-	}
-	
-	private void createExampleUsers() {
-		List<User> users = userService.getAll();
-		
-		if(users.size() == 0) {
-			User u = new User();
-			u.setId(77777777);
-			u.setEmail("ferlopezcarr@gmail.com");
-			u.setNickname("ferlopezcarr");
-			u.setName("Fernando");
-			u.setLastName("López");
-			u.setPassword("123456");
-			u.setBirthdate(new Date());
-			u.setDescription("Hola me llamo Fernando");
-			u.setActive(true);
-			userService.create(u);
-			
-			User u2 = new User();
-			u2.setId(88888888);
-			u2.setEmail("maria@gmail.com");
-			u2.setNickname("maria");
-			u2.setName("María");
-			u2.setLastName("Sánchez");
-			u2.setPassword("123456");
-			u2.setBirthdate(new Date());
-			u2.setDescription("Hola me llamo María");
-			u2.setActive(true);
-			userService.create(u2);
-		}
-	}
-	
-	private void loginTest(HttpSession session, User user) {
-		MySession.getInstance().setUserLogged(session, user);
 	}
 	
 	@GetMapping("/")
@@ -200,7 +170,7 @@ public class UserController {
 			user = userService.findById(userId);
 			if(user != null && user.isActive()) {
 				err = null;
-				modelAndView.addObject("user", user);
+				modelAndView.addObject("user", UserSerializer.domainObjToUserTransfer(user));
 			}
 		}
 		
@@ -217,17 +187,37 @@ public class UserController {
 	}
 	
 	@RequestMapping("/modifyProfile")
-	public ModelAndView modifyProfilePost(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("user") User user)  {
+	public ModelAndView modifyProfilePost(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("user") UserTransfer userTransfer)  {
 		String err = "User not found";
 
-		if(user != null) {
-			User userDatabase = userService.findById(user.getId());
+		if(userTransfer != null) {
+			User userDatabase = userService.findById(userTransfer.getId());
 			if(userDatabase != null && userDatabase.isActive()) {
-				//PARSE USER
-				User userSaved = userService.save(user);
-				if(userSaved != null) {
+				
+				if(UserParser.getInstance().parseUserModify(modelAndView, userTransfer)) {
+					
+					User userSameEmail = userService.findByEmail(userTransfer.getEmail());
+					
+					//users with same emails and different ids
+					if(userSameEmail.getEmail().equalsIgnoreCase(userTransfer.getEmail()) && userSameEmail.getId() != userTransfer.getId()) {
+						err = "The email "+userTransfer.getEmail()+" is already registered";
+					}
+					else {
+						userDatabase.setEmail(userTransfer.getEmail());
+						userDatabase.setName(userTransfer.getName());
+						userDatabase.setLastName(userTransfer.getLastName());
+						userDatabase.setBirthdate(DateUtil.getDateWithoutHour(userTransfer.getBirthdateStr()));
+						userDatabase.setDescription(userTransfer.getDescription());
+						
+						User userSaved = userService.save(userDatabase);
+						if(userSaved != null) {
+							err = null;
+							this.notifyModal(modelAndView, "Saved changes", "Your data has been saved successfully!");
+						}
+					}
+				}
+				else {
 					err = null;
-					this.notifyModal(modelAndView, "Saved changes", "Your data has been saved successfully!");
 				}
 			}
 		}
@@ -237,7 +227,7 @@ public class UserController {
 		}
 		//If redirect to users the modal wont be rendered
 		
-		Long userId = user.getId();
+		Long userId = userTransfer.getId();
 		modelAndView.addObject("userId", userId);
 		this.profile(modelAndView, session, status, userId);
 		

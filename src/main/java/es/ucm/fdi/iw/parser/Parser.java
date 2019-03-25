@@ -3,7 +3,7 @@ package es.ucm.fdi.iw.parser;
 import java.text.ParseException;
 import java.util.Date;
 
-import es.ucm.fdi.util.DateUtil;
+import es.ucm.fdi.iw.util.DateUtil;
 
 
 public class Parser {

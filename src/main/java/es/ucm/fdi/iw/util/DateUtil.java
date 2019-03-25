@@ -1,4 +1,4 @@
-package es.ucm.fdi.util;
+package es.ucm.fdi.iw.util;
 
 
 import java.text.ParseException;
