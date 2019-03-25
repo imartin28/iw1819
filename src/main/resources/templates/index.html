@@ -89,7 +89,17 @@
 
                     <div class="col-9">
                         <div class="row align-items-center justify-content-between mb-2 px-3">
-                            <button class="btn button d-flex align-items-center" style="height: 40px;"><i class="material-icons mr-2">unarchive</i>Upload</button>
+                        
+                        	<form method="POST" th:action="@{/user/{id}/file/(id=${user.id})}" enctype="multipart/form-data" >
+                        		<input type="file" name="file"/>
+                        		<input type="hidden" th:name="${_csrf.parameterName)" th:value="$(_csrf.token)"/>
+                        		<button type="submit">Upload</button>
+                        		
+                        	</form>
+                        	
+                        	
+                        	
+                            <button id="button-upload-file" class="btn button d-flex align-items-center" style="height: 40px;"><i class="material-icons mr-2">unarchive</i>Upload</button>
                             <a class="d-flex files-link" href="#">
                                 <span class="title-section">My Files</span>
                                 <i class="material-icons title-section my-auto ml-3">folder_open</i>

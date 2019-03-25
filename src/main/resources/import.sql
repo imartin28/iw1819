@@ -66,3 +66,7 @@ INSERT INTO TAG
 VALUES ('Blue', 'Home Videos', 1);
 
 
+-- FILE
+INSERT INTO FILE
+("METADATA")
+VALUES ('{name : intro_GOT.jpg, extension : jpg, type : picture, path : src/main/resources/static/file/intro_GOT.jpg}');
