@@ -22,8 +22,9 @@ public class MySession {
 	
 	public String userLoggedStr = "userLogged";
 
-	public void setUserLogged(HttpSession session, User userDatabase, String userType) {
-		if(userDatabase != null && userType != null) {
+
+	public void setUserLogged(HttpSession session, User userDatabase) {
+		if(userDatabase != null) {
 			session.setAttribute(userLoggedStr, userDatabase);
 		}
 	}
