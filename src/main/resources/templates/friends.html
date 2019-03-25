@@ -4,14 +4,11 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 	lang="es">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	
 	<div th:replace="fragments/head :: head"></div>
 	
 	<!-- Put additional css and js sources -->
-    <link rel="stylesheet" type="text/css" href="css/style.css">    
-    <link rel="stylesheet" type="text/css" href="css/style_index.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">    
+    <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
     
     <title>M3- Friends</title>
 </head>
@@ -23,16 +20,16 @@
     <div class="container col-10 mt-5">
     
 	    <div class="left-panel-index col-3">
-	        <img class="avatar center-content" src="img/snow.png">
+	        <img class="avatar center-content" src="/img/snow.png">
 	        <p class="name text-center">John Snow</p>
 	        <p class="nick text-center">@snow</p>
-	        <p class="bio text-center">Â· I know nothing, my friends killed me once, my parents are dead... but I have a white wolf! =) Â·</p>
+	        <p class="bio text-center">· I know nothing, my friends killed me once, my parents are dead... but I have a white wolf! =) ·</p>
 	        <div class="border-top">
 	            <a href=""><i class="material-icons mr-3">explore</i>Winterfell, GOT</a><br>
 	            <a href=""><i class="material-icons mr-3">language</i>winteriscoming.com</a><br>
 	            <div class="center-content">
-	                <img class="social" src="img/facebook.png">
-	                <img class="social" src="img/twitter.png">
+	                <img class="social" src="/img/facebook.png">
+	                <img class="social" src="/img/twitter.png">
 	            </div>
 	        </div>
 	        
@@ -63,11 +60,11 @@
                     <div class="tab-pane fade show active" id="friend" role="tabpanel" aria-labelledby="friends-tab">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <img class="profile-image" src="img/fer.jpg">   
+                                <img class="profile-image" src="/img/fer.jpg">   
                                 <a class="link profile-name" href="">Fer</a>            
                             </li>
                             <li class="list-group-item">
-                                <img class="profile-image" src="img/guille.jpg"> 
+                                <img class="profile-image" src="/img/guille.jpg"> 
                                 <a class="link profile-name" href="">Guille</a>            
                             </li> 
                         </ul>
@@ -76,7 +73,7 @@
                     <div class="tab-pane fade" id="friendship-request" role="tabpanel" aria-labelledby="friendship-request-tab">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item friendship-request center-content">
-                                <img class="profile-image" src="img/Jaime.jpg">   
+                                <img class="profile-image" src="/img/Jaime.jpg">   
                                 <a class="link friendship-request-profile-name" href="">Jaime</a>     
                                 <button type="button" class="btn button button-accept-friendship-request">Accept</button>
                                 <button type="button" class="btn button button-discard-friendship-request">Discard</button>       

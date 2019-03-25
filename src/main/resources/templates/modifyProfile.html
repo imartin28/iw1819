@@ -4,17 +4,14 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 	lang="es">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	
 	<div th:replace="fragments/head :: head"></div>
 	
 	<!-- Put additional css and js sources -->
-    <link rel="stylesheet" type="text/css" href="css/style.css">    
-    <link rel="stylesheet" type="text/css" href="css/style_index.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">    
+    <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
     
-   	<script src="js/moment.min.js"></script>
-	<script src="js/parser.js"></script>
+   	<script src="/js/moment.min.js"></script>
+	<script src="/js/parser.js"></script>
     
     <title>M3 - Modify Profile</title>
 </head>
@@ -25,7 +22,7 @@
 		<nav th:replace="fragments/nav :: nav"></nav>
 	
 	    <div class="left-panel-index col-5 mx-auto mt-3 h-auto">
-	        <img class="avatar center-content" th:src="@{img/snow.png}">
+	        <img class="avatar center-content" src="/img/snow.png">
 	
 	        <form id="modifyProfileForm" class="form" th:action="@{/modifyProfile}" th:object="${user}" method="POST" th:if="${user != null}">
 	            <div class="form-row justify-content-center">
@@ -51,9 +48,7 @@
 	             -->
 	            <div class="form-row">
 	                <div class="form-group col-12">
-	                    <!-- 
 	                    <input type="date" class="form-control" th:id="birthdate" th:name="birthdate" th:if="${user.birthdate != null}"th:value="${#date.format(user.birthdate, 'yyyy-MM-dd')}">
-	                	 -->
 	                </div>
 	            </div>
 	            <div class="form-row">
