@@ -93,9 +93,8 @@ public class UserController {
 	}
 	
 	@GetMapping("/")
-	public String index(ModelAndView modelAndView, HttpSession session) {
-		createExampleUsers();
-		loginTest(session, userService.getAll().get(0));
+	public String index(ModelAndView modelAndView, HttpSession session/*, @RequestParam("nickname") String nickname*/) {
+		//modelAndView.addObject("user", session.getAttribute("u"));
 		
 		return "index";
 	}
@@ -186,7 +185,7 @@ public class UserController {
 			this.notifyModal(modelAndView, "Error", err);
 		}
 		//If redirect to users the modal wont be rendered
-		this.index(modelAndView, session);
+		modelAndView.setViewName("redirect:/");
 		
 		return modelAndView;
 	}
