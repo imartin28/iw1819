@@ -1,5 +1,8 @@
 package es.ucm.fdi.iw.control;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -9,13 +12,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.session.MySession;
@@ -28,7 +37,12 @@ public class UserController {
 	private static final Logger log = LogManager.getLogger(UserController.class);
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
+	
+	@Autowired
+	private LocalData localData;
+	
+	
 	
 	/**
 	 * Function to notify the current user a message from server
@@ -85,6 +99,45 @@ public class UserController {
 		
 		return "index";
 	}
+	
+	
+	
+	@PostMapping("/{id}/file")
+	public String postFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id, Model model, HttpSession session) {
+		
+		User target = userService.findById(id);
+		model.addAttribute("user", target);
+		
+		User requester = (User) session.getAttribute("u");
+		if (requester.getId() != target.getId()) {
+			return "user";
+		}
+		
+		log.info("Uploading photo for user {}", id);
+		
+		
+		localData.getFolder("user" + id);  //crea la carpeta del usuario actual si no estaba creada
+		
+		File f = localData.getFile("user" + id, file.getName());
+		
+		if (file.isEmpty()) {
+			log.info("failed to upload file : empty file?");
+		} else {
+			try {
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f));
+				byte[] bytes = file.getBytes();
+				stream.write(bytes);
+			} catch (Exception e) {
+				System.out.println("Error uploading file of user " + id + " " + e);
+			}
+			
+			log.info("Succesfully uploaded file for user {} into {}", id, f.getAbsolutePath());
+		}
+		
+		
+		return "user";
+	}
+	
 	
 	@GetMapping("/profile")
 	public ModelAndView profile(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {
