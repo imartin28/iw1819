@@ -10,13 +10,23 @@ import java.util.regex.Pattern;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import es.ucm.fdi.transfer.UserTransfer;
+import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.transfer.UserTransfer;
 
 public class UserParser extends Parser {
+	
+	private static UserParser instance;
+	
+	public static UserParser getInstance() {
+		if(instance == null)
+			instance = new UserParser();
+		return instance;
+	}
 
     private static final String EMAIL_PATTERN = "^[^@]+@[^@]+\\.[a-zA-Z]{2,}$";
     private static final String NAME_PATTERN = "^[a-zA-ZáéíóúñÁÉÍÓÚÑ- ]*$";
     private static final String EMAIL_EXAMPLE = "ejemplo@ejemplo.es";
+    private static final String PASSWORD_PATTERN = "^(?=.{6,})(?=.*\\d)(?=.*[A-Z]).*$";
     private static final int EMAIL_MIN_LENGTH = 5;
     private static final int PASSWORD_MIN_LENGTH = 6;
     private static final int BIRTHDAY_MIN_AGE = 18;
@@ -39,7 +49,10 @@ public class UserParser extends Parser {
     private static final int PARSE_COD_PASSWORD_LENGTH = USER_ERROR_CODE+USER_PASSWORD_ERROR_CODE+1;
     private static final String PE_MSG_PASSWORD_LENGTH = "La contraseña debe contener al menos "+PASSWORD_MIN_LENGTH+" caracteres";
 
-    private static final int PARSE_COD_PASSWORDS_DINDT_MATCH = USER_ERROR_CODE+USER_PASSWORD_ERROR_CODE+2;
+    private static final int PARSE_COD_PASSWORD_PATTERN = USER_ERROR_CODE+USER_PASSWORD_ERROR_CODE+2;
+    private static final String PE_MSG_PASSWORD_PATTERN = "La contraseña debe contener al menos "+PASSWORD_MIN_LENGTH+" caracteres";
+    
+    private static final int PARSE_COD_PASSWORDS_DINDT_MATCH = USER_ERROR_CODE+USER_PASSWORD_ERROR_CODE+3;
     private static final String PE_MSG_PASSWORDS_DINDT_MATCH = "La contraseñas no coinciden";
 
     //Birthday
@@ -83,7 +96,12 @@ public class UserParser extends Parser {
     public static boolean isValidPassword(String password) throws ParseException {
         if (password.length() < PASSWORD_MIN_LENGTH)
             throw new ParseException(PE_MSG_PASSWORD_LENGTH, PARSE_COD_PASSWORD_LENGTH);
-
+        
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        if (!matcher.matches())
+            throw new ParseException(PE_MSG_PASSWORD_PATTERN, PARSE_COD_PASSWORD_PATTERN);
+        
         return true;
     }
 
@@ -224,21 +242,13 @@ public class UserParser extends Parser {
         return response;
     }
 
-    public ParserResponse processBirthday(String birthdayStr) {
+    public ParserResponse processBirthday(Date birthday) {
         ParserResponse response = null;
     	String msg = null;
     	boolean birthdayOk = false;
-        Date birthday = null;
-
 
         try {
-        	birthdayOk = (Parser.isNotNull(birthdayStr)
-                    && Parser.isNotEmptyString(birthdayStr));
-
-            if(birthdayOk) {
-                birthday = Parser.parseDate(birthdayStr);
-                birthdayOk = UserParser.isValidBirthday(birthday);
-            }
+            birthdayOk = UserParser.isValidBirthday(birthday);
         } catch(ParseException pe) {
         	msg = pe.getMessage();
         }
@@ -255,45 +265,73 @@ public class UserParser extends Parser {
         return response;
     }
     
-    public boolean parseUser(ModelAndView modelAndView, UserTransfer userTransfer) {
-    	
-		ParserResponse responseEmail = this.processEmail(userTransfer.getEmail());
+    public boolean parseUserRegister(ModelAndView modelAndView, UserTransfer userTransfer) {
+    	ParserResponse responseEmail = this.processEmail(userTransfer.getEmail());
 		
 		if(!responseEmail.isOk()) {
 			modelAndView.addObject("emailError", responseEmail.getMessage());
 		}
 		
-		ParserResponse responseName = this.processName(userTransfer.getName());
+		ParserResponse responseName = this.processName(userTransfer.getNickname());
+		
+		if(!responseName.isOk()) {
+			modelAndView.addObject("nickNameError", responseName.getMessage());
+		}
+		
+		ParserResponse responsePassword = null;
+		if(userTransfer.getPassword() != null && userTransfer.getPassword() != "") {
+			responsePassword = this.processPassword(userTransfer.getPassword());
+			
+			if(!responsePassword.isOk()) {
+				modelAndView.addObject("passwordError", responsePassword.getMessage());
+			}
+		}
+		
+		ParserResponse responseSamePassword = null;
+		if(userTransfer.getSamePassword() != null && userTransfer.getSamePassword() != "") {
+			responseSamePassword = this.processPasswordAndSamePass(userTransfer.getPassword(), userTransfer.getSamePassword());
+			
+			if(!responseSamePassword.isOk()) {
+				modelAndView.addObject("samePasswordError", responseSamePassword.getMessage());
+			}
+		}
+		
+		return responseEmail.isOk() 
+				&& responseName.isOk() 
+				&& (responsePassword != null ? responsePassword.isOk() : true) 
+				&& (responseSamePassword != null ? responseSamePassword.isOk() : true);
+    }
+    
+    public boolean parseUserModify(ModelAndView modelAndView, UserTransfer user) {
+    	
+		ParserResponse responseEmail = this.processEmail(user.getEmail());
+		
+		if(!responseEmail.isOk()) {
+			modelAndView.addObject("emailError", responseEmail.getMessage());
+		}
+		
+		ParserResponse responseName = this.processName(user.getName());
 		
 		if(!responseName.isOk()) {
 			modelAndView.addObject("nameError", responseName.getMessage());
 		}
 		
-		ParserResponse responseLastName = this.processName(userTransfer.getLastName());
+		ParserResponse responseLastName = this.processName(user.getLastName());
 		
 		if(!responseLastName.isOk()) {
 			modelAndView.addObject("lastNameError", responseLastName.getMessage());
 		}
 		
-		ParserResponse responseBirthday = this.processBirthday(userTransfer.getBirthdayStr());
+		ParserResponse responseBirthday = this.processBirthday(user.getBirthdate());
 		
 		if(!responseBirthday.isOk()) {
-			modelAndView.addObject("birthdayError", responseBirthday.getMessage());
+			modelAndView.addObject("birthdateError", responseBirthday.getMessage());
 		}
 		
-		ParserResponse responsePassword = this.processPassword(userTransfer.getPassword());
-		
-		if(!responsePassword.isOk()) {
-			modelAndView.addObject("passwordError", responsePassword.getMessage());
-		}
-		
-		ParserResponse responseSamePassword = this.processPasswordAndSamePass(userTransfer.getPassword(), userTransfer.getSamePassword());
-		
-		if(!responseSamePassword.isOk()) {
-			modelAndView.addObject("samePasswordError", responseSamePassword.getMessage());
-		}
-		
-		return responseEmail.isOk() && responseName.isOk() && responseLastName.isOk() && responseBirthday.isOk() && responsePassword.isOk() && responseSamePassword.isOk();
+		return responseEmail.isOk() 
+				&& responseName.isOk() 
+				&& responseLastName.isOk() 
+				&& responseBirthday.isOk();
     }
     
     public boolean userLoginDataCorrect(ModelAndView modelAndView, UserTransfer userLogin) {

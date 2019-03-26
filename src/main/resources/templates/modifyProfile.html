@@ -12,6 +12,7 @@
     
    	<script src="/js/moment.min.js"></script>
 	<script src="/js/parser.js"></script>
+	<script src="/js/modifyProfile.js"></script>
     
     <title>M3 - Modify Profile</title>
 </head>
@@ -24,36 +25,35 @@
 	    <div class="left-panel-index col-5 mx-auto mt-3 h-auto">
 	        <img class="avatar center-content" src="/img/snow.png">
 	
-	        <form id="modifyProfileForm" class="form" th:action="@{/modifyProfile}" th:object="${user}" method="POST" th:if="${user != null}">
+	        <form id="modifyProfileForm" class="form" th:action="@{/user/modifyProfile}" th:object="${user}" method="POST" th:if="${user != null}">
 	            <div class="form-row justify-content-center">
 	                <p class="nick text-center" th:text="${'@'+user.nickname}"></p>
 	            </div>
-	            <div class="form-row justify-content-center">
-	            	<p class="text-center" th:text="${user.email}"></p>
+	            <div class="form-row">
+	                <div class="form-group col-12">
+	                    <input type="email" class="form-control" placeholder="Email" th:id="email" th:name="email" th:value="${user.email}">
+	                    <div class="invalid-feedback" th:text="${emailError}"></div>
+	                </div>
 	            </div>
 	            <div class="form-row">
 	                <div class="form-group col-6">
 	                    <input type="text" class="form-control" placeholder="FirstName" th:id="name" th:name="name" th:value="${user.name}">
+	                    <div class="invalid-feedback" th:text="${nameError}"></div>
 	                </div>
 	                <div class="form-group col-6">
 	                    <input type="text" class="form-control" placeholder="LastName" th:id="lastName" th:name="lastName" th:value="${user.lastName}">
-	                </div>
-	            </div>
-	            <!-- 
-	            <div class="form-row">
-	                <div class="form-group col-12">
-	                    <input type="email" class="form-control" placeholder="Email" th:id="email" th:name="email" th:value="${user.email}">
-	                </div>
-	            </div>
-	             -->
-	            <div class="form-row">
-	                <div class="form-group col-12">
-	                    <input type="date" class="form-control" th:id="birthdate" th:name="birthdate" th:if="${user.birthdate != null}"th:value="${#date.format(user.birthdate, 'yyyy-MM-dd')}">
+	                	<div class="invalid-feedback" th:text="${lastNameError}"></div>
 	                </div>
 	            </div>
 	            <div class="form-row">
 	                <div class="form-group col-12">
-	                    <textarea class="form-control" rows = "4" th:id="birthdate" th:name="birthdate" th:text="${user.description}"></textarea>
+	                    <input type="date" class="form-control" th:id="birthdate" th:name="birthdate" th:value="${(user.birthdate != null ? #dates.format(user.birthdate, 'yyyy-MM-dd') : #dates.format(#dates.createNow(), 'yyyy-MM-dd') )}">
+	                	<div class="invalid-feedback" th:text="${birthdateError}"></div>
+	                </div>
+	            </div>
+	            <div class="form-row">
+	                <div class="form-group col-12">
+	                    <textarea class="form-control" rows= "4" th:id="description" th:name="description" th:text="${user.description}"></textarea>
 	                </div>
 	            </div>
 			</form>
@@ -61,12 +61,12 @@
             <div class="d-flex flex-column align-items-center"> 
                 <button class="btn button content-button mt-3" data-toggle="modal" data-target="#exampleModal"><i class="material-icons mr-3">settings_backup_restore</i>Modify password</button>
                 
-                <form id="deleteForm" th:action="@{/delete}" method="POST">
+                <form id="deleteForm" th:action="@{/user/delete}" method="POST">
 					<input type="hidden" id="userId" name="userId" th:value="${user.id}"/>
 					<button type="submit" form="deleteForm" class="btn button content-button mt-3"><i class="material-icons p-1">delete</i>Delete profile</button>
 				</form>
                 
-                <button form="modifyProfileForm" class="btn button content-button mt-3"><i class="material-icons mr-3">save</i> Save changes</button>
+                <button type="submit" form="modifyProfileForm" class="btn button content-button mt-3"><i class="material-icons mr-3">save</i> Save changes</button>
 
                 <!-- Modal PASSWORD-->
                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -83,11 +83,13 @@
                                 <div class="form-row">
                                     <div class="form-group col-12">
                                         <input type="password" class="form-control" id="OldPassword" placeholder="OldPassword">
+                                        <div class="invalid-feedback" th:text="${passwordError}"></div>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-12">
                                         <input type="password" class="form-control" id="NewPassword" placeholder="NewPassword">
+                                        <div class="invalid-feedback" th:text="${passwordError}"></div>
                                     </div>
                                 </div>
                             </form>

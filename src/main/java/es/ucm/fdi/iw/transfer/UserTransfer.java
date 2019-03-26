@@ -1,6 +1,8 @@
-package es.ucm.fdi.transfer;
+package es.ucm.fdi.iw.transfer;
 
 import java.util.Date;
+
+import es.ucm.fdi.iw.util.DateUtil;
 
 public class UserTransfer {
 	
@@ -20,12 +22,22 @@ public class UserTransfer {
 	
 	private String oldPassword;
 	
-	private Date birthday;
+	private Date birthdate;
 	
-	private String birthdayStr;
+	private String birthdateStr;
 	
 	private String description;
 	
+
+	public UserTransfer(String email, String nickname, String name, String lastName, Date birthdate, String description) {
+		this.email = email;
+		this.nickname = nickname;
+		this.name = name;
+		this.lastName = lastName;
+		this.birthdate = birthdate;
+		this.birthdateStr = DateUtil.horaMostrarString(this.birthdate);
+		this.description = description;
+	}
 
 	public long getId() {
 		return id;
@@ -91,20 +103,20 @@ public class UserTransfer {
 		this.oldPassword = oldPassword;
 	}
 	
-	public Date getBirthday() {
-		return birthday;
+	public Date getBirthdate() {
+		return birthdate;
 	}
 
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
 	}
 	
-	public String getBirthdayStr() {
-		return birthdayStr;
+	public String getBirthdateStr() {
+		return birthdateStr;
 	}
 
-	public void setBirthdayStr(String birthdayStr) {
-		this.birthdayStr = birthdayStr;
+	public void setBirthdateStr(String birthdateStr) {
+		this.birthdateStr = birthdateStr;
 	}
 	
 	public String getDescription() {
