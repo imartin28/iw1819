@@ -100,6 +100,11 @@ public class RootController {
 		return "share";
 	}
 	
+	@GetMapping("/file")
+	public String file(Model model) {
+		return "file";
+	}
+	
 	/*
 	@GetMapping("/admin")
 	public String admin(Model model, Principal principal) {
