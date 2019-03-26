@@ -3,8 +3,6 @@ package es.ucm.fdi.iw.control;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -29,7 +27,6 @@ import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
 import es.ucm.fdi.iw.service.UserService;
-import es.ucm.fdi.iw.session.MySession;
 import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.DateUtil;
 import es.ucm.fdi.iw.util.StringUtil;
@@ -180,6 +177,7 @@ public class UserController {
 		}
 		else {
 			modelAndView.addObject("user", user);
+			modelAndView.addObject("userTransfer", new UserTransfer());
 			modelAndView.setViewName("modifyProfile");
 		}
 		
@@ -187,22 +185,29 @@ public class UserController {
 	}
 	
 	@RequestMapping("/modifyProfile")
-	public ModelAndView modifyProfilePost(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("user") UserTransfer userTransfer)  {
+	public ModelAndView modifyProfilePost(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userTransfer") UserTransfer userTransfer)  {
 		String err = "User not found";
 
+		User userDatabase = null;
 		if(userTransfer != null) {
-			User userDatabase = userService.findById(userTransfer.getId());
+			userDatabase = userService.findById(userTransfer.getId());
 			if(userDatabase != null && userDatabase.isActive()) {
 				
 				if(UserParser.getInstance().parseUserModify(modelAndView, userTransfer)) {
 					
-					User userSameEmail = userService.findByEmail(userTransfer.getEmail());
+					boolean emailCorrect = true;
 					
-					//users with same emails and different ids
-					if(userSameEmail.getEmail().equalsIgnoreCase(userTransfer.getEmail()) && userSameEmail.getId() != userTransfer.getId()) {
-						err = "The email "+userTransfer.getEmail()+" is already registered";
+					if(!userDatabase.getEmail().equalsIgnoreCase(userTransfer.getEmail())) {
+						User userSameEmail = userService.findByEmail(userTransfer.getEmail());
+						
+						emailCorrect = (userSameEmail == null || (userSameEmail.getId() != userTransfer.getId() && !userSameEmail.getEmail().equalsIgnoreCase(userTransfer.getEmail())));
+						//users with same emails and different ids
+						if(!emailCorrect) {
+							err = "The email "+userTransfer.getEmail()+" is already registered";
+						}
 					}
-					else {
+					
+					if(emailCorrect) {
 						userDatabase.setEmail(userTransfer.getEmail());
 						userDatabase.setName(userTransfer.getName());
 						userDatabase.setLastName(userTransfer.getLastName());
@@ -212,7 +217,6 @@ public class UserController {
 						User userSaved = userService.save(userDatabase);
 						if(userSaved != null) {
 							err = null;
-							this.notifyModal(modelAndView, "Saved changes", "Your data has been saved successfully!");
 						}
 					}
 				}
@@ -223,13 +227,20 @@ public class UserController {
 		}
 
 		if(err != null) {
+			modelAndView.setViewName("modifyProfile");
+			modelAndView.addObject("user", UserSerializer.userTransferToDomainObj(userTransfer));
+			modelAndView.addObject("userTransfer", userTransfer);
+			modelAndView.addObject("userId", userTransfer.getId());
 			this.notifyModal(modelAndView, "Error", err);
 		}
-		//If redirect to users the modal wont be rendered
-		
-		Long userId = userTransfer.getId();
-		modelAndView.addObject("userId", userId);
-		this.profile(modelAndView, session, status, userId);
+		else {
+			Long userId = null;
+			if(userDatabase != null) {
+				userId = userDatabase.getId();
+				modelAndView.setViewName("redirect:/user/profile");
+				modelAndView.addObject("userId", userId);
+			}
+		}
 		
 		return modelAndView;
 	}

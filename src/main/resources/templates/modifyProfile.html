@@ -25,9 +25,10 @@
 	    <div class="left-panel-index col-5 mx-auto mt-3 h-auto">
 	        <img class="avatar center-content" src="/img/snow.png">
 	
-	        <form id="modifyProfileForm" class="form" th:action="@{/user/modifyProfile}" th:object="${user}" method="POST" th:if="${user != null}">
+	        <form id="modifyProfileForm" class="form" th:action="@{/user/modifyProfile}" th:object="${userTransfer}" method="POST" th:if="${user != null}">
 	            <div class="form-row justify-content-center">
 	                <p class="nick text-center" th:text="${'@'+user.nickname}"></p>
+	                <input type="hidden" th:id="id" th:name="id" th:value="${user.id}">
 	            </div>
 	            <div class="form-row">
 	                <div class="form-group col-12">
@@ -47,7 +48,7 @@
 	            </div>
 	            <div class="form-row">
 	                <div class="form-group col-12">
-	                    <input type="date" class="form-control" th:id="birthdate" th:name="birthdate" th:value="${(user.birthdate != null ? #dates.format(user.birthdate, 'yyyy-MM-dd') : #dates.format(#dates.createNow(), 'yyyy-MM-dd') )}">
+	                    <input type="date" class="form-control" th:id="birthdateStr" th:name="birthdateStr" th:value="${(user.birthdate != null ? #dates.format(user.birthdate, 'yyyy-MM-dd') : #dates.format(#dates.createNow(), 'yyyy-MM-dd') )}">
 	                	<div class="invalid-feedback" th:text="${birthdateError}"></div>
 	                </div>
 	            </div>

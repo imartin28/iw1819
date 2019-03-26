@@ -28,6 +28,10 @@ public class UserTransfer {
 	
 	private String description;
 	
+	
+	public UserTransfer() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public UserTransfer(String email, String nickname, String name, String lastName, Date birthdate, String description) {
 		this.email = email;

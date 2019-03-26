@@ -16,7 +16,7 @@ public class UserSerializer {
 		if(usertr.getBirthdate() == null && usertr.getBirthdateStr() != null) {
 			usertr.setBirthdate(DateUtil.getDateWithoutHour(usertr.getBirthdateStr()));
 		}
-		
+		/*
 		user = new User(
 			usertr.getEmail(),
 			usertr.getNickname(),
@@ -25,7 +25,15 @@ public class UserSerializer {
 			usertr.getBirthdate(), 
 			usertr.getDescription()
 		);
-			
+			*/
+		user = new User();
+		user.setEmail(usertr.getEmail());
+		user.setNickname(usertr.getNickname());
+		user.setName(usertr.getName());
+		user.setLastName(usertr.getLastName());
+		user.setBirthdate(usertr.getBirthdate());
+		user.setDescription(usertr.getDescription());
+		
 		if(user != null && usertr.getId() > 0) {
 			user.setId(usertr.getId());
 		}

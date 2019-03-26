@@ -67,6 +67,7 @@ public class User {
 	@OneToMany(targetEntity=Message.class, mappedBy="receiver")
 	private List<Message> receivedMessages;
 
+	/*
 	public User(String email, String nickname, String name, String lastName, Date birthdate, String description) {
 		this.email = email;
 		this.nickname = nickname;
@@ -75,6 +76,7 @@ public class User {
 		this.birthdate = birthdate;
 		this.description = description;
 	}
+	*/
 
 	public long getId() {
 		return id;

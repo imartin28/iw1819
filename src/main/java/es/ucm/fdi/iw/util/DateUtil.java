@@ -24,6 +24,10 @@ public class DateUtil {
         return dateWithHourFormat;
     }
     
+    public static SimpleDateFormat getDateHtmlFormat() {
+        return dateHtmlFormat;
+    }
+    
     public static String hourCorrectFormat(String horaIniString) {
         horaIniString = horaIniString.substring(0, 5);//eliminar am / pm
         horaIniString += ":00";//añadir segs
@@ -58,6 +62,10 @@ public class DateUtil {
 			e.printStackTrace();
 		}
     	return date;
+    }
+    
+    public static String getDateStrWithoutHour(Date date) {
+    	return dateFormat.format(date);
     }
     
     public static String horaMostrarString(Date fecha) {

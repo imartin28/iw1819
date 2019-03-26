@@ -30,11 +30,10 @@ public class Parser {
         return true;
     }
 
-    //Fechas y horas
     public static Date parseDate(String dateStr) throws ParseException {
         Date date = null;
         try {
-            date = DateUtil.getDateFormat().parse(dateStr);
+            date = DateUtil.getDateHtmlFormat().parse(dateStr);
         } catch(ParseException pe) {
             throw new ParseException(PE_MSG_FORMATO_INCORRECTO, PARSE_COD_FORMATO_INCORRECTO);
         }

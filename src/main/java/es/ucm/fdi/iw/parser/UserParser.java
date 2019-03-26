@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.transfer.UserTransfer;
+import es.ucm.fdi.iw.util.DateUtil;
 
 public class UserParser extends Parser {
 	
@@ -24,8 +25,8 @@ public class UserParser extends Parser {
 	}
 
     private static final String EMAIL_PATTERN = "^[^@]+@[^@]+\\.[a-zA-Z]{2,}$";
-    private static final String NAME_PATTERN = "^[a-zA-ZáéíóúñÁÉÍÓÚÑ- ]*$";
     private static final String EMAIL_EXAMPLE = "ejemplo@ejemplo.es";
+    private static final String NAME_PATTERN = "^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\\']+[\\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\\'])+[\\s]?([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\\'])?$";
     private static final String PASSWORD_PATTERN = "^(?=.{6,})(?=.*\\d)(?=.*[A-Z]).*$";
     private static final int EMAIL_MIN_LENGTH = 5;
     private static final int PASSWORD_MIN_LENGTH = 6;
@@ -242,13 +243,21 @@ public class UserParser extends Parser {
         return response;
     }
 
-    public ParserResponse processBirthday(Date birthday) {
+    public ParserResponse processBirthday(String birthdayStr) {
         ParserResponse response = null;
     	String msg = null;
     	boolean birthdayOk = false;
+    	Date birthday = null;
 
-        try {
-            birthdayOk = UserParser.isValidBirthday(birthday);
+
+         try {
+         	birthdayOk = (Parser.isNotNull(birthdayStr)
+                     && Parser.isNotEmptyString(birthdayStr));
+
+             if(birthdayOk) {
+                 birthday = Parser.parseDate(birthdayStr);
+                 birthdayOk = UserParser.isValidBirthday(birthday);
+             }
         } catch(ParseException pe) {
         	msg = pe.getMessage();
         }
@@ -309,7 +318,7 @@ public class UserParser extends Parser {
 		if(!responseEmail.isOk()) {
 			modelAndView.addObject("emailError", responseEmail.getMessage());
 		}
-		
+		/*
 		ParserResponse responseName = this.processName(user.getName());
 		
 		if(!responseName.isOk()) {
@@ -321,16 +330,20 @@ public class UserParser extends Parser {
 		if(!responseLastName.isOk()) {
 			modelAndView.addObject("lastNameError", responseLastName.getMessage());
 		}
-		
-		ParserResponse responseBirthday = this.processBirthday(user.getBirthdate());
+		*/
+		String birthday = user.getBirthdateStr();
+		if((birthday == null || birthday.equalsIgnoreCase("")) && user.getBirthdate() != null) {
+			birthday = DateUtil.getDateStrWithoutHour(user.getBirthdate());
+		}
+		ParserResponse responseBirthday = this.processBirthday(birthday);
 		
 		if(!responseBirthday.isOk()) {
 			modelAndView.addObject("birthdateError", responseBirthday.getMessage());
 		}
 		
-		return responseEmail.isOk() 
+		return responseEmail.isOk() /*
 				&& responseName.isOk() 
-				&& responseLastName.isOk() 
+				&& responseLastName.isOk() */
 				&& responseBirthday.isOk();
     }
     
