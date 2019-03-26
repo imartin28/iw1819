@@ -3,6 +3,9 @@ package es.ucm.fdi.iw.control;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -40,8 +43,8 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@Autowired
-	private LocalData localData;
+	
+	private LocalData localData = new LocalData();
 	
 	
 	
@@ -59,13 +62,11 @@ public class UserController {
 		}
 	}
 	
-	@GetMapping("/")
-	public String index(ModelAndView modelAndView, HttpSession session/*, @RequestParam("nickname") String nickname*/) {
-		//modelAndView.addObject("user", session.getAttribute("u"));
-		
-		return "index";
-	}
 	
+	@GetMapping("/")
+	public String index(ModelAndView modelAndView, HttpSession session) {		
+		return "index";
+	}	
 	
 	
 	@PostMapping("/{id}/file")
@@ -82,26 +83,41 @@ public class UserController {
 		log.info("Uploading photo for user {}", id);
 		
 		
-		localData.getFolder("user" + id);  //crea la carpeta del usuario actual si no estaba creada
+		/* Comprobar que existen el directorio del usuario y el fichero, y crearlos en caso contrario */
 		
-		File f = localData.getFile("user" + id, file.getName());
+		File f = localData.getFile("/user" + id + "/", file.getOriginalFilename());
+		if (!f.exists()) {
+			File folder = localData.getFolder("user" + id);
+			f = new File(folder.getAbsolutePath() +  "/" + file.getOriginalFilename());
+			try {
+			 if (f.createNewFile()){
+			        System.out.println("File is created!");
+			      }else{
+			        System.out.println("File already exists.");
+			      }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 		
 		if (file.isEmpty()) {
 			log.info("failed to upload file : empty file?");
 		} else {
 			try {
-				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f));
+				FileOutputStream f1 = new FileOutputStream(f);
 				byte[] bytes = file.getBytes();
-				stream.write(bytes);
+				f1.write(bytes);
+				f1.close();
+				log.info("Succesfully uploaded file for user {} into {}", id, f.getAbsolutePath());
 			} catch (Exception e) {
 				System.out.println("Error uploading file of user " + id + " " + e);
 			}
-			
-			log.info("Succesfully uploaded file for user {} into {}", id, f.getAbsolutePath());
 		}
 		
 		
-		return "user";
+		return "redirect:/";
 	}
 	
 	

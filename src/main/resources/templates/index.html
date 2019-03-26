@@ -91,12 +91,10 @@
                         		<input type="file" name="file"/>
                         		<!-- <input type="hidden" th:name="${_csrf.parameterName)" th:value="$(_csrf.token)"/>-->
                         		<button type="submit" id="button-upload-file" class="btn button d-flex align-items-center" style="height: 40px;"><i class="material-icons mr-2">unarchive</i>Upload</button>
-                        		
+                        		<input type="hidden" th:value="@{session.u.id}" name="userId" id="userId">
                         	</form>
                         	
                         	
-                        	
-                            
                             <a class="d-flex files-link" href="#">
                                 <span class="title-section">My Files</span>
                                 <i class="material-icons title-section my-auto ml-3">folder_open</i>

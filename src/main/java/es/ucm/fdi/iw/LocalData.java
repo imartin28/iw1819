@@ -19,7 +19,9 @@ public class LocalData {
     private File baseFolder;
     
     public LocalData() {
-		this.baseFolder = new File("src/main/resources/static/file");
+		this.baseFolder = new File("src/main/resources/static/file/");
+		this.baseFolder.setReadable(true); 
+		this.baseFolder.setWritable(true); 
     	log.info("base folder is " + baseFolder.getAbsolutePath());
     	if (!baseFolder.isDirectory()) {
     		if (baseFolder.exists()) {
@@ -75,5 +77,9 @@ public class LocalData {
      */
     public File getFile(String folderName, String fileName) {
     	return new File(getFolder(folderName), fileName);
+    }
+    
+    public String getBaseFolderPath() {
+    	return this.baseFolder.getAbsolutePath();
     }
 }
