@@ -103,6 +103,26 @@ hr {
 
   /*    FILE   */
   
+  #tags {
+  	  display: flex;
+      justify-content: start;
+      flex-wrap: wrap;
+      margin: 20px;
+  }
+  
+  #tags > * {
+      padding: 5px 10px;
+      border: 1px solid lightgrey;
+      border-radius: 20px;
+  }
+  
+  #tags .title {
+  	  color: rgba(62,181,169,1);
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: lowercase;
+  }
+  
   #mediaplayer {
       margin: 20px;
   }
