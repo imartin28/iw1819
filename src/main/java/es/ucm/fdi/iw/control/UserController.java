@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import javax.transaction.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,8 +27,13 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import es.ucm.fdi.iw.LocalData;
+import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.model.UserFile;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
 import es.ucm.fdi.iw.service.UserService;
@@ -42,6 +49,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private EntityManager entityManager;
 	
 	
 	private LocalData localData = new LocalData();
@@ -64,14 +74,28 @@ public class UserController {
 	
 	
 	@GetMapping("/")
-	public String index(ModelAndView modelAndView, HttpSession session) {		
+	public String index(Model model, HttpSession session) {	
+		Long id_currentUser = ((User) session.getAttribute("u")).getId();
+		List<CFile> files_currentUser = entityManager.createNamedQuery("FilesUser", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
+		
+		
+		
+		
+		model.addAttribute("files", files_currentUser);
+		if(!files_currentUser.isEmpty()) {
+			System.out.println(files_currentUser.get(0).getMetadata());
+		}
+		
+		
 		return "index";
 	}	
 	
 	
 	@PostMapping("/{id}/file")
+	@Transactional
 	public String postFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id, Model model, HttpSession session) {
 		
+		try {
 		User target = userService.findById(id);
 		model.addAttribute("user", target);
 		
@@ -106,18 +130,36 @@ public class UserController {
 			log.info("failed to upload file : empty file?");
 		} else {
 			try {
+				
 				FileOutputStream f1 = new FileOutputStream(f);
 				byte[] bytes = file.getBytes();
 				f1.write(bytes);
 				f1.close();
+				
+				String metadata = "{name : " + file.getOriginalFilename() + ", extension : " + file.getContentType()  + ", size : " + file.getSize() + ", path : " + f.getAbsolutePath() + "}";
+				CFile fileToPersist = new CFile(metadata);			
+				entityManager.persist(fileToPersist);
+				
+				//entityManager.getTransaction().commit();
+				//entityManager.getTransaction().begin();
+				
+				User currentUser = (User) session.getAttribute("u");
+				
+				UserFile userFile = new UserFile(currentUser, fileToPersist, "rw");
+				entityManager.persist(userFile);				
+				
+				entityManager.flush();
+				
 				log.info("Succesfully uploaded file for user {} into {}", id, f.getAbsolutePath());
 			} catch (Exception e) {
 				System.out.println("Error uploading file of user " + id + " " + e);
 			}
 		}
 		
-		
-		return "redirect:/";
+		}catch(Exception e) {
+			log.warn("ERROR DESCONOCIDO" , e);
+		}
+		return "redirect:/user/";
 	}
 	
 	

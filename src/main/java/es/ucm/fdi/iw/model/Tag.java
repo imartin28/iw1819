@@ -30,8 +30,8 @@ public class Tag {
 	@JoinColumn(name="parent_id")
 	private List<Tag> children;
 	
-	@ManyToMany(targetEntity=File.class, mappedBy="tags")
-	private List<File> files;
+	@ManyToMany(targetEntity=CFile.class, mappedBy="tags")
+	private List<CFile> files;
 	
 	public long getId() {
 		return id;
@@ -73,11 +73,11 @@ public class Tag {
 		this.children = children;
 	}
 	
-	public List<File> getFiles() {
+	public List<CFile> getFiles() {
 		return this.files;
 	}
 	
-	public void setFiles(List<File> files) {
+	public void setFiles(List<CFile> files) {
 		this.files = files;
 	}
 

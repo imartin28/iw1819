@@ -156,40 +156,18 @@
                                 -->
                                 <button id="edit-folder-view" class="btn button"><i class="material-icons">edit</i></button>
                             </nav>
-                            <div class="my-2">
-                                <div class="d-inline-flex flex-column justify-content-center align-items-center p-1">
+                           
+                           
+                            <div th:each="file : ${files}" class="my-2"> 
+                                <div  class="d-inline-flex flex-column justify-content-center align-items-center p-1">
                                     <i class="material-icons folder">folder</i>
-                                    <span>Folder name</span>
+                                    
+                                    <span th:text="${file.metadata}">Folder name</span>
                                 </div>
-                                <div class="d-inline-flex flex-column justify-content-center align-items-center p-1">
-                                    <i class="material-icons folder">folder</i>
-                                    <span>Folder name</span>
-                                </div>
-                                <div class="d-inline-flex flex-column justify-content-center align-items-center p-1">
-                                    <i class="material-icons folder">folder</i>
-                                    <span>Folder name</span>
-                                </div>
-                                <div class="d-inline-flex flex-column justify-content-center align-items-center p-1">
-                                    <i class="material-icons folder">folder</i>
-                                    <span>Folder name</span>
-                                </div>
-                                <div class="d-inline-flex flex-column justify-content-center align-items-center p-1">
-                                    <i class="material-icons folder">folder</i>
-                                    <span>Folder name</span>
-                                </div>
-                                <div class="d-inline-flex flex-column justify-content-center align-items-center p-1">
-                                    <i class="material-icons folder">folder</i>
-                                    <span>Folder name</span>
-                                </div>
-                                <div class="d-inline-flex flex-column justify-content-center align-items-center p-1">
-                                    <i class="material-icons folder">folder</i>
-                                    <span>Folder name</span>
-                                </div>
-                                <div class="d-inline-flex flex-column justify-content-center align-items-center p-1">
-                                    <i class="material-icons folder">folder</i>
-                                    <span>Folder name</span>
-                                </div>
+                                
+                                
                             </div>
+                           
                         </div>
 
                         <div id="action-button-container" class="row pt-2 mx-1 d-none">
