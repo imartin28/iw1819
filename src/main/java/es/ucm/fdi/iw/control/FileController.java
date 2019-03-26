@@ -69,7 +69,7 @@ public class FileController {
 	}
 	
 	@GetMapping("/{id}")
-	public ModelAndView getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long id, @ModelAttribute ("userId") Long userId) throws IOException {
+	public String getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long id, @ModelAttribute ("userId") Long userId) throws IOException {
 		
 		String err = "File not found";
 
@@ -79,12 +79,12 @@ public class FileController {
 		if (f.exists()) {
 			err = null;
 			InputStream in = new BufferedInputStream(new FileInputStream(f));
-			
+			// TODO
 		}
-		
-		
-		modelAndView.setViewName("profile");
-		return modelAndView;
+
+		if (err != null)
+			return "redirect:/";
+		else return "file";
 	}
 
 }
