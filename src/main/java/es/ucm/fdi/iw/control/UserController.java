@@ -65,50 +65,9 @@ public class UserController {
 	
 	
 	@GetMapping("/")
-	public String index(ModelAndView modelAndView, HttpSession session) {
-			
+	public String index(ModelAndView modelAndView, HttpSession session) {		
 		return "index";
-	}
-	
-	
-	
-	
-	
-	private void createExampleUsers() {
-		List<User> users = userService.getAll();
-		
-		if(users.size() == 0) {
-			User u = new User();
-			u.setId(77777777);
-			u.setEmail("ferlopezcarr@gmail.com");
-			u.setNickname("ferlopezcarr");
-			u.setName("Fernando");
-			u.setLastName("López");
-			u.setPassword("123456");
-			u.setBirthdate(new Date());
-			u.setDescription("Hola me llamo Fernando");
-			u.setActive(true);
-			userService.create(u);
-			
-			User u2 = new User();
-			u2.setId(88888888);
-			u2.setEmail("maria@gmail.com");
-			u2.setNickname("maria");
-			u2.setName("María");
-			u2.setLastName("Sánchez");
-			u2.setPassword("123456");
-			u2.setBirthdate(new Date());
-			u2.setDescription("Hola me llamo María");
-			u2.setActive(true);
-			userService.create(u2);
-		}
-	}
-	
-	private void loginTest(HttpSession session, User user) {
-		MySession.getInstance().setUserLogged(session, user);
-	}
-	
-	
+	}	
 	
 	
 	@PostMapping("/{id}/file")
