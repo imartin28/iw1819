@@ -19,4 +19,6 @@ public interface UserService {
 	User findByNickname(String nickname);
 	
 	User findById(long id);
+	
+	User findByEmailOrNickname(String email, String nickname);
 }

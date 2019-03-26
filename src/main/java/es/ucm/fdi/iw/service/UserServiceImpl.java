@@ -65,5 +65,21 @@ public class UserServiceImpl implements UserService {
 	public User findById(long id) {
 		return userRepo.findById(id);
 	}
+
+	@Override
+	public User findByEmailOrNickname(String email, String nickname) {
+		email = email.trim();
+		nickname = nickname.trim();
+		User u = null;
+		
+		if(email != null && nickname != null && !email.equalsIgnoreCase("") && !nickname.equalsIgnoreCase("")) {
+			u = entityManager.createNamedQuery("User.byEmailOrNickname", User.class)
+	                .setParameter("email", email)
+	                .setParameter("nickname", nickname)
+	                .getSingleResult();
+		}
+		
+		return u;
+	}
 	
 }

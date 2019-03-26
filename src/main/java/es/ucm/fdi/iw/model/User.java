@@ -17,9 +17,12 @@ import javax.persistence.OneToMany;
 
 @Entity
 @NamedQueries({
-	@NamedQuery(name="User.byEmailOrNickname",
+	@NamedQuery(name="User.byEmailOrNicknameAndActive",
 			query="SELECT u FROM User u "
 					+ "WHERE (u.email = :userLogin OR u.nickname = :userLogin) AND u.active = 1"),
+	@NamedQuery(name="User.byEmailOrNickname",
+	query="SELECT u FROM User u "
+			+ "WHERE (u.email = :userLogin OR u.nickname = :userLogin)"),
 })
 public class User {
 	@Id
@@ -211,6 +214,10 @@ public class User {
 			return false;
 		return Arrays.stream(this.roles.split(","))
 				.anyMatch(r -> r.equalsIgnoreCase(roleName));
+	}
+	
+	public void addRole(String roleName) {
+		this.roles += ','+roleName;
 	}
 
 	@Override
