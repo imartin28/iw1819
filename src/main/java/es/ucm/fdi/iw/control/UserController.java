@@ -1,41 +1,35 @@
 package es.ucm.fdi.iw.control;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import javax.transaction.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserFile;
+import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
 import es.ucm.fdi.iw.service.UserService;
@@ -127,8 +121,7 @@ public class UserController {
 				e.printStackTrace();
 			}
 		}
-		
-		
+
 		
 		if (file.isEmpty()) {
 			log.info("failed to upload file : empty file?");
@@ -188,24 +181,46 @@ public class UserController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value= "/delete", method = RequestMethod.POST)
+	@PostMapping("/delete")
 	public ModelAndView deleteUser(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {
-		String err = "User not found";
-
-		if(userId != null) {
-			User user = userService.findById(userId);
-			if(user != null) {
-				if(user.isActive()) {
-					user = userService.delete(user);
-					if(user != null && !user.isActive()) {
-						err = null;
-						String msg = "User "+user.getName()+" ("+user.getEmail()+")"+
-										" with id: "+userId+", has been deactivated";
-						this.notifyModal(modelAndView, "User notification", msg);
+		String err = null;
+		String viewName = null;
+		
+		User userLogged = (User)session.getAttribute("u");
+		
+		//If the loggedUser is deactivating himself
+		if(userLogged != null && userLogged.getId() == userId) {
+			viewName = "redirect:/logout";
+		}
+		else {
+			//If admin is deactivating a user
+			if(userLogged != null && userLogged.hasRole(UserType.Administrator.getKeyName())) {
+				viewName = "redirect:/admin/";
+			}			
+			//One user is deactivating another
+			else {
+				err = "You are not allowed to delete this user";
+				viewName = "redirect:/user/";
+			}
+		}
+		
+		if(err == null) {
+			err = "User not found";
+			if(userId != null) {
+				User user = userService.findById(userId);
+				if(user != null) {
+					if(user.isActive()) {
+						user = userService.delete(user);
+						if(user != null && !user.isActive()) {
+							err = null;
+							String msg = "User "+user.getName()+" ("+user.getEmail()+")"+
+											" with id: "+userId+", has been deactivated";
+							this.notifyModal(modelAndView, "User notification", msg);
+						}
 					}
-				}
-				else {
-					err = "The user with id: "+userId+" is already deactivated";
+					else {
+						err = "The user with id: "+userId+" is already deactivated";
+					}
 				}
 			}
 		}
@@ -213,23 +228,30 @@ public class UserController {
 		if(err != null) {
 			this.notifyModal(modelAndView, "Error", err);
 		}
-		//If redirect to users the modal wont be rendered
-		modelAndView.setViewName("redirect:/");
+		else {
+			modelAndView.setViewName(viewName);
+		}
 		
 		return modelAndView;
 	}
 	
 	@GetMapping("/modifyProfile")
 	public ModelAndView modifyProfileGet(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {
-		
-		String err = "User not found";
-
 		User user = null;
+		String err = "User not found";
+		
 		if(userId != null) {
-			user = userService.findById(userId);
-			if(user != null && user.isActive()) {
-				err = null;
-				modelAndView.addObject("user", UserSerializer.domainObjToUserTransfer(user));
+			User userLogged = (User)session.getAttribute("u");
+			
+			if(userLogged != null && userLogged.getId() == userId) {
+				user = userService.findById(userId);
+				if(user != null && user.isActive()) {
+					err = null;
+					modelAndView.addObject("user", UserSerializer.domainObjToUserTransfer(user));
+				}
+			}
+			else {
+				err= "You dont have the persimission to modify this user";
 			}
 		}
 		
@@ -246,45 +268,52 @@ public class UserController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/modifyProfile")
+	@PostMapping("/modifyProfile")
 	public ModelAndView modifyProfilePost(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userTransfer") UserTransfer userTransfer)  {
 		String err = "User not found";
 
 		User userDatabase = null;
+		User userLogged = (User)session.getAttribute("u");
+		
 		if(userTransfer != null) {
-			userDatabase = userService.findById(userTransfer.getId());
-			if(userDatabase != null && userDatabase.isActive()) {
-				
-				if(UserParser.getInstance().parseUserModify(modelAndView, userTransfer)) {
+			if(userLogged != null && userLogged.getId() == userTransfer.getId()) {
+				userDatabase = userService.findById(userTransfer.getId());
+				if(userDatabase != null && userDatabase.isActive()) {
 					
-					boolean emailCorrect = true;
-					
-					if(!userDatabase.getEmail().equalsIgnoreCase(userTransfer.getEmail())) {
-						User userSameEmail = userService.findByEmail(userTransfer.getEmail());
+					if(UserParser.getInstance().parseUserModify(modelAndView, userTransfer)) {
 						
-						emailCorrect = (userSameEmail == null || (userSameEmail.getId() != userTransfer.getId() && !userSameEmail.getEmail().equalsIgnoreCase(userTransfer.getEmail())));
-						//users with same emails and different ids
-						if(!emailCorrect) {
-							err = "The email "+userTransfer.getEmail()+" is already registered";
+						boolean emailCorrect = true;
+						
+						if(!userDatabase.getEmail().equalsIgnoreCase(userTransfer.getEmail())) {
+							User userSameEmail = userService.findByEmail(userTransfer.getEmail());
+							
+							emailCorrect = (userSameEmail == null || (userSameEmail.getId() != userTransfer.getId() && !userSameEmail.getEmail().equalsIgnoreCase(userTransfer.getEmail())));
+							//users with same emails and different ids
+							if(!emailCorrect) {
+								err = "The email "+userTransfer.getEmail()+" is already registered";
+							}
+						}
+						
+						if(emailCorrect) {
+							userDatabase.setEmail(userTransfer.getEmail());
+							userDatabase.setName(userTransfer.getName());
+							userDatabase.setLastName(userTransfer.getLastName());
+							userDatabase.setBirthdate(DateUtil.getDateWithoutHour(userTransfer.getBirthdateStr()));
+							userDatabase.setDescription(userTransfer.getDescription());
+							
+							User userSaved = userService.save(userDatabase);
+							if(userSaved != null) {
+								err = null;
+							}
 						}
 					}
-					
-					if(emailCorrect) {
-						userDatabase.setEmail(userTransfer.getEmail());
-						userDatabase.setName(userTransfer.getName());
-						userDatabase.setLastName(userTransfer.getLastName());
-						userDatabase.setBirthdate(DateUtil.getDateWithoutHour(userTransfer.getBirthdateStr()));
-						userDatabase.setDescription(userTransfer.getDescription());
-						
-						User userSaved = userService.save(userDatabase);
-						if(userSaved != null) {
-							err = null;
-						}
+					else {
+						err = "";
 					}
 				}
-				else {
-					err = null;
-				}
+			}
+			else {
+				err= "You dont have the persimission to modify this user";
 			}
 		}
 

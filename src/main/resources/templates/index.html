@@ -6,10 +6,13 @@
 <head>
 	<div th:replace="fragments/head :: head"></div>
 	
-	<!-- Put additional css and js sources -->
-    <link rel="stylesheet" type="text/css" href="/css/style.css">    
-    <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
+	    	<!-- Put additional css and js sources -->
+    
 
+	
+	<link rel="stylesheet" type="text/css" href="/css/style.css">    
+    <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
+	
     <!-- datatables-->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
@@ -19,6 +22,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"></script>
     
     <script type="text/javascript" src="/js/index.js"></script>
+
     
     <title>M3 - MultiMedia Manager</title>
 </head>
@@ -55,24 +59,25 @@
                             
                             <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
-                                    <i class="material-icons mr-2">local_offer</i>
+                                    <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
+                                    <i class="material-icons icon-tag mr-2">bookmark</i>
                                     <span th:text="${tag.name}"></span>
                                 </div>
-                                <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">brightness_low</i></button>
+                                <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">menu</i></button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Rename</a>
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">palette</i>Change color</a>
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
                                 </div>
                             </li>
-                            
+            
                         </ul>
 
                         
                         <!-- Button trigger modal -->
 						<button type="button" class="btn button-second mt-auto d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#exampleModal">
 						  <i class="material-icons mr-2">add</i>
-                            <span>Add Tag</span>
+                            <span>Add New Tag</span>
 						</button>
 						
 						<!-- Modal -->

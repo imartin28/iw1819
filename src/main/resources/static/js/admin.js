@@ -11,15 +11,19 @@ $(function() {
     		userIdsToDelete.push($(rows[i]).attr("id"));
     	}
     	
+    	let jsonArray = JSON.stringify(userIdsToDelete);
+    	
     	if(userIdsToDelete && userIdsToDelete.length > 0) {
         	$.ajax({
     			type: "POST",
-    			url: "/delete-users",
+    			url: "/admin/delete-users",
     			headers: {
     				"Content-Type": "application/json",				
     				"X-CSRF-TOKEN": m3.csrf.value
     			},
-    			data: JSON.stringify(userIdsToDelete),
+    			dataType: 'json',
+    			contentType:'application/json',
+    			data: jsonArray,
     			success: function() {
     				console.log("users deleted");
     			},

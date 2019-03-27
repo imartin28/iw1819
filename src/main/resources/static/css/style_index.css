@@ -101,6 +101,11 @@ hr {
     color: rgba(42,46,54,1);
 }
 
+
+.icon-tag{
+	transform: rotate(90deg);
+}
+
   /*    FILE   */
   
   #tags {
@@ -321,8 +326,8 @@ img.social {
     height: 40px;
 }
 
-.no-bck {
-    background: none;
+.no-bck{
+	color: rgb(27, 28, 31);
 }
 
 /* MyFiles-panel */

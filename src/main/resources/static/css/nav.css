@@ -5,6 +5,14 @@
     align-items: center;
 }
 
-.fa-sign-out-alt {
+.fa-icon {
 	font-size: 20px;
+}
+
+.nav-item {
+	margin: 0 10px;
+}
+
+.img-nav {
+	background-color: #ffffff;
 }

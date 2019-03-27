@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	lang="es">
+<head>
+	<th:block th:replace="fragments/head :: head"></th:block>
+	
+	<!-- Put additional css and js sources -->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">    
+    <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
+    
+    <title>M3 - MultiMedia Manager</title>
+</head>
+
+<body> 
+        
+    <nav th:replace="fragments/nav :: nav"></nav>
+    
+    <div class="conatiner mt-4">
+
+        <div class="row">
+        	<div class="col-auto mx-auto d-flex flex-column text-center">
+        		<h3>Error</h3>
+				<h3 th:if="${status != null && error != null}" th:text="${status + ' ' + error}"></h3>
+				<img class="mx-auto" src="/img/robot.jpg">
+				<div class="text-center" th:if="${url != null}" th:text="${url}"></div>
+				<div class="text-center" th:if="${exception != null}" th:text="${exception.message}"></div>
+				<div class="text-center" th:if="${exception != null}" th:text="${exception.stacktrace}"></div>
+				
+				<div class="text-center" th:if="${message != null}" th:text="${message}"></div>
+				<div class="text-center" th:if="${timestamp != null}" th:text="${timestamp}"></div>
+				<div class="text-center" th:if="${trace != null}" th:text="${trace}"></div>
+			</div>
+		</div>
+		
+	</div>
+</body>
+</html>
