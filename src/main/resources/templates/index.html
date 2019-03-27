@@ -51,11 +51,12 @@
                                     <i class="material-icons mr-2">all_inclusive</i>
                                     <span>All</span>
                                 </div>
-                            </li>
-                            <li class="list-group-item py-0 d-flex justify-content-between align-items-center">
+                            </li>                            
+                            
+                            <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
                                     <i class="material-icons mr-2">local_offer</i>
-                                    <span>Tag 1</span>
+                                    <span th:text="${tag.name}"></span>
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">brightness_low</i></button>
                                 <div class="dropdown-menu">
@@ -64,24 +65,54 @@
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
                                 </div>
                             </li>
-                            <li class="list-group-item py-0 d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <i class="material-icons mr-2">local_offer</i>
-                                    <span>Tag 2</span>
-                                </div>
-                                <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">brightness_low</i></button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Modify</a>
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">palette</i>Change color</a>
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
-                                </div>
-                            </li>
+                            
                         </ul>
 
-                        <button class="btn button-second mt-auto d-flex align-items-center justify-content-center">
-                            <i class="material-icons mr-2">add</i>
+                        
+                        <!-- Button trigger modal -->
+						<button type="button" class="btn button-second mt-auto d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#exampleModal">
+						  <i class="material-icons mr-2">add</i>
                             <span>Add Tag</span>
-                        </button>
+						</button>
+						
+						<!-- Modal -->
+						<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title" id="exampleModalLabel">Add new tag</h5>
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						          <span aria-hidden="true">&times;</span>
+						        </button>
+						      </div>
+						      <div class="modal-body">
+						      	<form method="POST" action="#" th:action="@{/file/newTag}">
+						          <div class="form-group">
+						            <label for="recipient-name" class="col-form-label">Introduce the name of the new tag:</label>
+						            <input type="text" class="form-control" id="recipient-name" name="tagName">
+						          </div>
+						          <div class="form-group">
+						            <label for="exampleFormControlSelect1">Nest the tag in:</label>
+									    <select class="form-control" id="exampleFormControlSelect1" name="parentId">
+									    	<option></option>
+									      	<option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}">Option</option>
+									    </select>
+						          </div>
+						          <div class="modal-footer">
+						      	
+						        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+						        <button type="submit" class="btn button">Create tag</button>
+						        
+						      </div>
+						        </form>
+						      </div>
+						      
+						    </div>
+						  </div>
+						</div>
+                        
+                        
+                        
                     </div>
 
                     <div class="col-9">
@@ -163,6 +194,7 @@
                                     <i class="material-icons folder">folder</i>
                                     
                                     <span th:text="${file.metadata}">Folder name</span>
+                                    
                                 </div>
                                 
                                 

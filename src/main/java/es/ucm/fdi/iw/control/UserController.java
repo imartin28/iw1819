@@ -25,8 +25,13 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
+import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserFile;
 import es.ucm.fdi.iw.model.UserType;
@@ -73,11 +78,13 @@ public class UserController {
 	public String index(Model model, HttpSession session) {	
 		Long id_currentUser = ((User) session.getAttribute("u")).getId();
 		List<CFile> files_currentUser = entityManager.createNamedQuery("FilesUser", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
+		List<Tag> tags = entityManager.createNamedQuery("readAllTags", Tag.class).getResultList();
 		
-		
-		
+		//String json = new Gson().toJson(files_currentUser);
 		
 		model.addAttribute("files", files_currentUser);
+		model.addAttribute("tags", tags);
+		
 		if(!files_currentUser.isEmpty()) {
 			System.out.println(files_currentUser.get(0).getMetadata());
 		}

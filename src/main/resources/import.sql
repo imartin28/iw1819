@@ -54,17 +54,17 @@ VALUES ( 1, '', 'admin@admin.es', 'Admin', 'Admin', 'admin', '{bcrypt}$2a$04$2ao
 -- TAGS
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID" )
-VALUES ('Red', 'Video', null);
+("COLOR", "NAME", "PARENT_ID", "USER_ID")
+VALUES ('Red', 'Video', null, 1);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID" )
-VALUES ('Yellow', 'Music', null);
+("COLOR", "NAME", "PARENT_ID", "USER_ID" )
+VALUES ('Yellow', 'Music', null, 1);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID" )
-VALUES ('Orange', 'Pictures', null);
+("COLOR", "NAME", "PARENT_ID", "USER_ID" )
+VALUES ('Orange', 'Pictures', null, 1);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID" )
-VALUES ('Blue', 'Home Videos', 1);
+("COLOR", "NAME", "PARENT_ID", "USER_ID" )
+VALUES ('Blue', 'Home Videos', 1, 1);

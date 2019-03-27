@@ -9,10 +9,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@NamedQueries({
+@NamedQuery(name="readAllTags", query="SELECT t "
+		+ " FROM Tag t "),
+@NamedQuery(name="findById", query="SELECT t "
+		+ " FROM Tag t"
+		+ " WHERE id = :id")
+})
 public class Tag {
 	
 	@Id
@@ -32,6 +41,20 @@ public class Tag {
 	
 	@ManyToMany(targetEntity=CFile.class, mappedBy="tags")
 	private List<CFile> files;
+	
+	@ManyToOne(targetEntity=User.class)
+	private User user;
+	
+	public Tag() {
+		
+	}
+	public Tag(String name, String color, Tag parent, User user) {
+		this.name = name;
+		this.color = color;
+		this.parent = parent;
+		this.user = user;
+	}
+	
 	
 	public long getId() {
 		return id;
@@ -80,5 +103,13 @@ public class Tag {
 	public void setFiles(List<CFile> files) {
 		this.files = files;
 	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	
 
 }
