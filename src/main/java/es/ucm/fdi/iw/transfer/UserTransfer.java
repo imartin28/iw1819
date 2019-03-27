@@ -40,7 +40,8 @@ public class UserTransfer {
 		this.name = name;
 		this.lastName = lastName;
 		this.birthdate = birthdate;
-		this.birthdateStr = DateUtil.horaMostrarString(this.birthdate);
+		if(this.birthdate != null)
+			this.birthdateStr = DateUtil.horaMostrarString(this.birthdate);
 		this.description = description;
 	}
 

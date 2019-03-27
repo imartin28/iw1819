@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import es.ucm.fdi.iw.util.DateUtil;
 import es.ucm.fdi.iw.util.StringUtil;
 
 @Controller
+@ConditionalOnProperty(name = "${es.ucm.fdi.debug}", havingValue = "false")
 public class MyErrorController implements ErrorController  {
  
 	private static final Logger log = LogManager.getLogger(MyErrorController.class);

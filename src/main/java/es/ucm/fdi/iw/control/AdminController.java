@@ -1,19 +1,18 @@
 package es.ucm.fdi.iw.control;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
@@ -68,24 +67,19 @@ public class AdminController {
 	}
 	
 	@PostMapping("/delete-users")
-	public ModelAndView deleteUsers(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userIdsToDelete") JSONArray userIdsToDelete) {
+	public ModelAndView deleteUsers(ModelAndView modelAndView, HttpSession session, SessionStatus status, @RequestBody List<Long> userIdsToDelete) {
 		String err = "";
 		
 		if(userIdsToDelete != null) {
-			for(int i = 0; i < userIdsToDelete.length(); i++) {
+			
+			for(int i = 0; i < userIdsToDelete.size(); i++) {
 				String errUserId = "";
-				Long userId = null;
-				try {
-					userId = userIdsToDelete.getLong(i);
-				} catch (JSONException e) {
-					log.error("delete-users JSONArray parseLong exception", e);
-				}
+				
+				Long userId = userIdsToDelete.get(i);
 				
 				if(userId != null) {
 					User user = userService.findById(userId);
 	
-					errUserId += "User with id: "+userId+", not found";
-				
 					if(user != null) {
 						if(user.isActive()) {
 							user = userService.delete(user);
@@ -97,21 +91,24 @@ public class AdminController {
 							errUserId = "The user with id: "+userId+" is already deactivated";
 						}
 					}
+					else {
+						errUserId += "User with id: "+userId+", not found";
+					}
 				}
 				else {
 					errUserId += "Error with user id";
 				}
+				
 				err += errUserId + '\n';
 			}
 		}
 		
 		err = err.trim();
 
-		if(err != null && err != "") {
+		modelAndView.setViewName("redirect:/admin/");
+		if(err != null && !err.equalsIgnoreCase("")) {
 			this.notifyModal(modelAndView, "Error", err);
 		}
-		//If redirect to users the modal wont be rendered
-		this.usersGet(modelAndView);
 		
 		return modelAndView;
 	}

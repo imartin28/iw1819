@@ -18,8 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
@@ -65,8 +63,21 @@ public class RootController {
 	}
 	
 	@GetMapping("/")
-	public String index(Model model, HttpSession session) {
-		return "redirect:/login";
+	public ModelAndView index(ModelAndView modelAndView, HttpSession session) {
+		String viewName = "redirect:/login";
+		User userLogged = (User)session.getAttribute("u");
+		
+		if(userLogged != null) {
+			if(userLogged.hasRole(UserType.Administrator.getKeyName())) {
+				viewName = "redirect:/admin/";
+			}
+			else {
+				viewName = "redirect:/user/";
+			}
+		}
+		modelAndView.setViewName(viewName);
+		
+		return modelAndView;
 	}
 
 	@GetMapping("/login")

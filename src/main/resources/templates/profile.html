@@ -23,9 +23,13 @@
             <p class="name text-center" th:text="${user.name + ' ' + user.lastName}">John Snow</p>
             <p class="nick text-center" th:text="${'@'+user.nickname}"></p>
             <p class="text-center" th:text="${user.email}"></p>
-            <p class="text-center" th:if="${user.birthdate != null}" th:text="${ 'Edad : ' + (#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' años - ' + #dates.format(user.birthdate, 'dd/MM/yyyy')}"></p>
+            <p class="text-center" th:if="${user.birthdate != null}" 
+            	th:text="${ 'Edad : ' + (#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' años - ' + #dates.format(user.birthdate, 'dd/MM/yyyy')}"></p>
             <p class="bio text-center" th:text="${user.description}"></p>
-            <a th:href="@{/user/modifyProfile?userId=__${user.id}__}" class="btn button content-button mt-3"><i class="material-icons mr-2">edit</i>Modify profile</a>
+            <a th:if="${session.u != null && session.u.id == user.id}" 
+            	th:href="@{/user/modifyProfile?userId=__${user.id}__}" class="btn button content-button mt-3">
+            	<i class="material-icons mr-2">edit</i>Modify profile
+            </a>
 
         </div>
     </div>

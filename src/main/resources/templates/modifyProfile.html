@@ -32,23 +32,29 @@
 	            </div>
 	            <div class="form-row">
 	                <div class="form-group col-12">
-	                    <input type="email" class="form-control" placeholder="Email" th:id="email" th:name="email" th:value="${user.email}">
+	                    <input type="email" class="form-control" placeholder="Email" 
+	                    	th:id="email" th:name="email" th:value="${user.email}" th:classappend="${emailError != null} ? is-invalid : ''">
 	                    <div class="invalid-feedback" th:text="${emailError}"></div>
 	                </div>
 	            </div>
 	            <div class="form-row">
 	                <div class="form-group col-6">
-	                    <input type="text" class="form-control" placeholder="FirstName" th:id="name" th:name="name" th:value="${user.name}">
+	                    <input type="text" class="form-control" placeholder="FirstName" 
+	                    	th:id="name" th:name="name" th:value="${user.name}" th:classappend="${nameError != null} ? is-invalid : ''">
 	                    <div class="invalid-feedback" th:text="${nameError}"></div>
 	                </div>
 	                <div class="form-group col-6">
-	                    <input type="text" class="form-control" placeholder="LastName" th:id="lastName" th:name="lastName" th:value="${user.lastName}">
+	                    <input type="text" class="form-control" placeholder="LastName" 
+	                    	th:id="lastName" th:name="lastName" th:value="${user.lastName}" th:classappend="${lastNameError != null} ? is-invalid : ''">
 	                	<div class="invalid-feedback" th:text="${lastNameError}"></div>
 	                </div>
 	            </div>
 	            <div class="form-row">
 	                <div class="form-group col-12">
-	                    <input type="date" class="form-control" th:id="birthdateStr" th:name="birthdateStr" th:value="${(user.birthdate != null ? #dates.format(user.birthdate, 'yyyy-MM-dd') : #dates.format(#dates.createNow(), 'yyyy-MM-dd') )}">
+	                    <input type="date" class="form-control" 
+	                    	th:id="birthdateStr" th:name="birthdateStr" 
+	                    	th:value="${(user.birthdate != null ? #dates.format(user.birthdate, 'yyyy-MM-dd') : #dates.format(#dates.createNow(), 'yyyy-MM-dd') )}"
+	                    	th:classappend="${birthdateError != null} ? is-invalid : ''">
 	                	<div class="invalid-feedback" th:text="${birthdateError}"></div>
 	                </div>
 	            </div>

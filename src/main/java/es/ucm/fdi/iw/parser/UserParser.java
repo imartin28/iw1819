@@ -260,6 +260,7 @@ public class UserParser extends Parser {
              }
         } catch(ParseException pe) {
         	msg = pe.getMessage();
+        	birthdayOk = false;
         }
         
         if(birthdayOk) {
