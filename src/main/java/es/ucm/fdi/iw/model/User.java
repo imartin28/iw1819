@@ -70,16 +70,9 @@ public class User {
 	@OneToMany(targetEntity=Message.class, mappedBy="receiver")
 	private List<Message> receivedMessages;
 
-	/*
-	public User(String email, String nickname, String name, String lastName, Date birthdate, String description) {
-		this.email = email;
-		this.nickname = nickname;
-		this.name = name;
-		this.lastName = lastName;
-		this.birthdate = birthdate;
-		this.description = description;
-	}
-	*/
+	@OneToMany(targetEntity=Tag.class, mappedBy="user")
+	private List<Tag> tags;
+
 
 	public long getId() {
 		return id;
@@ -87,6 +80,14 @@ public class User {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public List<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
 	}
 
 	public String getNickname() {

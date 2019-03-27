@@ -42,13 +42,17 @@ public class Tag {
 	@ManyToMany(targetEntity=CFile.class, mappedBy="tags")
 	private List<CFile> files;
 	
+	@ManyToOne(targetEntity=User.class)
+	private User user;
+	
 	public Tag() {
 		
 	}
-	public Tag(String name, String color, Tag parent) {
+	public Tag(String name, String color, Tag parent, User user) {
 		this.name = name;
 		this.color = color;
 		this.parent = parent;
+		this.user = user;
 	}
 	
 	
@@ -99,5 +103,13 @@ public class Tag {
 	public void setFiles(List<CFile> files) {
 		this.files = files;
 	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	
 
 }

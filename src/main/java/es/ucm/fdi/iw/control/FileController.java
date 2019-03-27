@@ -13,6 +13,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import javax.websocket.Session;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,14 +94,14 @@ public class FileController {
 
 	@PostMapping("/newTag")
 	@Transactional
-	public String postTag(Model model, @RequestParam("tagName") String name, @RequestParam("parentId") Long parentId) {
+	public String postTag(Model model, HttpSession session, @RequestParam("tagName") String name, @RequestParam("parentId") Long parentId) {
 		
 		
 		Tag parentTag = null;
 		if(parentId != null) {
 			parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId).getSingleResult();
 		}
-		Tag tag = new Tag(name, null, parentTag);
+		Tag tag = new Tag(name, null, parentTag, (User)session.getAttribute("u"));
 		
 		entityManager.persist(tag);
 		entityManager.flush();
