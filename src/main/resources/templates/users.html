@@ -43,7 +43,7 @@
 	                </tr>
 	            </thead>
 	            <tbody th:if="${users != null}">     
-	                <tr th:id="${user.id}" th:each=" user, iStat : ${users}">
+	                <tr th:id="${user.id}" th:each=" user, iStat : ${users}" th:if="${session.u.id != user.id}">
 	                	<td th:text="${user.nickname}"></td>
 	                    <td th:text="${user.name}"></td>
 	                    <td th:text="${user.lastName}"></td>
@@ -52,7 +52,7 @@
 	                    <td th:text="${#dates.format(user.birthdate, 'dd/MM/yyyy')}"></td>
 	                    <td th:text="${user.description}"></td>
 	                    <td class="d-flex justify-content-center align-items-center">
-	                    	<form th:action="@{/delete}" method="POST">
+	                    	<form th:action="@{/user/delete}" method="POST">
 								<input type="hidden" id="userId" name="userId" th:value="${user.id}"/>
 								<button class="button"><i class="material-icons p-1">delete</i></button>
 							</form>

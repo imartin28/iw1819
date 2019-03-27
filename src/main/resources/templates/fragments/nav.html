@@ -12,23 +12,39 @@
 	
 		<link rel="stylesheet" href="/css/nav.css">
 		
-	    <div class="navbar-nav">
-	    	<a href="/"><img class="mx-3 my-1" src="/img/logoM3.png" width="40px" height="40px"></a>
-	        <a class="nav-item nav-link mx-2" th:if="${session.u != null}" th:href="@{user/?nickname=__${session.u.nickname}__}"><i class="material-icons">home</i></a>
-	        <a class="nav-item nav-link mx-2" href="#"><i class="material-icons">folder_open</i></a>
-	        <a class="nav-item nav-link mx-2" href="#"><i class="material-icons">group</i></a>
-	        <a class="nav-item nav-link mx-2" href="#"><i class="material-icons">brightness_low</i></a>
-	        <a th:if="${session.u != null}" th:href="@{/user/profile?userId=__${session.u.id}__}"><img class="border-3 rounded-circle mx-3" src="/img/guille.jpg" width="50px" height="50px"></a>
-	    	<a th:if="${session.u != null}" th:href="@{/logout}" class="nav-item nav-link"><i class="fas fa-sign-out-alt"></i></a>
+	    <div class="navbar-nav flex-nowrap">
+	    	<a th:href="@{/}"><img class="mx-3 my-1" src="/img/logoM3.png" width="40px" height="40px"></a>
+	    	<th:block th:if="${session.u != null && !session.u.hasRole('admin')}">
+	    		<a th:href="@{/user/?nickname=__${session.u.nickname}__}" class="nav-item nav-link mx-2"><i class="material-icons">home</i></a>
+		        <a href="#" class="nav-item nav-link mx-2"><i class="material-icons">folder_open</i></a>
+		        <a href="#" class="nav-item nav-link mx-2"><i class="material-icons">group</i></a>
+		        <a href="#" class="nav-item nav-link mx-2"><i class="material-icons">brightness_low</i></a>
+		        <a th:href="@{/user/profile?userId=__${session.u.id}__}"><img class="border-3 rounded-circle ml-3 img-nav" src="/img/guille.jpg" width="50px" height="50px"></a>
+	    	</th:block>
+	    	<th:block th:if="${session.u != null && session.u.hasRole('admin')}">
+				<a th:href="@{/admin/users}" class="nav-item nav-link fa-icon"><i class="fas fa-users-cog"></i></a>
+				<a href="#" class="nav-item nav-link fa-icon"><i class="fas fa-copy"></i></a>
+				<a th:href="@{/admin/addAdmin}" class="nav-item nav-link fa-icon"><i class="fas fa-user-plus"></i></a>
+				<a th:href="@{/user/profile?userId=__${session.u.id}__}"><img class="border-3 rounded-circle ml-3 img-nav" src="/img/admin.png" width="50px" height="50px"></a>
+	    	</th:block>
+	    	<th:block th:if="${session.u != null}">
+	    		<a th:href="@{/logout}" class="nav-item nav-link fa-icon"><i class="fas fa-sign-out-alt"></i></a>
+	    	</th:block>
 	    </div>
 	    
-	    <div class="debug" th:if="${application.debug}">
-			<form th:action="@{/login}" method="post" th:if="${session.u == null}">
+	    <div class="debug d-flex flex-row align-items-center" th:if="${application.debug}">
+			<form id="loginUser" th:action="@{/login}" method="post" th:if="${session.u == null}">
 				<input type="hidden" name="username" value="flopezcarr@ucm.es">
 				<input type="hidden" name="password" value="a">
 				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-				<button type="submit">flopezcarr@ucm.es</button>
- 			</form>						
+				<button type="submit" class="button" form="loginUser">flopezcarr@ucm.es</button>
+ 			</form>
+ 			<form id="loginAdmin" th:action="@{/login}" method="post" th:if="${session.u == null}">
+				<input type="hidden" name="username" value="admin">
+				<input type="hidden" name="password" value="a">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+				<button type="submit" class="button" form="loginAdmin">admin@admin.es</button>
+ 			</form>					
 		</div>
 	        
 	    <!-- Modal to dsplay server messages to user -->

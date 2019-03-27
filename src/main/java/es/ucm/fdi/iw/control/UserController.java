@@ -1,20 +1,18 @@
 package es.ucm.fdi.iw.control;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import javax.transaction.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,13 +25,11 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserFile;
+import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
 import es.ucm.fdi.iw.service.UserService;
@@ -186,22 +182,46 @@ public class UserController {
 	
 	@RequestMapping(value= "/delete", method = RequestMethod.POST)
 	public ModelAndView deleteUser(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {
-		String err = "User not found";
-
-		if(userId != null) {
-			User user = userService.findById(userId);
-			if(user != null) {
-				if(user.isActive()) {
-					user = userService.delete(user);
-					if(user != null && !user.isActive()) {
-						err = null;
-						String msg = "User "+user.getName()+" ("+user.getEmail()+")"+
-										" with id: "+userId+", has been deactivated";
-						this.notifyModal(modelAndView, "User notification", msg);
+		String err = null;
+		String viewName = null;
+		
+		User userLogged = (User)session.getAttribute("u");
+		
+		//If the loggedUser is deactivating himself
+		if(userLogged != null && userLogged.getId() == userId) {
+			viewName = "redirect:/login?logout";
+		}
+		else {
+			//If admin is deactivating a user
+			if(userLogged != null && userLogged.hasRole(UserType.Administrator.getKeyName())) {
+				viewName = "redirect:/admin/";
+			}			
+			//One user is deactivating another
+			else {
+				err = "You are not allowed to delete this user";
+				viewName = "redirect:/user/";
+			}
+		}
+		
+		modelAndView.setViewName(viewName);
+		
+		if(err == null) {
+			err = "User not found";
+			if(userId != null) {
+				User user = userService.findById(userId);
+				if(user != null) {
+					if(user.isActive()) {
+						user = userService.delete(user);
+						if(user != null && !user.isActive()) {
+							err = null;
+							String msg = "User "+user.getName()+" ("+user.getEmail()+")"+
+											" with id: "+userId+", has been deactivated";
+							this.notifyModal(modelAndView, "User notification", msg);
+						}
 					}
-				}
-				else {
-					err = "The user with id: "+userId+" is already deactivated";
+					else {
+						err = "The user with id: "+userId+" is already deactivated";
+					}
 				}
 			}
 		}
@@ -209,8 +229,6 @@ public class UserController {
 		if(err != null) {
 			this.notifyModal(modelAndView, "Error", err);
 		}
-		//If redirect to users the modal wont be rendered
-		modelAndView.setViewName("redirect:/");
 		
 		return modelAndView;
 	}

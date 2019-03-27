@@ -48,8 +48,8 @@ VALUES ( 1, '', 'imart02@ucm.es', 'Martin', 'Irene', 'Darko', '{bcrypt}$2a$04$2a
 
 
 INSERT INTO USER
-("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE")
-VALUES ( 1, '', 'prueba@prueba.es', 'Lopez', 'Fernando', 'prueba', 'prueba', TO_DATE('1996-09-06', 'YYYY-MM-DD') );
+("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "ROLES")
+VALUES ( 1, '', 'admin@admin.es', 'Admin', 'Admin', 'admin', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', 'admin');
 
 -- TAGS
 

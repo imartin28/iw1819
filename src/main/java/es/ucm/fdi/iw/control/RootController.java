@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw.control;
 
 import javax.persistence.EntityManager;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
 import es.ucm.fdi.iw.service.UserService;
@@ -96,7 +98,7 @@ public class RootController {
 	}
 	
 	@PostMapping("/register")
-	public ModelAndView register(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("user") UserTransfer userTransfer) {
+	public ModelAndView register(ModelAndView modelAndView, HttpSession session, SessionStatus status, ServletContext context, @ModelAttribute ("user") UserTransfer userTransfer) {
 		String err = "Please fill the fields";
 
 		if(userTransfer != null) {
@@ -106,7 +108,21 @@ public class RootController {
 				User userNickname = userService.findByNickname(userTransfer.getNickname());
 				if(userEmail == null && userNickname == null) {
 					User user = UserSerializer.userTransferToDomainObj(userTransfer);
-					user.addRole("user");
+					
+					UserType userType = UserType.getUserType(userTransfer.getType());
+					Boolean debug = (Boolean)context.getAttribute("debug");
+					if(userType != null) {
+						if(userType == UserType.Administrator && debug != null && debug) {
+							user.addRole(UserType.Administrator.getKeyName());
+						}
+						else if(userType != UserType.Administrator) {
+							user.addRole(userTransfer.getType());
+						}
+					}
+					else {
+						user.addRole("user");
+					}
+					
 					user = userService.create(user);
 
 					if(user != null) {

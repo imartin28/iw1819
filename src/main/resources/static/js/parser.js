@@ -6,19 +6,19 @@ $(function() {
 	parser = {
 		legalAge: 18,
 		emailPattern: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-		namePattern: /^([0-9a-zA-ZáéíóúñÁÉÍÓÚÑ ])*$/,
+		namePattern: /^([0-9a-zA-ZáéíóúñÁÉÍÓÚÑ])*$/,
 		passwordPattern: /^(?=.{6,})(?=.*\d)(?=.*[A-Z]).*$/,
 		
-	    parseNotNullText : "Por favor, rellena el campo",
-	    parseNotEmptyText : "Por favor, rellena el campo",
-	    parseEmailText: "Por favor, introduce un email válido",
-	    parseNameText: "Por favor, introduce solo letras y/o números",
-	    parsePasswordText: "La contraseña debe contener al menos"+" 1 mayúscula"+ ", 1 número"+" y 6 caracteres",
-	    parseSamePasswordText: "Las contraseñas deben coincidir",
-	    parseIntegerText : "Por favor, introduce un número válido",
-	    parseIntegerPositiveText: "Por favor, introduce un número positvo",
-	    parseDateText: "Por favor, introduce una fecha válida",
-	    parseBirthdayText: "Debes tener al menos 18 años",
+	    parseNotNullText : "Please, fill the field",
+	    parseNotEmptyText : "Please, fill the field",
+	    parseEmailText: "Please, introduce a valid email",
+	    parseNameText: "Please, introduce only letters or numbers",
+	    parsePasswordText: "Password must contains at least"+" 1 capital letter"+ ", 1 number"+" and 6 characters",
+	    parseSamePasswordText: "Passwords must match",
+	    parseIntegerText : "Please, introduce a number",
+	    parseIntegerPositiveText: "Please, introduce a positive number",
+	    parseDateText: "Please, introduce a valid date",
+	    parseBirthdayText: "You must be at least 18 years old",
 
 	    /**
 	     * Resturn true if the argument is correct, if not return false

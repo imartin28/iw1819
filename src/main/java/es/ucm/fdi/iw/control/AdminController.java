@@ -10,15 +10,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.service.UserService;
+import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.StringUtil;
 
 @Controller()
@@ -44,25 +46,28 @@ public class AdminController {
 		}
 	}
 	
+	@GetMapping("/")
+	public String index(ModelAndView modelAndView, HttpSession session) {
+		return "redirect:/admin/users";
+	}
+	
 	@GetMapping("/users")
 	public ModelAndView usersGet(ModelAndView modelAndView) {
-		
-		/*
-		 * //To check if the user is logged
-		User userLogged = MySession.getInstance().getUserLogged(modelAndView, session, status);
-		if(userLogged != null) {
-			//Do things
-		}
-		*/
-		
 		List<User> users = userService.getAll();
 
 		modelAndView.addObject("users", users);
-		modelAndView.setViewName("admin");
+		modelAndView.setViewName("users");
 		return modelAndView;
 	}
 	
-	@RequestMapping(value= "/delete-users", method = RequestMethod.POST)
+	@GetMapping("/addAdmin")
+	public ModelAndView addAdminGet(ModelAndView modelAndView) {
+		modelAndView.setViewName("addAdmin");
+		modelAndView.addObject("user", new UserTransfer());
+		return modelAndView;
+	}
+	
+	@PostMapping("/delete-users")
 	public ModelAndView deleteUsers(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userIdsToDelete") JSONArray userIdsToDelete) {
 		String err = "";
 		
