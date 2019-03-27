@@ -26,8 +26,9 @@ public class UserParser extends Parser {
 
     private static final String EMAIL_PATTERN = "^[^@]+@[^@]+\\.[a-zA-Z]{2,}$";
     private static final String EMAIL_EXAMPLE = "ejemplo@ejemplo.es";
-    private static final String NAME_PATTERN = "^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\\']+[\\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\\'])+[\\s]?([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\\'])?$";
+    private static final String NAME_PATTERN = "^[\\w\\s]+$";
     private static final String PASSWORD_PATTERN = "^(?=.{6,})(?=.*\\d)(?=.*[A-Z]).*$";
+    private static final String NICKNAME_PATTERN = "^[A-Za-z]+$";
     private static final int EMAIL_MIN_LENGTH = 5;
     private static final int PASSWORD_MIN_LENGTH = 6;
     private static final int BIRTHDAY_MIN_AGE = 18;

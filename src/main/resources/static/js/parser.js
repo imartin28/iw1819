@@ -6,8 +6,9 @@ $(function() {
 	parser = {
 		legalAge: 18,
 		emailPattern: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-		namePattern: /^([0-9a-zA-ZáéíóúñÁÉÍÓÚÑ ])*$/,
+		namePattern: /^[\w\s]+$/,
 		passwordPattern: /^(?=.{6,})(?=.*\d)(?=.*[A-Z]).*$/,
+		nicknamePattern: /^[A-Za-z]+$/,
 		
 	    parseNotNullText : "Por favor, rellena el campo",
 	    parseNotEmptyText : "Por favor, rellena el campo",
