@@ -51,11 +51,12 @@
                                     <i class="material-icons mr-2">all_inclusive</i>
                                     <span>All</span>
                                 </div>
-                            </li>
-                            <li class="list-group-item py-0 d-flex justify-content-between align-items-center">
+                            </li>                            
+                            
+                            <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
                                     <i class="material-icons mr-2">local_offer</i>
-                                    <span>Tag 1</span>
+                                    <span th:text="${tag.name}"></span>
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">brightness_low</i></button>
                                 <div class="dropdown-menu">
@@ -64,18 +65,7 @@
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
                                 </div>
                             </li>
-                            <li class="list-group-item py-0 d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <i class="material-icons mr-2">local_offer</i>
-                                    <span>Tag 2</span>
-                                </div>
-                                <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">brightness_low</i></button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Modify</a>
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">palette</i>Change color</a>
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
-                                </div>
-                            </li>
+                            
                         </ul>
 
                         

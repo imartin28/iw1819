@@ -17,7 +17,10 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NamedQueries({
 @NamedQuery(name="readAllTags", query="SELECT t "
-		+ " FROM Tag t ")
+		+ " FROM Tag t "),
+@NamedQuery(name="findById", query="SELECT t "
+		+ " FROM Tag t"
+		+ " WHERE id = :id")
 })
 public class Tag {
 	
@@ -38,6 +41,16 @@ public class Tag {
 	
 	@ManyToMany(targetEntity=CFile.class, mappedBy="tags")
 	private List<CFile> files;
+	
+	public Tag() {
+		
+	}
+	public Tag(String name, String color, Tag parent) {
+		this.name = name;
+		this.color = color;
+		this.parent = parent;
+	}
+	
 	
 	public long getId() {
 		return id;
