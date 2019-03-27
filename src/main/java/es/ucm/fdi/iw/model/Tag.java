@@ -9,10 +9,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@NamedQueries({
+@NamedQuery(name="readAllTags", query="SELECT t "
+		+ " FROM Tag t ")
+})
 public class Tag {
 	
 	@Id

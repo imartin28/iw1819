@@ -71,14 +71,7 @@ public class CFile {
 		this.tags = tags;
 	}
 	
-	public Integer getId() {
-		return id;
-	}
-
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	 
 
 
 	public String getMetadata() {
@@ -98,12 +91,6 @@ public class CFile {
 		this.id = id;
 	}
 
-	public String getMetadata() {
-		return metadata;
-	}
-
-	public void setMetadata(String metadata) {
-		this.metadata = metadata;
-	}
+	
 
 }

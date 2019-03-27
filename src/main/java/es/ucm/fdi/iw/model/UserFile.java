@@ -24,6 +24,10 @@ public class UserFile {
 	
 	private String permission;
 	
+	public UserFile() {
+		
+	}
+	
 	public UserFile(User user, CFile file, String permission ){
 		
 		this.user = user;

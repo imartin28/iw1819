@@ -86,5 +86,13 @@ public class FileController {
 			return "redirect:/";
 		else return "file";
 	}
+	
+	
 
+	@PostMapping("/newTag")
+	public String postTag(Model model, @RequestParam("tagName") String name, @RequestParam("parentId") Integer parentId) {
+		System.out.println(name);
+		System.out.println(parentId);
+		return "redirect:/user/";
+	}
 }
