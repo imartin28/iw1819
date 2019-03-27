@@ -4,3 +4,7 @@
     flex-direction: row;
     align-items: center;
 }
+
+.fa-sign-out-alt {
+	font-size: 20px;
+}
