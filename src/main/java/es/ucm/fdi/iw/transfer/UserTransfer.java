@@ -30,7 +30,7 @@ public class UserTransfer {
 	
 	
 	public UserTransfer() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public UserTransfer(String email, String nickname, String name, String lastName, Date birthdate, String description) {

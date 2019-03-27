@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	lang="es">
+<head>
+	<div th:replace="fragments/head :: head"></div>
+	
+	<!-- Put additional css and js sources -->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">    
+    <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
+
+    <!-- datatables-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+    
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/sl-1.2.6/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"></script>
+    
+    <title>M3 - My files</title>
+</head>
+
+<body> 
+        
+    <nav th:replace="fragments/nav :: nav"></nav>
+    
+    <div class="conatiner mt-4">
+
+        <div class="row">
+            <div class="col-10 panel mx-auto">
+                <div class="row">
+                    <div class="col-3 border-right d-flex flex-column justify-content-center">
+                        <div class="d-flex flex-column align-items-center pb-2 border-bottom files-left-panel">
+                            <form class="form-inline center-content searchForm mb-2">
+                                <input class="form-control" type="search" placeholder="Search a file" aria-label="Search">
+                                <button class="btn button button-search" type="submit"><i class="material-icons center-content">search</i></button>
+                            </form>
+                        
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn button content-button px-3"><i class="material-icons mr-2">photo_library</i>Images</button>
+                                <button type="button" class="btn button content-button px-3"><i class="material-icons mr-2">video_library</i>Videos</button>
+                                <button type="button" class="btn button content-button px-3"><i class="material-icons mr-2">library_music</i>Music</button>
+                            </div>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item py-0 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center all-tag">
+                                    <i class="material-icons mr-2">all_inclusive</i>
+                                    <span>All</span>
+                                </div>
+                            </li>
+                            <li class="list-group-item py-0 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <i class="material-icons mr-2">local_offer</i>
+                                    <span>Tag 1</span>
+                                </div>
+                                <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">brightness_low</i></button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Rename</a>
+                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">palette</i>Change color</a>
+                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
+                                </div>
+                            </li>
+                            <li class="list-group-item py-0 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <i class="material-icons mr-2">local_offer</i>
+                                    <span>Tag 2</span>
+                                </div>
+                                <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">brightness_low</i></button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Modify</a>
+                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">palette</i>Change color</a>
+                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <button class="btn button-second mt-auto d-flex align-items-center justify-content-center">
+                            <i class="material-icons mr-2">add</i>
+                            <span>Add Tag</span>
+                        </button>
+                    </div>
+
+                    <div class="col-9">
+                    	<div class="row justify-content-between align-items-center border-bottom">
+                        	<a class="d-flex files-link" href="#" th:switch="${file.type}">
+                            	<i class="material-icons title-section my-auto ml-3" th:case="'image'">image</i>
+                                <i class="material-icons title-section my-auto ml-3" th:case="'music'">music_video</i>
+                                <i class="material-icons title-section my-auto ml-3" th:case="'video'">videocam</i>
+                                <span class="title-section" th:text="${file.name}">File</span>
+                            </a>
+                            <div class="row">
+                                <button class="btn button d-flex align-items-center" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">share</i>Share</button>
+                                <button class="btn button d-flex align-items-center" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">edit</i>Edit</button>
+                            </div>
+                       	</div>
+                        <div id="mediaplayer" class="row justify-content-center" th:switch="${file.type}">
+                        	<img src="${file.url}" width="50%" height="50%" th:case="'image'">
+                            <audio controls th:case="'music'">
+                            	<source th:src="${file.url}" type="audio/mpeg">
+                            </audio>
+                            <video width="50%" height="50%" controls th:case="'video'">
+                            	<source src="${file.url}" type="video/mp4">
+                            </video>
+                            <div th:case="*">Mediaplayer</div>
+                       	</div>
+                       	<div id="tags">
+                            <th:block th:each="tag : ${tags}">
+                            <div class="title" th:text="${tag.name}">Tag</div>
+                            </th:block>
+                       	</div>
+                        <div id="metadata">
+                           	<th:block th:each="data : ${metadata}">
+                           	<div class="title" th:text="${data.title}">Title</div>
+                            <div class="description" th:text="${data.value}">Description</div>
+                           	</th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+    

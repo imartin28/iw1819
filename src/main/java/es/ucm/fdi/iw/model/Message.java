@@ -34,7 +34,7 @@ public class Message {
 	private User receiver;	
 	
 	@ManyToOne
-	private Group groupReceiver;
+	private CGroup groupReceiver;
 
 	public long getId() {
 		return id;
@@ -76,11 +76,11 @@ public class Message {
 		this.receiver = receiver;
 	}
 
-	public Group getGroupReceiver() {
+	public CGroup getGroupReceiver() {
 		return groupReceiver;
 	}
 
-	public void setGroupReceiver(Group groupReceiver) {
+	public void setGroupReceiver(CGroup groupReceiver) {
 		this.groupReceiver = groupReceiver;
 	}
 

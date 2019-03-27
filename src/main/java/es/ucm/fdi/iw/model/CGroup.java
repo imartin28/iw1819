@@ -17,7 +17,7 @@ import javax.persistence.OneToMany;
 
 
 @Entity
-public class Group {
+public class CGroup {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -28,8 +28,8 @@ public class Group {
 	@ManyToMany(targetEntity=User.class)
 	private List<User> users;
 
-	@ManyToMany(targetEntity=File.class)
-	private List<File> files;
+	@ManyToMany(targetEntity=CFile.class)
+	private List<CFile> files;
 
 	@OneToMany(targetEntity=Message.class, mappedBy="groupReceiver")
 	private List<Message> messages;
@@ -43,11 +43,11 @@ public class Group {
 		this.messages = messages;
 	}
 
-	public List<File> getFiles() {
+	public List<CFile> getFiles() {
 		return files;
 	}
 
-	public void setFiles(List<File> files) {
+	public void setFiles(List<CFile> files) {
 		this.files = files;
 	}
 	
