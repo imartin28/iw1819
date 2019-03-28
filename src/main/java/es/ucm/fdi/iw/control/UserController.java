@@ -133,7 +133,7 @@ public class UserController {
 				f1.write(bytes);
 				f1.close();
 				
-				String metadata = "{name : " + file.getOriginalFilename() + ", extension : " + file.getContentType()  + ", size : " + file.getSize() + ", path : " + f.getAbsolutePath() + "}";
+				String metadata = "{\"name\" : \"" + file.getOriginalFilename() + "\", \"extension\" : \"" + file.getContentType()  + "\", \"size\" : \"" + file.getSize() + "\", \"path\" : \"" + f.getAbsolutePath() + "\"}";
 				CFile fileToPersist = new CFile(metadata);			
 				entityManager.persist(fileToPersist);
 				
