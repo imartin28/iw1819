@@ -65,9 +65,8 @@
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">menu</i></button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Rename</a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#' + tag.id}"><i class="material-icons mr-2">palette</i>Change color</a>
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalEdit' + tag.id}"><i class="material-icons mr-2">edit</i>Edit</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalDelete' + tag.id}"><i class="material-icons mr-2">delete_outline</i>Delete</a>
                                 </div>
                                 
                                 
@@ -76,36 +75,71 @@
             
                         </ul>
                         
-                             <!-- Modal Select Color Tag-->
-						<div th:each="tag : ${tags}" class="modal fade" th:attr="id=${tag.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
-						  <div class="modal-dialog" role="document">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Modify color of the tag ' + tag.name}"></h5>
-						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						          <span aria-hidden="true">&times;</span>
-						        </button>
-						      </div>
-						      <div class="modal-body">
-						      	<form method="POST" action="#" th:action="@{/file/modifyColorTag}">
-						          <div class="form-group">
-						            <label for="recipient-name" class="col-form-label">Choose a color:</label>
-						            <input type="color"  id="recipient-name" name="colorTag">
-						            <input type="hidden"  th:value="${tag.id}" name="idTag">
-						          </div>
-						           
-						          <div class="modal-footer">						      	
-							        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
-							        <button type="submit" class="btn button">Change color</button>
-						  	      </div>
-						        </form>
-						      </div>
-						      
-						    </div>
-						  </div>
-						</div>
                         
-                                
+                        	<!-- Modal Edit Tag-->
+								<div th:each="tag : ${tags}" class="modal fade" th:attr="id=${'modalEdit' + tag.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+								  <div class="modal-dialog" role="document">
+								    <div class="modal-content">
+								      <div class="modal-header">
+								        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Modify color of the tag ' + tag.name}"></h5>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          <span aria-hidden="true">&times;</span>
+								        </button>
+								      </div>
+								      <div class="modal-body">
+								      	<form method="POST" action="#" th:action="@{/file/modifyTag}">
+								          <div class="form-group">
+						            		<label for="recipient-name" class="col-form-label">Introduce the new name of the tag:</label>
+						            		<input type="text" class="form-control" id="recipient-name" name="tagName" th:value="${tag.name}">
+						          		  </div>
+								           
+								           <div class="form-group">
+								            <label for="recipient-name" class="col-form-label">Choose a color:</label>
+								            <input type="color"  id="recipient-name" name="colorTag" th:value="${tag.color}">
+								            <input type="hidden"  th:value="${tag.id}" name="idTag">
+								          </div>
+								           
+					
+								          <div class="modal-footer">						      	
+									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+									        <button type="submit" class="btn button">Save changes</button>
+								  	      </div>
+								        </form>
+								      </div>
+								      
+								    </div>
+								  </div>
+								</div>
+                        
+                        
+                            
+                                <!-- Modal Delete Tag-->
+								<div th:each="tag : ${tags}" class="modal fade" th:attr="id=${'modalDelete' + tag.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+								  <div class="modal-dialog" role="document">
+								    <div class="modal-content">
+								      <div class="modal-header">
+								        <h5 class="modal-title" id="exampleModalLabel" >Delete tag </h5>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          <span aria-hidden="true">&times;</span>
+								        </button>
+								      </div>
+								      <div class="modal-body">
+								      	<form method="POST" action="#" th:action="@{/file/deleteTag}">
+								          <div class="form-group">
+						            		<label for="recipient-name" class="col-form-label" th:text="${'Are you sure you want to delete the tag ' + tag.name + '?' }"> </label>
+						            		<input type="hidden" name="idTag" th:value="${tag.id}">
+						          		  </div>
+
+								          <div class="modal-footer">						      	
+									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+									        <button type="submit" class="btn button">I'm sure</button>
+								  	      </div>
+								        </form>
+								      </div>
+								      
+								    </div>
+								  </div>
+								</div>
 									
 									
                                

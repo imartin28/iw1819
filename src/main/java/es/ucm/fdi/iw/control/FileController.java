@@ -112,12 +112,29 @@ public class FileController {
 	
 	
 	
-	@PostMapping("/modifyColorTag")
+	@PostMapping("/modifyTag")
 	@Transactional
-	public String postColorTag(Model model, HttpSession session, @RequestParam("colorTag") String color, @RequestParam("idTag") Long id) {
+	public String postModifyTag(@RequestParam("colorTag") String color, @RequestParam("idTag") Long id, @RequestParam("tagName") String name) {
+		
+		
 		
 		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", id).getSingleResult();		
 		tag.setColor(color);
+		tag.setName(name);
+		
+		return "redirect:/user/";
+	}
+	
+	
+
+	@PostMapping("/deleteTag")
+	@Transactional
+	public String postDeleteTag(@RequestParam("idTag") Long id) {
+		
+		
+		
+		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", id).getSingleResult();		
+		entityManager.remove(tag);
 		
 		return "redirect:/user/";
 	}
