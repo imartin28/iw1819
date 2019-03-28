@@ -109,4 +109,18 @@ public class FileController {
 		
 		return "redirect:/user/";
 	}
+	
+	
+	
+	@PostMapping("/modifyColorTag")
+	@Transactional
+	public String postColorTag(Model model, HttpSession session, @RequestParam("tagColor") String color) {
+		
+		
+		System.out.println(color);
+		
+		
+		return "redirect:/user/";
+	}
+	
 }

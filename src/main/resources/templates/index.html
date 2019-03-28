@@ -66,13 +66,42 @@
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">menu</i></button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Rename</a>
-                                    <a class="dropdown-item" href="#"><i class="material-icons mr-2">palette</i>Change color</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalColor"><i class="material-icons mr-2">palette</i>Change color</a>
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
                                 </div>
                             </li>
             
                         </ul>
-
+						<!-- Modal Select Color Tag-->
+						<div class="modal fade" id="modalColor" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title" id="exampleModalLabel">Add new tag</h5>
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						          <span aria-hidden="true">&times;</span>
+						        </button>
+						      </div>
+						      <div class="modal-body">
+						      	<form method="POST" action="#" th:action="@{/file/modifyColorTag}">
+						          <div class="form-group">
+						            <label for="recipient-name" class="col-form-label">Choose a color:</label>
+						            <input type="color"  id="recipient-name">
+						          </div>
+						           
+						          <div class="modal-footer">						      	
+							        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+							        <button type="submit" class="btn button">Change color</button>
+						  	      </div>
+						        </form>
+						      </div>
+						      
+						    </div>
+						  </div>
+						</div>
+						
+						
+						
                         
                         <!-- Button trigger modal -->
 						<button type="button" class="btn button-second mt-auto d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#exampleModal">
@@ -80,7 +109,7 @@
                             <span>Add New Tag</span>
 						</button>
 						
-						<!-- Modal -->
+						<!-- Modal NewTag-->
 						<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 						  <div class="modal-dialog" role="document">
 						    <div class="modal-content">
@@ -98,17 +127,15 @@
 						          </div>
 						          <div class="form-group">
 						            <label for="exampleFormControlSelect1">Nest the tag in:</label>
-									    <select class="form-control" id="exampleFormControlSelect1" name="parentId">
-									    	<option></option>
-									      	<option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}">Option</option>
-									    </select>
+									  <select class="form-control" id="exampleFormControlSelect1" name="parentId">
+									  	<option></option>
+									 	<option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}">Option</option>
+									  </select>
 						          </div>
-						          <div class="modal-footer">
-						      	
-						        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
-						        <button type="submit" class="btn button">Create tag</button>
-						        
-						      </div>
+						          <div class="modal-footer">						      	
+							        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+							        <button type="submit" class="btn button">Create tag</button>
+						  	      </div>
 						        </form>
 						      </div>
 						      
@@ -122,7 +149,13 @@
 
                     <div class="col-9">
                         <div class="row align-items-center justify-content-between mb-2 px-3">
-                        
+                       
+						<a class="d-flex files-link" href="#">
+                                <span class="title-section">My Files</span>
+                                <i class="material-icons title-section my-auto ml-3">folder_open</i>
+                            </a>
+                            
+                            
                         	<form th:if="${session.u != null}" method="POST" th:action="@{/user/{id}/file/(id=${session.u.id})}" enctype="multipart/form-data" >
                         		<input type="file" name="file"/>
                         		<!-- <input type="hidden" th:name="${_csrf.parameterName)" th:value="$(_csrf.token)"/>-->
@@ -131,10 +164,7 @@
                         	</form>
                         	
                         	
-                            <a class="d-flex files-link" href="#">
-                                <span class="title-section">My Files</span>
-                                <i class="material-icons title-section my-auto ml-3">folder_open</i>
-                            </a>
+                            
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <button id="view-list" class="btn button-second" data-toggle="collapse" data-target=".multi-collapse"  aria-expanded="true" aria-controls="fileTable-container folderView">
                                     <input type="radio" name="options" id="option1" autocomplete="off" checked>
