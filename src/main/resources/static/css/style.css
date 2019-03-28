@@ -123,15 +123,15 @@
     color: #fff;
     border-color: inherit;
 }
-.form-wrap form .input.is-invalid {
-	border-color: #FF5757;
+.is-invalid {
+	border-color: #FF5757 !important;
 }
-.form-wrap form .input.is-valid {
-	border-color: #62D6C4;
+.is-valid {
+	border-color: #62D6C4 !important;
 }
 .invalid-feedback {
-	font-size: 15px;
-	color:#FF5757;
+	font-size: 15px !important;
+	color:#FF5757 !important;
 }
 .form-wrap form .button {
     margin: 1em auto;

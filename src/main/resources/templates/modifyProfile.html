@@ -87,15 +87,16 @@
                         </div>
                         <div class="modal-body px-5">
                             <form id="modifyPasswordForm" class="form" th:action="@{/user/modifyPassword}" th:object="${userTransfer}" method="POST" th:if="${user != null}">
+                            	<input type="hidden" th:id="id" th:name="id" th:value="${user.id}">
                                 <div class="form-row">
                                     <div class="form-group col-12">
-                                        <input type="password" class="form-control" th:id="password" th:name="password" placeholder="OldPassword">
+                                        <input type="password" class="form-control" id="oldPassword" placeholder="Old password" th:field="*{password}">
                                         <div class="invalid-feedback" th:text="${passwordError}"></div>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-12">
-                                        <input type="password" class="form-control" th:id="samePassword" th:name="samePassword" placeholder="NewPassword">
+                                        <input type="password" class="form-control" th:id="newPassword" placeholder="New password" th:field="*{samePassword}">
                                         <div class="invalid-feedback" th:text="${samePasswordError}"></div>
                                     </div>
                                 </div>

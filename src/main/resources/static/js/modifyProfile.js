@@ -87,16 +87,16 @@ $(function() {
 	var correctPasswordForm = [];
 	
 	function handleOldPassword(){
-		correctPasswordForm[1] = parser.parse('#OldPassword', parser.parsePassword);
+		correctPasswordForm[1] = parser.parse('#oldPassword', parser.parsePassword);
 	}
-	$('#OldPassword').donetyping(handleOldPassword);
-	$('#OldPassword').change(handleOldPassword);
+	$('#oldPassword').donetyping(handleOldPassword);
+	$('#oldPassword').change(handleOldPassword);
 	
 	function handleNewPassword(){
-		correctPasswordForm[2] = parser.parse('#NewPassword', parser.parseSamePassword, '#OldPassword');
+		correctPasswordForm[2] = parser.parse('#newPassword', parser.parseSamePassword, '#oldPassword');
 	}
-	$('#NewPassword').donetyping(handleNewPassword);
-	$('#NewPassword').change(handleNewPassword);
+	$('#newPassword').donetyping(handleNewPassword);
+	$('#newPassword').change(handleNewPassword);
 	
     $("#modifyPasswordForm").submit(function() {
     	let allCorrect = true;

@@ -46,13 +46,29 @@
     
 }
 
+.inactive-text {
+	color: #FF5757;
+}
 
-
+.active-text {
+	color: #5FD1C1;
+}
 
 .button {
     background: linear-gradient(0deg, rgba(62,181,169,1) 0%, rgba(111,226,204,1) 100%);
     color: white;
     border-radius: 30px; 
+}
+
+.button.delete {
+	background: none;
+	background-color: #FF5757;
+}
+
+.button.delete:hover {
+	background: none;
+    border-color: #FF5757 !important;
+    color: #FF5757
 }
 
 .button-second {
