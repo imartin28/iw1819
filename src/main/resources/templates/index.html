@@ -60,7 +60,7 @@
                             <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
                                     <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
-                                    <i class="material-icons icon-tag mr-2">bookmark</i>
+                                    <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
                                     <span th:text="${tag.name}"></span>
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">menu</i></button>
@@ -81,7 +81,7 @@
 						  <div class="modal-dialog" role="document">
 						    <div class="modal-content">
 						      <div class="modal-header">
-						        <h5 class="modal-title" id="exampleModalLabel">Add new tag</h5>
+						        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Modify color of the tag ' + tag.name}"></h5>
 						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						          <span aria-hidden="true">&times;</span>
 						        </button>
