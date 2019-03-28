@@ -176,21 +176,6 @@ public class RootController {
 		return "chats";
 	}
 	
-	@GetMapping("/friends")
-	public String friends(Model model) {
-		return "friends";
-	}
-	
-	@GetMapping("/groups")
-	public String groups(Model model) {
-		return "groups";
-	}
-	
-	@GetMapping("/history")
-	public String history(Model model) {
-		return "history";
-	}
-	
 	@GetMapping("/share")
 	public String share(Model model) {
 		return "share";

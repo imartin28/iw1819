@@ -4,12 +4,12 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 	lang="es">
 <head>
-	<div th:replace="fragments/head :: head"></div>
-	
-	    	<!-- Put additional css and js sources -->
-    
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+	<th:block th:replace="fragments/head :: head"></th:block>
 	
+	<!-- Put additional css and js sources -->
 	<link rel="stylesheet" type="text/css" href="/css/style.css">    
     <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
 	
@@ -220,7 +220,7 @@
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Tipo</th>
-                                        <th>Tama�o</th>
+                                        <th>Tamaï¿½o</th>
                                         <th>Opc</th>
                                     </tr>
                                 </thead>
@@ -302,7 +302,7 @@
         </div>
 
         <div class="row mt-4 justify-content-center">
-            <button class="btn button d-flex"><i class="material-icons mr-2">history</i>View history</button>
+            <a th:href="@{/user/history}" class="btn button d-flex"><i class="material-icons mr-2">history</i>View history</a>
         </div>
         
        

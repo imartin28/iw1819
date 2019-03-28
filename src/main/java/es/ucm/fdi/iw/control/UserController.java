@@ -448,5 +448,20 @@ public class UserController {
 		
 		return modelAndView;
 	}
-
+	
+	@GetMapping("/friends")
+	public String friends(Model model) {
+		return "friends";
+	}
+	
+	@GetMapping("/groups")
+	public String groups(Model model) {
+		return "groups";
+	}
+	
+	@GetMapping("/history")
+	public String history(Model model) {
+		return "history";
+	}
+	
 }

@@ -4,7 +4,10 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 	lang="es">
 <head>
-	<div th:replace="fragments/head :: head"></div>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<th:block th:replace="fragments/head :: head"></th:block>
 	
 	<!-- Put additional css and js sources -->
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>    
@@ -24,7 +27,7 @@
             <p class="nick text-center" th:text="${'@'+user.nickname}"></p>
             <p class="text-center" th:text="${user.email}"></p>
             <p class="text-center" th:if="${user.birthdate != null}" 
-            	th:text="${ 'Edad : ' + (#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' años - ' + #dates.format(user.birthdate, 'dd/MM/yyyy')}"></p>
+            	th:text="${ 'Edad : ' + (#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' aÃ±os - ' + #dates.format(user.birthdate, 'dd/MM/yyyy')}"></p>
             <p class="bio text-center" th:text="${user.description}"></p>
             <a th:if="${session.u != null && session.u.id == user.id}" 
             	th:href="@{/user/modifyProfile?userId=__${user.id}__}" class="btn button content-button mt-3">
