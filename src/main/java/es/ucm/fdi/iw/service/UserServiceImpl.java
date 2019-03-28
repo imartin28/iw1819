@@ -68,8 +68,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findByEmailOrNickname(String email, String nickname) {
-		email = email.trim();
-		nickname = nickname.trim();
 		User u = null;
 		
 		if(email != null && nickname != null && !email.equalsIgnoreCase("") && !nickname.equalsIgnoreCase("")) {
@@ -81,5 +79,25 @@ public class UserServiceImpl implements UserService {
 		
 		return u;
 	}
+	
+	@Override
+	public User findByEmailAndPasswordAndActive(String email, String password) {
+		User u = null;
+		
+		if(email != null && password != null && !email.equalsIgnoreCase("") && !password.equalsIgnoreCase("")) {
+			u = entityManager.createNamedQuery("User.byEmailAndPassword", User.class)
+	                .setParameter("userEmail", email)
+	                .setParameter("userPassword", password)
+	                .getSingleResult();
+		}
+		
+		return u;
+	}
+	
+	@Override
+	public int adminCount() {
+		return entityManager.createNamedQuery("User.listAdmin", User.class).getResultList().size();
+	}
+	
 	
 }

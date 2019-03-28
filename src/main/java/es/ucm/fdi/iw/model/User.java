@@ -23,6 +23,14 @@ import javax.persistence.OneToMany;
 	@NamedQuery(name="User.byEmailOrNickname",
 	query="SELECT u FROM User u "
 			+ "WHERE (u.email = :userLogin OR u.nickname = :userLogin)"),
+	@NamedQuery(name="User.byEmailAndPassword",
+	query="SELECT u FROM User u "
+			+ "WHERE (u.email = :userEmail AND u.password = :userPassword AND u.active = 1)"),
+	
+	//Admin
+	@NamedQuery(name="User.listAdmin",
+	query="SELECT u FROM User u "
+			+ "WHERE (u.active = 1 AND LOCATE(u.roles, 'admin') > 0)")
 })
 public class User {
 	@Id

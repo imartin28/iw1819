@@ -93,7 +93,7 @@ $(function() {
 	$('#oldPassword').change(handleOldPassword);
 	
 	function handleNewPassword(){
-		correctPasswordForm[2] = parser.parse('#newPassword', parser.parseSamePassword, '#oldPassword');
+		correctPasswordForm[2] = parser.parse('#newPassword', parser.parsePassword);
 	}
 	$('#newPassword').donetyping(handleNewPassword);
 	$('#newPassword').change(handleNewPassword);

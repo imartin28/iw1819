@@ -27,7 +27,7 @@ public class UserParser extends Parser {
     private static final String EMAIL_PATTERN = "^[^@]+@[^@]+\\.[a-zA-Z]{2,}$";
     private static final String EMAIL_EXAMPLE = "ejemplo@ejemplo.es";
     private static final String NAME_PATTERN = "^[\\w\\s]+$";
-    private static final String PASSWORD_PATTERN = "^(?=.{6,})(?=.*\\d)(?=.*[A-Z]).*$";
+    private static final String PASSWORD_PATTERN = "^(?=.{"+UserParser.PASSWORD_MIN_LENGTH+",})(?=.*\\d)(?=.*[A-Z]).*$";
     private static final String NICKNAME_PATTERN = "^[A-Za-z]+$";
     private static final int EMAIL_MIN_LENGTH = 5;
     private static final int PASSWORD_MIN_LENGTH = 6;
@@ -38,29 +38,29 @@ public class UserParser extends Parser {
     //Email
     private static final int USER_EMAIL_ERROR_CODE = 100;
     private static final int PARSE_COD_EMAIL_PATTERN = USER_ERROR_CODE+USER_EMAIL_ERROR_CODE+1;
-    private static final String PE_MSG_EMAIL_PATTERN = "Email inválido, debe ser de la forma: "+EMAIL_EXAMPLE;
+    private static final String PE_MSG_EMAIL_PATTERN = "Invalid email, should be like: "+EMAIL_EXAMPLE;
 
     //Name
     private static final int USER_NAME_ERROR_CODE = 200;
     private static final int PARSE_COD_NAME_PATTERN = USER_ERROR_CODE+USER_NAME_ERROR_CODE+1;
-    private static final String PE_MSG_NAME_PATTERN = "Nombre inválido, solo puede contener letras";
+    private static final String PE_MSG_NAME_PATTERN = "Invalid name, it can only contains letters";
     
     //Passwords
     private static final int USER_PASSWORD_ERROR_CODE = 300;
     
     private static final int PARSE_COD_PASSWORD_LENGTH = USER_ERROR_CODE+USER_PASSWORD_ERROR_CODE+1;
-    private static final String PE_MSG_PASSWORD_LENGTH = "La contraseña debe contener al menos "+PASSWORD_MIN_LENGTH+" caracteres";
+    private static final String PE_MSG_PASSWORD_LENGTH = "Password must contains at least "+PASSWORD_MIN_LENGTH+" characters";
 
     private static final int PARSE_COD_PASSWORD_PATTERN = USER_ERROR_CODE+USER_PASSWORD_ERROR_CODE+2;
-    private static final String PE_MSG_PASSWORD_PATTERN = "La contraseña debe contener al menos "+PASSWORD_MIN_LENGTH+" caracteres";
+    private static final String PE_MSG_PASSWORD_PATTERN = "Password must contains 1 capital letter, 1 number and at least "+PASSWORD_MIN_LENGTH+" characters";
     
     private static final int PARSE_COD_PASSWORDS_DINDT_MATCH = USER_ERROR_CODE+USER_PASSWORD_ERROR_CODE+3;
-    private static final String PE_MSG_PASSWORDS_DINDT_MATCH = "La contraseñas no coinciden";
+    private static final String PE_MSG_PASSWORDS_DINDT_MATCH = "Password mismatch";
 
     //Birthday
     private static final int USER_BIRTHDAY_ERROR_CODE = 400;
     private static final int PARSE_COD_BIRTHDAY_MENOR_EDAD = USER_ERROR_CODE+USER_BIRTHDAY_ERROR_CODE+1;
-    private static final String PE_MSG_BIRTHDAY_MENOR_EDAD = "Debes ser mayor de "+BIRTHDAY_MIN_AGE+" años";
+    private static final String PE_MSG_BIRTHDAY_MENOR_EDAD = "You must be "+BIRTHDAY_MIN_AGE+" years old";
 
 
     // ---- CHECKS ---- //
@@ -80,6 +80,16 @@ public class UserParser extends Parser {
     public static boolean isValidEmailLength(String email) throws ParseException {
         if(email.length() < EMAIL_MIN_LENGTH)
             throw new ParseException(PE_MSG_EMAIL_PATTERN, PARSE_COD_EMAIL_PATTERN);
+
+        return true;
+    }
+    
+    //Nickname
+    public static boolean isValidNickname(String nickname) throws ParseException {
+        Pattern pattern = Pattern.compile(NICKNAME_PATTERN);
+        Matcher matcher = pattern.matcher(nickname);
+        if (!matcher.matches())
+            throw new ParseException(PE_MSG_NAME_PATTERN, PARSE_COD_NAME_PATTERN);
 
         return true;
     }
@@ -162,6 +172,33 @@ public class UserParser extends Parser {
         return response;
     }
 
+    public ParserResponse processNickname(String nickname) {
+        ParserResponse response = null;
+    	String msg = null;
+    	boolean nameOk = false;
+
+        try {
+        	nameOk = (
+            		Parser.isNotNull(nickname)
+                    && Parser.isNotEmptyString(nickname)
+                    && UserParser.isValidNickname(nickname)
+            );
+        } catch(ParseException pe) {
+        	 msg = pe.getMessage();
+        }
+        
+        if(nameOk) {
+        	Map<String, Object> args = new HashMap<String, Object>();
+        	args.put("nickname", nickname);
+        	response = new ParserResponse().parserOKResponse("", args);
+        }
+        else {
+        	response = new ParserResponse().parserFailResponse(msg, null);
+        }
+
+        return response;
+    }
+    
     public ParserResponse processName(String name) {
         ParserResponse response = null;
     	String msg = null;
@@ -283,10 +320,10 @@ public class UserParser extends Parser {
 			modelAndView.addObject("emailError", responseEmail.getMessage());
 		}
 		
-		ParserResponse responseName = this.processName(userTransfer.getNickname());
+		ParserResponse responseNickname = this.processNickname(userTransfer.getNickname());
 		
-		if(!responseName.isOk()) {
-			modelAndView.addObject("nickNameError", responseName.getMessage());
+		if(!responseNickname.isOk()) {
+			modelAndView.addObject("nickNameError", responseNickname.getMessage());
 		}
 		
 		ParserResponse responsePassword = null;
@@ -308,7 +345,7 @@ public class UserParser extends Parser {
 		}
 		
 		return responseEmail.isOk() 
-				&& responseName.isOk() 
+				&& responseNickname.isOk()
 				&& (responsePassword != null ? responsePassword.isOk() : true) 
 				&& (responseSamePassword != null ? responseSamePassword.isOk() : true);
     }
@@ -320,7 +357,7 @@ public class UserParser extends Parser {
 		if(!responseEmail.isOk()) {
 			modelAndView.addObject("emailError", responseEmail.getMessage());
 		}
-		/*
+
 		ParserResponse responseName = this.processName(user.getName());
 		
 		if(!responseName.isOk()) {
@@ -332,7 +369,7 @@ public class UserParser extends Parser {
 		if(!responseLastName.isOk()) {
 			modelAndView.addObject("lastNameError", responseLastName.getMessage());
 		}
-		*/
+		
 		String birthday = user.getBirthdateStr();
 		if((birthday == null || birthday.equalsIgnoreCase("")) && user.getBirthdate() != null) {
 			birthday = DateUtil.getDateStrWithoutHour(user.getBirthdate());
@@ -343,10 +380,33 @@ public class UserParser extends Parser {
 			modelAndView.addObject("birthdateError", responseBirthday.getMessage());
 		}
 		
-		return responseEmail.isOk() /*
+		return responseEmail.isOk()
 				&& responseName.isOk() 
-				&& responseLastName.isOk() */
+				&& responseLastName.isOk()
 				&& responseBirthday.isOk();
+    }
+    
+    public boolean parseUserModifyPassword(ModelAndView modelAndView, UserTransfer userTransfer) {
+    	
+    	ParserResponse responseOldPassword = null;
+		if(userTransfer.getPassword() != null && userTransfer.getPassword() != "") {
+			responseOldPassword = this.processPassword(userTransfer.getPassword());
+			
+			if(!responseOldPassword.isOk()) {
+				modelAndView.addObject("oldPasswordError", responseOldPassword.getMessage());
+			}
+		}
+		
+    	ParserResponse responseNewPassword = null;
+		if(userTransfer.getPassword() != null && userTransfer.getPassword() != "") {
+			responseNewPassword = this.processPassword(userTransfer.getPassword());
+			
+			if(!responseNewPassword.isOk()) {
+				modelAndView.addObject("newPasswordError", responseNewPassword.getMessage());
+			}
+		}
+		
+		return responseOldPassword.isOk() && responseNewPassword.isOk();
     }
     
     public boolean userLoginDataCorrect(ModelAndView modelAndView, UserTransfer userLogin) {

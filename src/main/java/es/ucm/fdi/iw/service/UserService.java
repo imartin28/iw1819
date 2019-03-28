@@ -21,4 +21,8 @@ public interface UserService {
 	User findById(long id);
 	
 	User findByEmailOrNickname(String email, String nickname);
+	
+	User findByEmailAndPasswordAndActive(String email, String password);
+	
+	int adminCount();
 }

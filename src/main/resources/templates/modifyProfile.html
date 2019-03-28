@@ -91,13 +91,13 @@
                                 <div class="form-row">
                                     <div class="form-group col-12">
                                         <input type="password" class="form-control" id="oldPassword" placeholder="Old password" th:field="*{password}">
-                                        <div class="invalid-feedback" th:text="${passwordError}"></div>
+                                        <div class="invalid-feedback" th:text="${oldPasswordError}"></div>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-12">
                                         <input type="password" class="form-control" th:id="newPassword" placeholder="New password" th:field="*{samePassword}">
-                                        <div class="invalid-feedback" th:text="${samePasswordError}"></div>
+                                        <div class="invalid-feedback" th:text="${newPasswordError}"></div>
                                     </div>
                                 </div>
                             </form>

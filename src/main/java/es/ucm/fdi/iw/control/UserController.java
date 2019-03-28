@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +50,8 @@ public class UserController {
 	@Autowired
 	private EntityManager entityManager;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	private LocalData localData = new LocalData();
 	
@@ -83,8 +86,7 @@ public class UserController {
 		if(!files_currentUser.isEmpty()) {
 			System.out.println(files_currentUser.get(0).getMetadata());
 		}
-		
-		
+
 		return "index";
 	}	
 	
@@ -208,24 +210,35 @@ public class UserController {
 			err = "User not found";
 			if(userId != null) {
 				User user = userService.findById(userId);
+				
 				if(user != null) {
 					if(user.isActive()) {
-						user = userService.delete(user);
-						if(user != null && !user.isActive()) {
+						boolean delete = true;
+						
+						if(user.hasRole(UserType.Administrator.getKeyName())) {
+							int adminCount = userService.adminCount();
+							if(adminCount <= 1) {
+								delete = false;
+								err = "You cant deactivate yourselve because you are the last admin";
+							}								
+						}
+						
+						if(delete) {
+							user = userService.delete(user);
 							err = null;
 							String msg = "User "+user.getName()+" ("+user.getEmail()+")"+
 											" with id: "+userId+", has been deactivated";
 							this.notifyModal(modelAndView, "User notification", msg);
 						}
 					}
-					else {
+					else
 						err = "The user with id: "+userId+" is already deactivated";
-					}
 				}
 			}
 		}
 
 		if(err != null) {
+			modelAndView.setViewName("redirect:/");
 			this.notifyModal(modelAndView, "Error", err);
 		}
 		else {
@@ -236,7 +249,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/activate")
-	public ModelAndView activateUser(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {
+	public ModelAndView activateUser(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userId") Long userId) {
 		String err = null;
 		String viewName = null;
 		
@@ -316,7 +329,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/modifyProfile")
-	public ModelAndView modifyProfilePost(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userTransfer") UserTransfer userTransfer)  {
+	public ModelAndView modifyProfilePost(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userTransfer") UserTransfer userTransfer)  {
 		String err = "User not found";
 
 		User userDatabase = null;
@@ -378,6 +391,59 @@ public class UserController {
 				modelAndView.setViewName("redirect:/user/profile");
 				modelAndView.addObject("userId", userId);
 			}
+		}
+		
+		return modelAndView;
+	}
+	
+	@PostMapping("/modifyPassword")
+	public ModelAndView modifyPassword(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userTransfer") UserTransfer userTransfer) {
+		User user = null;
+		String err = "User not found";
+		User userLogged = null;
+		
+		if(userTransfer != null) {
+			userLogged = (User)session.getAttribute("u");
+			
+			if(userLogged != null && userLogged.getId() == userTransfer.getId()) {
+				User userDatabase = userService.findById(userTransfer.getId());
+				
+				if(userDatabase != null && userDatabase.isActive()) {
+					if(UserParser.getInstance().parseUserModifyPassword(modelAndView, userTransfer)) {
+						String oldPassword = passwordEncoder.encode(userTransfer.getPassword());
+						String newPassword = passwordEncoder.encode(userTransfer.getSamePassword());
+						
+						if(userDatabase.getPassword().equalsIgnoreCase(oldPassword)) {
+							if(!userDatabase.getPassword().equalsIgnoreCase(newPassword)) {
+								err = null;
+								userDatabase.setPassword(newPassword);
+								userService.save(user);
+							}
+							else
+								err = "The new password must be different from the old one";
+						}
+						else
+							err = "Incorrect password";
+					}
+					else
+						err = "";
+				}
+			}
+			else
+				err= "You dont have the persimission to modify this user";
+		}
+		
+		if(err != null) {
+			modelAndView.setViewName("modifyProfile");
+			modelAndView.addObject("user", userLogged);
+			modelAndView.addObject("userTransfer", userTransfer);
+			modelAndView.addObject("userId", userLogged.getId());
+			this.notifyModal(modelAndView, "Error", err);
+		}
+		else {
+			modelAndView.setViewName("redirect:/user/profile");
+			modelAndView.addObject("userId", userTransfer.getId());
+			this.notifyModal(modelAndView, "Password changed", "You have successfully update your password");
 		}
 		
 		return modelAndView;
