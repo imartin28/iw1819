@@ -114,11 +114,10 @@ public class FileController {
 	
 	@PostMapping("/modifyColorTag")
 	@Transactional
-	public String postColorTag(Model model, HttpSession session, @RequestParam("tagColor") String color) {
+	public String postColorTag(Model model, HttpSession session, @RequestParam("colorTag") String color, @RequestParam("idTag") Long id) {
 		
-		
-		System.out.println(color);
-		
+		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", id).getSingleResult();		
+		tag.setColor(color);
 		
 		return "redirect:/user/";
 	}

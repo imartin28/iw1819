@@ -66,14 +66,18 @@
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">menu</i></button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Rename</a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalColor"><i class="material-icons mr-2">palette</i>Change color</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#' + tag.id}"><i class="material-icons mr-2">palette</i>Change color</a>
                                     <a class="dropdown-item" href="#"><i class="material-icons mr-2">delete_outline</i>Delete</a>
                                 </div>
+                                
+                                
+                                
                             </li>
             
                         </ul>
-						<!-- Modal Select Color Tag-->
-						<div class="modal fade" id="modalColor" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+                        
+                             <!-- Modal Select Color Tag-->
+						<div th:each="tag : ${tags}" class="modal fade" th:attr="id=${tag.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
 						  <div class="modal-dialog" role="document">
 						    <div class="modal-content">
 						      <div class="modal-header">
@@ -86,7 +90,8 @@
 						      	<form method="POST" action="#" th:action="@{/file/modifyColorTag}">
 						          <div class="form-group">
 						            <label for="recipient-name" class="col-form-label">Choose a color:</label>
-						            <input type="color"  id="recipient-name">
+						            <input type="color"  id="recipient-name" name="colorTag">
+						            <input type="hidden"  th:value="${tag.id}" name="idTag">
 						          </div>
 						           
 						          <div class="modal-footer">						      	
@@ -99,9 +104,11 @@
 						    </div>
 						  </div>
 						</div>
-						
-						
-						
+                        
+                                
+									
+									
+                               
                         
                         <!-- Button trigger modal -->
 						<button type="button" class="btn button-second mt-auto d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#exampleModal">
