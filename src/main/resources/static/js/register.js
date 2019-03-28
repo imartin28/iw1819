@@ -1,6 +1,18 @@
 "use strict"
 $(function() {
 	
+	var cssBold = {'font-weight' : 'bold', 'color' : '#ffffff', 'border-width' : '5px'};
+	var cssBoldReset = {'font-weight' : '', 'color' : '', 'border-width' : ''};
+	$(".log-in").css(cssBold);
+	$(".log-in").click(function() {
+		$(this).css(cssBold);
+		$(".sign-up").css(cssBoldReset);
+	});
+	$(".sign-up").click(function() {
+		$(this).css(cssBold);
+		$(".log-in").css(cssBoldReset);
+	});
+	
 	//
 	// $('#element').donetyping(callback[, timeout=1000])
 	// Fires callback when a user has finished typing. This is determined by the time elapsed
@@ -45,30 +57,68 @@ $(function() {
         }
     });
 
-    /* Person form */
-    var correctUserForm = [];
     
-    $('#inputEmail').donetyping(function(){
-    	correctUserForm["inputEmail"] = parser.parse('#inputEmail', parser.parseEmail);
-	});
-	
-	$('#inputName').donetyping(function(){
-		correctUserForm["inputName"] = parser.parse('#inputName', parser.parseName);
-	});
-	
-	$('#inputPassword').donetyping(function(){
-		correctUserForm["inputPassword"] = parser.parse('#inputPassword', parser.parsePassword);
-	});
-	
-	$('#inputSamePassword').donetyping(function(){
-		correctUserForm["inputSamePassword"] = parser.parse('#inputSamePassword', parser.parseSamePassword, '#inputPassword');
-	});
     
+    /* Login form */
+    var correctLoginForm = [];
+    
+    function handleLoginUser() {
+    	correctLoginForm[0] = (parser.parse('#username', parser.parseEmail) || parser.parse('#username', parser.parseNickname));
+    }
+    $('#username').donetyping(handleLoginUser);
+    $('#username').change(handleLoginUser);
+    
+    /*
+	function handleLoginPassword() {
+		correctLoginForm[1] = parser.parse('#password', parser.parsePassword);
+	}
+	$('#password').donetyping(handleLoginPassword);
+	$('#password').change(handleLoginPassword);
+    */
+    $("#login-form").submit(function() {
+    	let allCorrect = true;
+    	
+    	for (let i = 0; i < correctLoginForm.length; i++) {
+    		allCorrect = allCorrect && correctLoginForm[i];
+    	}
+    	
+		return allCorrect;
+    });
+    
+    
+    
+    /* Register form */
+    var correctRegisterForm = [];
+    
+    function handleEmail() {
+    	correctRegisterForm[0] = parser.parse('#inputEmail', parser.parseEmail);
+    }
+    $('#inputEmail').donetyping(handleEmail);
+    $('#inputEmail').change(handleEmail);
+	
+    function handleNickname() {
+    	correctRegisterForm[1] = parser.parse('#inputNickname', parser.parseNickname);
+    }
+	$('#inputNickname').donetyping(handleNickname);
+	$('#inputNickname').change(handleNickname);
+	
+	function handlePassword() {
+		correctRegisterForm[2] = parser.parse('#inputPassword', parser.parsePassword);
+	}
+	$('#inputPassword').donetyping(handlePassword);
+	$('#inputPassword').change(handlePassword);
+	
+	function handleSamePassword() {
+		correctRegisterForm[3] = parser.parse('#inputSamePassword', parser.parseSamePassword, '#inputPassword');
+	}
+	$('#inputSamePassword').donetyping(handleSamePassword);
+	$('#inputSamePassword').change(handleSamePassword);
+	
     $("#signup-form").submit(function() {
     	let allCorrect = true;
     	
-    	for (let correctInput in correctUserForm) {
-    		allCorrect = allCorrect && correctInput;
+    	for (let i = 0; i < correctRegisterForm.length; i++) {
+    		allCorrect = allCorrect && correctRegisterForm[i];
     	}
     	
 		return allCorrect;

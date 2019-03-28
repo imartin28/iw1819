@@ -4,7 +4,10 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 	lang="es">
 <head>
-	<div th:replace="fragments/head :: head"></div>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<th:block th:replace="fragments/head :: head"></th:block>
 	
 	<!-- Put additional css and js sources -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -46,12 +49,14 @@
 				        </ol>
 					    <div class="carousel-inner">
 					    	<div class="carousel-item active">
-					        	<h1 class="texto-carousel">Comparte tus peliculas, musica y videos!</h1>
+					        	<h1 class="texto-carousel">Comparte tus películas, música y vídeos!</h1>
 					        </div>
 					        <div class="carousel-item">
-					        	<h1 class="texto-carousel">Crea tus playlist</h1>
+					        	<h1 class="texto-carousel">Crea tus playlist y oganiza tu contenido</h1>
 					        </div>
-					          
+					        <div class="carousel-item">
+					        	<h1 class="texto-carousel">Reproduce cualquier contenido multimedia</h1>
+					        </div>
 					    </div>
 					    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
 					    	<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -80,14 +85,26 @@
 	                    <!-- TABS LOGIN -->
 	                    <div id="login-tab-content" class="active">
 	                        <form id="login-form" class="login-form" th:action="@{/login}" method="post">
-	                            <input type="text" class="input form-control" placeholder="Email or Username" id="username" name="username" th:classappend="${error} ? is-invalid : ''">
-	                            <input type="password" class="input form-control" placeholder="Password" id="password" name="password" th:classappend="${error} ? is-invalid : ''">
-	                            <input type="checkbox" class="checkbox" checked id="remember_me">
-	                            <label for="remember_me">Remember me</label>
-	                            <div class="invalid-feedback" th:if="${error}">Invalid user or password</div>
-	                            <input type="submit" form="login-form" class="button" value="Log in">
+	                        	<div class="form-row">
+	                            	<input type="text" class="input form-control" placeholder="Email or Username" id="username" name="username" th:classappend="${error} ? is-invalid : ''">
+	                            	<div class="invalid-feedback" th:text="${emailError}"></div>
+	                            </div>
+	                            <div class="form-row">
+	                            	<input type="password" class="input form-control" placeholder="Password" id="password" name="password" th:classappend="${error} ? is-invalid : ''">
+	                            	<div class="invalid-feedback" th:text="${emailError}"></div>
+	                            </div>
+	                            <div class="form-row">
+	                            	<input type="checkbox" class="checkbox my-0 py-0" checked id="remember_me">
+	                            	<label for="remember_me" class="my-0 py-0">Remember me</label>
+	                            </div>
+	                            <div class="form-row">
+	                            	<div class="invalid-feedback error" th:if="${error}">Invalid user or password</div>
+	                            </div>
+	                            <div class="form-row">
+	                            	<input id="btnLogin" type="submit" form="login-form" class="button" value="Log in">
+	                            </div>
 	                        </form>
-	                        <div class="">
+	                        <div class="text-center">
 	                            <p><i class="fa fa-arrow-left" aria-hidden="true"></i><a class="forgot" href="#">Forgot your password?</a></p>
 	                        </div>
 	                    </div>
@@ -99,8 +116,8 @@
 		                            <div class="invalid-feedback" th:text="${emailError}"></div>
 	                            </div>
 	                            <div class="form-row">
-	                            	<input id="inputName" type="text" class="input form-control" placeholder="Username" th:field="*{nickname}">
-	                            	<div class="invalid-feedback" th:text="${nameError}"></div>
+	                            	<input id="inputNickname" type="text" class="input form-control" placeholder="Username" th:field="*{nickname}">
+	                            	<div class="invalid-feedback" th:text="${nicknameError}"></div>
 	                            </div>
 	                            <div class="form-row">
 	                            	<input id="inputPassword" type="password" class="input form-control" autocomplete="off" placeholder="Password" th:field="*{password}">

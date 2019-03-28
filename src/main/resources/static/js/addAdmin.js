@@ -48,31 +48,41 @@ $(function() {
     /* Person form */
     var correctUserForm = [];
     
-    $('#email').donetyping(function(){
-    	correctUserForm["email"] = parser.parse('#email', parser.parseEmail);
-	});
+    function handleEmail() {
+    	correctUserForm[0] = parser.parse('#email', parser.parseEmail);
+    }
+    $('#email').donetyping(handleEmail);
+    $('#email').change(handleEmail);
 	
-	$('#name').donetyping(function(){
-		correctUserForm["name"] = parser.parse('#name', parser.parseName);
-	});
+    function handleName() {
+    	correctUserForm[1] = parser.parse('#name', parser.parseName);
+    }
+    $('#name').donetyping(handleName);
+    $('#name').change(handleName);
 	
-	$('#lastName').donetyping(function(){
-		correctUserForm["lastName"] = parser.parse('#lastName', parser.parseName);
-	});
+    function handleLastName(){
+		correctUserForm[2] = parser.parse('#lastName', parser.parseName);
+	}
+	$('#lastName').donetyping(handleLastName);
+	$('#lastName').change(handleLastname);
 	
-	$('#password').donetyping(function(){
-		correctUserForm["password"] = parser.parse('#password', parser.parsePassword);
-	});
+	function handlePassword(){
+		correctUserForm[3] = parser.parse('#password', parser.parsePassword);
+	}
+	$('#password').donetyping(handlePassword);
+	$('#password').change(handlePassword);
 	
-	$('#samePassword').donetyping(function(){
-		correctUserForm["samePassword"] = parser.parse('#samePassword', parser.parseSamePassword, '#password');
-	});
+	function handleSamePassword(){
+		correctUserForm[4] = parser.parse('#samePassword', parser.parseSamePassword, '#password');
+	}
+	$('#samePassword').donetyping(handleSamePassword);
+	$('#samePassword').change(handleSamePassword);
     
     $("#addAdmin-form").submit(function() {
     	let allCorrect = true;
     	
-    	for (let correctInput in correctUserForm) {
-    		allCorrect = allCorrect && correctInput;
+    	for (let i = 0; i < correctUserForm.length; i++) {
+    		allCorrect = allCorrect && correctUserForm[i];
     	}
     	
 		return allCorrect;

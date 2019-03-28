@@ -86,24 +86,24 @@
                         </button>
                         </div>
                         <div class="modal-body px-5">
-                            <form class ="form">
+                            <form id="modifyPasswordForm" class="form" th:action="@{/user/modifyPassword}" th:object="${userTransfer}" method="POST" th:if="${user != null}">
                                 <div class="form-row">
                                     <div class="form-group col-12">
-                                        <input type="password" class="form-control" id="OldPassword" placeholder="OldPassword">
+                                        <input type="password" class="form-control" th:id="password" th:name="password" placeholder="OldPassword">
                                         <div class="invalid-feedback" th:text="${passwordError}"></div>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-12">
-                                        <input type="password" class="form-control" id="NewPassword" placeholder="NewPassword">
-                                        <div class="invalid-feedback" th:text="${passwordError}"></div>
+                                        <input type="password" class="form-control" th:id="samePassword" th:name="samePassword" placeholder="NewPassword">
+                                        <div class="invalid-feedback" th:text="${samePasswordError}"></div>
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                        <button type="button" class="button content-button btn" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="button content-button btn">Save changes</button>
+                        <button type="reset" class="button content-button btn" data-dismiss="modal">Cancel</button>
+                        <button type="submit" form="modifyPasswordForm" class="button content-button btn">Save changes</button>
                         </div>
                     </div>
                     </div>

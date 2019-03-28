@@ -45,43 +45,67 @@ $(function() {
         }
     });
 
-    /* Person form */
+    /* ModifyUser form */
     var correctUserForm = [];
     
-    $('#email').donetyping(function(){
-    	correctUserForm["email"] = parser.parse('#email', parser.parseEmail);
-	});
+    function handleEmail(){
+    	correctUserForm[1] = parser.parse('#email', parser.parseEmail);
+	}
+    $('#email').donetyping(handleEmail);
+    $('#email').change(handleEmail);
 	
-	$('#name').donetyping(function(){
-		correctUserForm["name"] = parser.parse('#name', parser.parseName);
-	});
+    function handleName(){
+		correctUserForm[2] = parser.parse('#name', parser.parseName);
+	}
+	$('#name').donetyping(handleName);
+	$('#name').change(handleName);
 	
-	$('#lastName').donetyping(function(){
-		correctUserForm["lastName"] = parser.parse('#lastName', parser.parseName);
-	});
+	function handleLastName(){
+		correctUserForm[3] = parser.parse('#lastName', parser.parseName);
+	}
+	$('#lastName').donetyping(handleLastName);
+	$('#lastName').change(handleLastName);
 	
-	$('#birthdate').donetyping(function(){
-		correctUserForm["birthdate"] = parser.parse('#birthdate', parser.parseBirthday);
-	});
-	
-	/*
-	$('#OldPassword').donetyping(function(){
-		correctUserForm["OldPassword"] = parser.parse('#OldPassword', parser.parsePassword);
-	});
-	
-	$('#NewPassword').donetyping(function(){
-		correctUserForm["NewPassword"] = parser.parse('#NewPassword', parser.parseSamePassword, '#OldPassword');
-	});
-	*/
+	function handleBirthdate(){
+		correctUserForm[4] = parser.parse('#birthdate', parser.parseBirthday);
+	}
+	$('#birthdate').donetyping(handleBirthdate);
+	$('#birthdate').change(handleBirthdate);
     
     $("#modifyProfileForm").submit(function() {
     	let allCorrect = true;
     	
-    	for (let correctInput in correctUserForm) {
-    		allCorrect = allCorrect && correctInput;
+    	for (let i = 0; i < correctUserForm.length; i++) {
+    		allCorrect = allCorrect && correctUserForm[i];
     	}
     	
 		return allCorrect;
     });
     
+    
+    /* ModifyPassword form */
+	var correctPasswordForm = [];
+	
+	function handleOldPassword(){
+		correctPasswordForm[1] = parser.parse('#OldPassword', parser.parsePassword);
+	}
+	$('#OldPassword').donetyping(handleOldPassword);
+	$('#OldPassword').change(handleOldPassword);
+	
+	function handleNewPassword(){
+		correctPasswordForm[2] = parser.parse('#NewPassword', parser.parseSamePassword, '#OldPassword');
+	}
+	$('#NewPassword').donetyping(handleNewPassword);
+	$('#NewPassword').change(handleNewPassword);
+	
+    $("#modifyPasswordForm").submit(function() {
+    	let allCorrect = true;
+    	
+    	for (let i = 0; i < correctPasswordForm.length; i++) {
+    		allCorrect = allCorrect && correctPasswordForm[i];
+    	}
+    	
+		return allCorrect;
+    });
+	
 });

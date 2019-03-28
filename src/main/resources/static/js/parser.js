@@ -14,6 +14,7 @@ $(function() {
 	    parseNotEmptyText : "Please, fill the field",
 	    parseEmailText: "Please, introduce a valid email",
 	    parseNameText: "Please, introduce only letters or numbers",
+	    parseNicknameText: "Please, introduce only letters, numbers, - or _",
 	    parsePasswordText: "Password must contains at least"+" 1 capital letter"+ ", 1 number"+" and 6 characters",
 	    parseSamePasswordText: "Passwords must match",
 	    parseIntegerText : "Please, introduce a number",
@@ -46,6 +47,12 @@ $(function() {
 	    	let re = parser.namePattern;
 	    	let result = re.test(argument);
 	    	return { ok: result, msg: (result ? null : parser.parseNameText) };
+	    },
+	    
+	    parseNickname: function parseNickname(argument) {
+	    	let re = parser.nicknamePattern;
+	    	let result = re.test(argument);
+	    	return { ok: result, msg: (result ? null : parser.parseNicknameText) };
 	    },
 	    
 	    parsePassword: function parsePassword(argument) {
