@@ -31,6 +31,7 @@
 					<div class="form-row justify-content-center">
 		                <p class="nick text-center">Administrator</p>
 		                <input type="hidden" th:id="id" th:name="id" th:value="${user.id}">
+		                <input type="hidden" th:id="type" th:name="type" th:value="${user.type}">
 		            </div>
 					<div class="form-row">
 					    <div class="form-group col-12">
@@ -40,7 +41,7 @@
 					</div>
 					<div class="form-row">
 					    <div class="form-group col-12">
-					        <input type="email" class="form-control" placeholder="Username" id="nickname" th:field="*{nickname}">
+					        <input type="text" class="form-control" placeholder="Username" id="nickname" th:field="*{nickname}">
 					        <div class="invalid-feedback" th:text="${nicknameError}"></div>
 					    </div>
 					</div>

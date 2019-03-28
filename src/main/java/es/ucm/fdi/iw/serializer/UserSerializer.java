@@ -34,6 +34,7 @@ public class UserSerializer {
 		user.setBirthdate(usertr.getBirthdate());
 		user.setDescription(usertr.getDescription());
 		user.setPassword(usertr.getPassword());
+		user.setRoles(usertr.getType());
 		
 		if(user != null && usertr.getId() > 0) {
 			user.setId(usertr.getId());
@@ -57,6 +58,7 @@ public class UserSerializer {
 			userobj.getDescription()
 		);
 		usertr.setPassword(userobj.getPassword());
+		usertr.setType(userobj.getRoles());
 		
 		if(usertr != null && userobj.getId() > 0) {
 			usertr.setId(userobj.getId());

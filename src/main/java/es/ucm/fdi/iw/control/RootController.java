@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.User;
@@ -35,6 +34,9 @@ import es.ucm.fdi.iw.util.StringUtil;
 public class RootController {
 	
 	private static final Logger log = LogManager.getLogger(RootController.class);
+	
+	@Autowired
+	private ServletContext context;
 	
 	@Autowired
 	private Environment env;
@@ -109,9 +111,11 @@ public class RootController {
 	}
 	
 	@PostMapping("/register")
-	public ModelAndView register(ModelAndView modelAndView, ServletContext context, @ModelAttribute ("userRegister") UserTransfer userTransfer) {
+	public ModelAndView register(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userRegister") UserTransfer userTransfer) {
 		String err = "Please fill the fields";
 
+		User userLogged = (User)session.getAttribute("u");
+		
 		if(userTransfer != null) {
 			err = null;
 			if(UserParser.getInstance().parseUserRegister(modelAndView, userTransfer)) {
@@ -120,28 +124,29 @@ public class RootController {
 				if(userEmail == null && userNickname == null) {
 					User user = UserSerializer.userTransferToDomainObj(userTransfer);
 					
+					boolean hasPermission = false;
 					UserType userType = UserType.getUserType(userTransfer.getType());
-					Boolean debug = (Boolean)context.getAttribute("debug");
+					//Boolean debug = (Boolean)context.getAttribute("debug");
 					if(userType != null) {
-						if(userType == UserType.Administrator && debug != null && debug) {
-							user.addRole(UserType.Administrator.getKeyName());
-						}
-						else if(userType != UserType.Administrator) {
-							user.addRole(userTransfer.getType());
-						}
+						hasPermission = (userType == UserType.Administrator && userLogged != null && userLogged.hasRole(UserType.Administrator.getKeyName()));
 					}
 					else {
 						user.addRole("user");
+						hasPermission = true;
 					}
 					
-					user = userService.create(user);
-
-					if(user != null) {
-						err = null;
-						userTransfer.setId(user.getId());
+					if(hasPermission) {
+						user = userService.create(user);
+						if(user != null) {
+							err = null;
+							userTransfer.setId(user.getId());
+						}
+						else {
+							err = "Error while trying to create the user";
+						}
 					}
 					else {
-						err = "Error while trying to create the user";
+						err = "You have not the permission to register an andmin";
 					}
 				}
 				else {

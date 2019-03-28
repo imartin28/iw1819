@@ -18,6 +18,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.StringUtil;
@@ -62,7 +63,9 @@ public class AdminController {
 	@GetMapping("/addAdmin")
 	public ModelAndView addAdminGet(ModelAndView modelAndView) {
 		modelAndView.setViewName("addAdmin");
-		modelAndView.addObject("user", new UserTransfer());
+		UserTransfer user = new UserTransfer();
+		user.setType(UserType.Administrator.getKeyName());
+		modelAndView.addObject("user", user);
 		return modelAndView;
 	}
 	
