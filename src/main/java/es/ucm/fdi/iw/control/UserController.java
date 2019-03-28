@@ -235,6 +235,53 @@ public class UserController {
 		return modelAndView;
 	}
 	
+	@PostMapping("/activate")
+	public ModelAndView activateUser(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {
+		String err = null;
+		String viewName = null;
+		
+		User userLogged = (User)session.getAttribute("u");
+		
+		if(userLogged != null && userLogged.hasRole(UserType.Administrator.getKeyName())) {
+			viewName = "redirect:/admin/";
+		}
+		else {
+			err = "You are not allowed to activate this user";
+			viewName = "redirect:/";
+		}
+		
+		if(err == null) {
+			err = "User not found";
+			if(userId != null) {
+				User user = userService.findById(userId);
+				if(user != null) {
+					if(!user.isActive()) {
+						user.setActive(true);
+						user = userService.save(user);
+						if(user != null && user.isActive()) {
+							err = null;
+							String msg = "User "+user.getName()+" ("+user.getEmail()+")"+
+											" with id: "+userId+", has been activated";
+							this.notifyModal(modelAndView, "User notification", msg);
+						}
+					}
+					else {
+						err = "The user with id: "+userId+" is already activated";
+					}
+				}
+			}
+		}
+
+		if(err != null) {
+			this.notifyModal(modelAndView, "Error", err);
+		}
+		else {
+			modelAndView.setViewName(viewName);
+		}
+		
+		return modelAndView;
+	}
+	
 	@GetMapping("/modifyProfile")
 	public ModelAndView modifyProfileGet(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {
 		User user = null;

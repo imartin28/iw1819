@@ -94,7 +94,7 @@ public class RootController {
 		}
 		
 		modelAndView.setViewName("login");
-		modelAndView.addObject("user", new UserTransfer());
+		modelAndView.addObject("userRegister", new UserTransfer());
 		
 		return modelAndView;
 	}
@@ -109,7 +109,7 @@ public class RootController {
 	}
 	
 	@PostMapping("/register")
-	public ModelAndView register(ModelAndView modelAndView, HttpSession session, SessionStatus status, ServletContext context, @ModelAttribute ("user") UserTransfer userTransfer) {
+	public ModelAndView register(ModelAndView modelAndView, ServletContext context, @ModelAttribute ("userRegister") UserTransfer userTransfer) {
 		String err = "Please fill the fields";
 
 		if(userTransfer != null) {

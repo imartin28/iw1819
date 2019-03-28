@@ -49,13 +49,13 @@
 				        </ol>
 					    <div class="carousel-inner">
 					    	<div class="carousel-item active">
-					        	<h1 class="texto-carousel">Comparte tus películas, música y vídeos!</h1>
+					        	<h1 class="texto-carousel">Share your images, music or video!</h1>
 					        </div>
 					        <div class="carousel-item">
-					        	<h1 class="texto-carousel">Crea tus playlist y oganiza tu contenido</h1>
+					        	<h1 class="texto-carousel">Make your own playlist and manage your content</h1>
 					        </div>
 					        <div class="carousel-item">
-					        	<h1 class="texto-carousel">Reproduce cualquier contenido multimedia</h1>
+					        	<h1 class="texto-carousel">Multimedia player inside!</h1>
 					        </div>
 					    </div>
 					    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -110,7 +110,8 @@
 	                    </div>
 	                    <!-- TABS SIGNUP -->
 	                    <div id="signup-tab-content">
-	                        <form id="signup-form" class="signup-form" action="@{/register}" method="post" th:object="${user}">
+	                        <form id="signup-form" class="signup-form" action="@{/register}" method="post" th:object="${userRegister}">
+	                        	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	                        	<div class="form-row">
 		                            <input id="inputEmail" type="email" class="input form-control" placeholder="Email" th:field="*{email}">
 		                            <div class="invalid-feedback" th:text="${emailError}"></div>
