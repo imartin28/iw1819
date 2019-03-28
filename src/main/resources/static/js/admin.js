@@ -3,31 +3,35 @@ $(function() {
     $('#userTable').DataTable({
         select: true,
     });
-    
-    $("#delete-selected").click(function() {
-    	let userIdsToDelete = [];
+
+    function handleModifyUserState(active) {
+    	let userIds = {};
     	let rows = $('#userTable').find("tr.selected");
     	for(let i = 0; i < rows.length; i++) {
-    		userIdsToDelete.push($(rows[i]).attr("id"));
+    		userIds['user'+$(rows[i]).attr("id").toString()] = active.toString();
     	}
     	
-    	let jsonArray = JSON.stringify(userIdsToDelete);
+    	let map = JSON.stringify(userIds);
     	
-    	if(userIdsToDelete && userIdsToDelete.length > 0) {
+    	if(map != null && map != "" && map != "{}") {
         	$.ajax({
     			type: "POST",
-    			url: "/admin/delete-users",
+    			url: "/admin/users",
     			headers: {
     				"Content-Type": "application/json",				
     				"X-CSRF-TOKEN": m3.csrf.value
     			},
     			dataType: 'json',
-    			contentType:'application/json',
-    			data: jsonArray,
-    			success: function() {
-    				console.log("users deleted");
-    			},
+    			data: map
     		});
     	}
+    }
+    
+    $("#activate-selected").click(function() {
+    	handleModifyUserState(true);
     });
+    $("#delete-selected").click(function() {
+    	handleModifyUserState(false);
+    });
+    
 });

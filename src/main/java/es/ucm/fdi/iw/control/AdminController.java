@@ -1,5 +1,6 @@
 package es.ucm.fdi.iw.control;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -8,13 +9,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.User;
@@ -60,52 +61,49 @@ public class AdminController {
 		return modelAndView;
 	}
 	
-	@GetMapping("/addAdmin")
-	public ModelAndView addAdminGet(ModelAndView modelAndView) {
-		modelAndView.setViewName("addAdmin");
-		UserTransfer user = new UserTransfer();
-		user.setType(UserType.Administrator.getKeyName());
-		modelAndView.addObject("user", user);
-		return modelAndView;
-	}
-	
-	@PostMapping("/delete-users")
-	public ModelAndView deleteUsers(ModelAndView modelAndView, HttpSession session, SessionStatus status, @RequestBody List<Long> userIdsToDelete) {
+	@PostMapping("/users")
+	public ModelAndView activateUsers(ModelAndView modelAndView, @RequestBody String userIdsAndStates) {
 		String err = "";
 		
-		if(userIdsToDelete != null) {
+		JSONObject userIdsAndStatesJSON = null;
+		try {
+			userIdsAndStatesJSON = new JSONObject(userIdsAndStates);
 			
-			for(int i = 0; i < userIdsToDelete.size(); i++) {
-				String errUserId = "";
+			if(userIdsAndStates != null) {
+				Iterator<String> keys = userIdsAndStatesJSON.keys();
 				
-				Long userId = userIdsToDelete.get(i);
-				
-				if(userId != null) {
-					User user = userService.findById(userId);
-	
-					if(user != null) {
-						if(user.isActive()) {
-							user = userService.delete(user);
-							if(user != null && !user.isActive()) {
-								errUserId = "";
+				while(keys.hasNext()) {
+					String errUserId = "";
+					
+					String key = keys.next();
+					Long userId = Long.parseLong(key.replace("user", ""));
+					
+					if(userId != null) {
+						User user = userService.findById(userId);
+						
+						if(user != null) {
+							Boolean active = Boolean.parseBoolean((String)userIdsAndStatesJSON.get(key));
+							if(active != null && (active != user.isActive())) {
+								user.setActive(active);
+								user = userService.save(user);
 							}
 						}
-						else {
-							errUserId = "The user with id: "+userId+" is already deactivated";
-						}
+						else
+							errUserId += "User with id: "+userId+", not found";
 					}
 					else {
-						errUserId += "User with id: "+userId+", not found";
+						errUserId += "Error with user id";
 					}
+					
+					err += errUserId + '\n';
 				}
-				else {
-					errUserId += "Error with user id";
-				}
-				
-				err += errUserId + '\n';
 			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			err = "Error while parsing ids";
 		}
-		
+
 		err = err.trim();
 
 		modelAndView.setViewName("redirect:/admin/");
@@ -113,6 +111,15 @@ public class AdminController {
 			this.notifyModal(modelAndView, "Error", err);
 		}
 		
+		return modelAndView;
+	}
+	
+	@GetMapping("/addAdmin")
+	public ModelAndView addAdminGet(ModelAndView modelAndView) {
+		modelAndView.setViewName("addAdmin");
+		UserTransfer user = new UserTransfer();
+		user.setType(UserType.Administrator.getKeyName());
+		modelAndView.addObject("user", user);
 		return modelAndView;
 	}
 	
