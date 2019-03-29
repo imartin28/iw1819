@@ -40,7 +40,29 @@
 }
 
 
+.panel-grid-files{
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	
+}
 
+.panel-grid-files-element{
+	display: flex;
+	flex-direction:column;
+	
+}
+
+.file-icon-checkbox{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.file-name{
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
 
 .title-section{
     font-size: 40px;

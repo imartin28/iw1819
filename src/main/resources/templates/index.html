@@ -244,7 +244,7 @@
                             </table>
                         </div>
 
-                        <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show">
+                        <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show ">
                             <nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -260,8 +260,11 @@
                                 <button id="edit-folder-view" class="btn button"><i class="material-icons">edit</i></button>
                             </nav>
                            
-                            <div th:each="file : ${files}" class="my-2"> 
-                                <div  class="d-inline-flex flex-column justify-content-center align-items-center p-1">
+                           
+                           <div class="panel-grid-files" >
+                            <div th:each="file : ${files}" class="panel-grid-files-element  my-2"> 
+                                <div class=" file-icon-checkbox  p-1">
+                                   <input type ="checkbox" class="mr-4">
                                     <i class="material-icons folder">folder</i>
                                     
                                      <script th:inline="javascript">
@@ -277,11 +280,14 @@
 							             	
 							                                    	
 							        </script>
+							     </div>
+							     <div class="file-name">
                                     <span th:attr="id = ${'metadata' + file.id}"></span>  
+                                 </div>
                                     
-                                    
-                                </div>
+                               
                             </div>
+                           </div>
                         </div>
 
                         <div id="action-button-container" class="row pt-2 mx-1 d-none">

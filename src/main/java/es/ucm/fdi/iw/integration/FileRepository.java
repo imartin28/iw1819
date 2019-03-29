@@ -5,9 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import es.ucm.fdi.iw.model.CFile;
 
-@Repository("userRepository")
+@Repository("fileRepository")
 public interface FileRepository extends JpaRepository<CFile, Long> {
-	
 	CFile findById(long id);
-	
 }
