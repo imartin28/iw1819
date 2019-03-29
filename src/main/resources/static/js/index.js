@@ -21,15 +21,6 @@ $(function() {
         }
     });
     
-    
-    
-    $("#button-upload-file").on("click", uploadFileButtonHandler);
 
 });
 
-
-function uploadFileButtonHandler(){
-	
-	
-	
-}

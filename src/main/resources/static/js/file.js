@@ -1,4 +1,8 @@
 $(() => {
+	
+	 
+	
+   $(".custom-file-input").on("change", appearFileName);	 
    $("#delete-files").on("click", deleteFilesButtonHandler);
    $(".panel-grid-files-element").mouseenter(mouseEnterOnFileHandler); 
    $(".panel-grid-files-element").mouseleave(mouseLeaveFileHandler);
@@ -6,6 +10,13 @@ $(() => {
 });
 
 
+
+
+function appearFileName(){
+	 
+  let fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+}
 
 function deleteFilesButtonHandler(){
 	let filesChecked = $("input[name='file-check']:checked");
