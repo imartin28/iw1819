@@ -78,6 +78,7 @@ public class UserController {
 		List<CFile> files_currentUser = entityManager.createNamedQuery("FilesUser", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
 		List<Tag> tags = entityManager.createNamedQuery("readAllTags", Tag.class).getResultList();
 		
+		System.out.println(files_currentUser);
 		//String json = new Gson().toJson(files_currentUser);
 		
 		model.addAttribute("files", files_currentUser);
@@ -136,6 +137,8 @@ public class UserController {
 				f1.close();
 				
 				String metadata = "{\"name\" : \"" + file.getOriginalFilename() + "\", \"extension\" : \"" + file.getContentType()  + "\", \"size\" : \"" + file.getSize() + "\", \"path\" : \"" + f.getAbsolutePath() + "\"}";
+				
+				
 				CFile fileToPersist = new CFile(metadata);			
 				entityManager.persist(fileToPersist);
 				

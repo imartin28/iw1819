@@ -3,6 +3,7 @@ package es.ucm.fdi.iw.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,7 +30,7 @@ public class CFile {
 	
 	private String metadata;
 	 
-	@OneToMany(targetEntity=UserFile.class, mappedBy="file")
+	@OneToMany(targetEntity=UserFile.class, mappedBy="file", cascade=CascadeType.ALL)
 	private List<UserFile> filePermissions;
 	
 	@ManyToMany(targetEntity=CGroup.class, mappedBy="files")

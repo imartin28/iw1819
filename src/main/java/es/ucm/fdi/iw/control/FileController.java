@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
@@ -16,10 +17,12 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -107,6 +110,24 @@ public class FileController {
 	}
 	
 	
+	
+	
+	@PostMapping("/deleteFiles")
+	@Transactional
+	public String deleteFiles(@RequestBody List<Long> ids) {
+		
+		
+		List<CFile> files = fileService.getAllById(ids);
+		
+		
+		for (CFile file : files) {
+			fileService.deleteFile(file);
+		}
+		
+		return "redirect:/user/";
+	}
+	
+	
 
 	@PostMapping("/newTag")
 	@Transactional
@@ -154,5 +175,10 @@ public class FileController {
 		
 		return "redirect:/user/";
 	}
+	
+	
+	
+	
+
 	
 }

@@ -22,6 +22,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"></script>
     
     <script type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript" src="/js/file.js"></script>
 
     
     <title>M3 - MultiMedia Manager</title>
@@ -202,7 +203,7 @@
                         	
                         	
                             
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                           <!--  <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <button id="view-list" class="btn button-second" data-toggle="collapse" data-target=".multi-collapse"  aria-expanded="true" aria-controls="fileTable-container folderView">
                                     <input type="radio" name="options" id="option1" autocomplete="off" checked>
                                     <i class="material-icons center-content">view_list</i>
@@ -211,10 +212,10 @@
                                     <input type="radio" name="options" id="option2" autocomplete="off" checked>
                                     <i class="material-icons center-content">view_module</i>
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
                     
-                        <div id="fileTable-container" class="collapse multi-collapse">
+                      <!--   <div id="fileTable-container" class="collapse multi-collapse">
                             <table id="fileTable" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
@@ -242,7 +243,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
+                        </div> -->
 
                         <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show ">
                             <nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">
@@ -258,13 +259,15 @@
                                     </div>
                                 -->
                                 <button id="edit-folder-view" class="btn button"><i class="material-icons">edit</i></button>
+                                <button id="delete-files" class="btn button-second"><i class="material-icons">delete</i></button>
                             </nav>
                            
                            
                            <div class="panel-grid-files" >
                             <div th:each="file : ${files}" class="panel-grid-files-element  my-2"> 
                                 <div class=" file-icon-checkbox  p-1">
-                                   <input type ="checkbox" class="mr-4">
+                                   <input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">                                
+                                   
                                     <i class="material-icons folder">folder</i>
                                     
                                      <script th:inline="javascript">

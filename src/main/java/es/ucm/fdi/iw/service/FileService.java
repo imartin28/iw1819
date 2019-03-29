@@ -10,4 +10,10 @@ public interface FileService {
 
 	List<CFile> getAll();
 	
+	
+	
+	List<CFile> getAllById(List<Long> ids);
+
+	void deleteFile(CFile file);
+	
 }
