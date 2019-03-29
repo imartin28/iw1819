@@ -40,22 +40,19 @@
                     <div class="col-3 border-right d-flex flex-column justify-content-center">
                         <div class="d-flex flex-column align-items-center pb-2 border-bottom files-left-panel">
                             <form class="form-inline center-content searchForm mb-2">
-                                <input class="form-control" type="search" placeholder="Search a file" aria-label="Search">
+                                <input class="form-control" type="search" placeholder="Search a tag" aria-label="Search">
                                 <button class="btn button button-search" type="submit"><i class="material-icons center-content">search</i></button>
                             </form>
                         
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn button content-button px-3"><i class="material-icons mr-2">photo_library</i>Images</button>
-                                <button type="button" class="btn button content-button px-3"><i class="material-icons mr-2">videocam</i>Videos</button>
-                                <button type="button" class="btn button content-button px-3"><i class="material-icons mr-2">library_music</i>Music</button>
-                            </div>
+                           
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item py-0 d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center all-tag">
-                                    <i class="material-icons mr-2">all_inclusive</i>
-                                    <span>All</span>
-                                </div>
+                                
+                                <button type="button" class="btn button-second mt-auto d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#exampleModal">
+						  <i class="material-icons mr-2">add</i>
+                            <span>Add New Tag</span>
+						</button>
                             </li>                            
                             
                             <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center">
@@ -142,10 +139,10 @@
                                
                         
                         <!-- Button trigger modal -->
-						<button type="button" class="btn button-second mt-auto d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#exampleModal">
+						<!-- <button type="button" class="btn button-second mt-auto d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#exampleModal">
 						  <i class="material-icons mr-2">add</i>
                             <span>Add New Tag</span>
-						</button>
+						</button>-->
 						
 						<!-- Modal NewTag-->
 						<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
