@@ -1,10 +1,8 @@
 $(() => {
-
    $("#delete-files").on("click", deleteFilesButtonHandler);
-    
-    
-    $("#button-upload-file").on("click", uploadFileButtonHandler);
-
+   $(".panel-grid-files-element").mouseenter(mouseEnterOnFileHandler); 
+   $(".panel-grid-files-element").mouseleave(mouseLeaveFileHandler);
+   $("#button-upload-file").on("click", uploadFileButtonHandler);
 });
 
 
@@ -42,4 +40,13 @@ function deleteFiles(array_IdsToDelete){
 		
 	});
 	
+}
+
+function mouseEnterOnFileHandler(event) {
+	$(this).children().eq(0).removeClass("visibility-hidden");
+}
+
+function mouseLeaveFileHandler(event) {
+	
+	$(this).children().eq(0).addClass("visibility-hidden");
 }

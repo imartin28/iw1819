@@ -46,11 +46,47 @@
 	
 }
 
+
 .panel-grid-files-element{
 	display: flex;
 	flex-direction:column;
 	
 }
+
+
+.panel-grid-files-element:hover{
+	/*transform:scale(1.1);*/
+	border: 1px solid rgba(42,46,54,1);
+	border-radius:10px;
+	
+}
+
+.panel-buttons-options > .button{
+
+	border-radius: 10px;
+	width: 35px;
+	height:35px;
+	
+	
+}
+
+.display-none {
+	display: none;
+}
+
+
+.remove-link-style, .remove-link-style:hover{
+	
+	color:black;
+	text-decoration:none;
+}
+
+
+.visibility-hidden{
+	visibility:hidden;
+}
+
+
 
 .file-icon-checkbox{
 	display: flex;

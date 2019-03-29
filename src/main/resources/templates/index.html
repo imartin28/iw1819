@@ -258,36 +258,34 @@
                                         <a class="dropdown-item" href="#"><i class="material-icons mr-2">edit</i>Modify</a>
                                     </div>
                                 -->
-                                <button id="edit-folder-view" class="btn button"><i class="material-icons">edit</i></button>
-                                <button id="delete-files" class="btn button-second"><i class="material-icons">delete</i></button>
+                                <button id="edit-folder-view" class="btn button"><i class="material-icons center-content">edit</i></button>
+                                <button id="delete-files" class="btn button-second"><i class="material-icons center-content">delete</i></button>
                             </nav>
                            
                            
                            <div class="panel-grid-files" >
-                            <div th:each="file : ${files}" class="panel-grid-files-element  my-2"> 
-                                <div class=" file-icon-checkbox  p-1">
-                                   <input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">                                
-                                   
-                                    <i class="material-icons folder">folder</i>
-                                    
-                                     <script th:inline="javascript">
+                            <div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2 "> 
+                            	<div th:attr="id=${'fileOptionButtons' + file.id}" class="panel-buttons-options visibility-hidden pt-2 pl-2">
+                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn button "><i class="material-icons center-content">edit</i></button>
+                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button "><i class="material-icons center-content">share</i></button>
+                            	
+                            	</div>
+                                <div class=" file-icon-checkbox p-1">
+                                   <input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">       
+                                    <a href="#" class="remove-link-style"><i class="material-icons folder folder-icon">folder</i></a>
+                                    <script th:inline="javascript">
                 							
-							                	var metadataJSON = JSON.parse([[${file.metadata}]]);
-							                 	window.addEventListener('load', () => {
-							                 		const e = document.querySelector("#metadata" + [[${file.id}]]);
-							                 		e.innerText = metadataJSON.name;
-							                 		
-							                 		 
-							                 	});
-                        						
-							             	
-							                                    	
-							        </script>
+					                	var metadataJSON = JSON.parse([[${file.metadata}]]);
+					                 	window.addEventListener('load', () => {
+					                 		const e = document.querySelector("#metadata" + [[${file.id}]]);
+					                 		e.innerText = metadataJSON.name;						                 		
+					                 		 
+					                 	});
+                        			</script>
 							     </div>
 							     <div class="file-name">
-                                    <span th:attr="id = ${'metadata' + file.id}"></span>  
-                                 </div>
-                                    
+                                    <a href="#"  class="remove-link-style" th:attr="id = ${'metadata' + file.id}"></a>  
+                                 </div>                                    
                                
                             </div>
                            </div>
