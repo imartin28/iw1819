@@ -87,36 +87,36 @@
 
                     <div class="col-9">
                     	<div class="row justify-content-between align-items-center border-bottom">
-                        	<a class="d-flex files-link" href="#" th:switch="${file.type}">
+                        	<a class="d-flex files-link" href="#" th:switch="${mimetype}">
                             	<i class="material-icons title-section my-auto ml-3" th:case="'image'">image</i>
                                 <i class="material-icons title-section my-auto ml-3" th:case="'music'">music_video</i>
                                 <i class="material-icons title-section my-auto ml-3" th:case="'video'">videocam</i>
-                                <span class="title-section" th:text="${file.name}">File</span>
+                                <span class="title-section" th:text="${filename}">File</span>
                             </a>
                             <div class="row">
                                 <button class="btn button d-flex align-items-center" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">share</i>Share</button>
                                 <button class="btn button d-flex align-items-center" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">edit</i>Edit</button>
                             </div>
                        	</div>
-                        <div id="mediaplayer" class="row justify-content-center" th:switch="${file.type}">
-                        	<img src="${file.url}" width="50%" height="50%" th:case="'image'">
+                        <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
+                        	<img src="${fileurl}" width="50%" height="50%" th:case="'image'">
                             <audio controls th:case="'music'">
-                            	<source th:src="${file.url}" type="audio/mpeg">
+                            	<source th:src="${fileurl}" type="audio/mpeg">
                             </audio>
                             <video width="50%" height="50%" controls th:case="'video'">
-                            	<source src="${file.url}" type="video/mp4">
+                            	<source src="${fileurl}" type="video/mp4">
                             </video>
                             <div th:case="*">Mediaplayer</div>
                        	</div>
                        	<div id="tags">
                             <th:block th:each="tag : ${tags}">
-                            <div class="title" th:text="${tag.name}">Tag</div>
+                            <div class="title" th:text="${tag}">Tag</div>
                             </th:block>
                        	</div>
                         <div id="metadata">
                            	<th:block th:each="data : ${metadata}">
-                           	<div class="title" th:text="${data.title}">Title</div>
-                            <div class="description" th:text="${data.value}">Description</div>
+                           	<div class="title" th:text="${data.getKey()}">Title</div>
+                            <div class="description" th:text="${data.getValue()}">Description</div>
                            	</th:block>
                         </div>
                     </div>
