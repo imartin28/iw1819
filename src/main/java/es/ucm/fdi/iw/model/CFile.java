@@ -1,5 +1,6 @@
 package es.ucm.fdi.iw.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -24,7 +25,8 @@ public class CFile {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	private long id;
+	
 	private String metadata;
 	 
 	@OneToMany(targetEntity=UserFile.class, mappedBy="file")
@@ -83,14 +85,22 @@ public class CFile {
 		this.metadata = metadata;
 	}
 
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
+	public List<String> tagNameList() {
+		List<String> strings = new ArrayList<String>(tags.size());
+		for (Tag tag : tags) {
+		    strings.add(tag != null ? tag.getName() : null);
+		}
+		
+		return strings;
+	}
 	
 
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import es.ucm.fdi.iw.model.User;
 
 @Repository("userRepository")
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
 	 User findByEmail(String email); //Sólo con hacer un findBy'nombreDelAtributo'(Tipo nombre); te busca los usuarios con ese campo
 	 User findByNickname(String nickname);
 	 User findById(long id);

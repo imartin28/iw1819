@@ -4,16 +4,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,8 +26,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
+import es.ucm.fdi.iw.model.FileType;
 import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.service.FileService;
 import es.ucm.fdi.iw.util.StringUtil;
 
 @Controller()
@@ -36,6 +37,9 @@ import es.ucm.fdi.iw.util.StringUtil;
 public class FileController {
 	
 	private static final Logger log = LogManager.getLogger(FileController.class);
+	
+	@Autowired
+	private FileService fileService;
 	
 	@Autowired
 	private EntityManager entityManager;
@@ -66,9 +70,9 @@ public class FileController {
 		
 		String err = "File not found";
 		
-		CFile f = entityManager.find(CFile.class, id);
+		CFile file = fileService.findById(id);
 		
-		if (f != null) {
+		if (file != null) {
 			err = null;
 			modelAndView.addObject("filename", id);
 			
@@ -77,32 +81,24 @@ public class FileController {
 			
 			Path path = Paths.get(p);
 			String mimetype = Files.probeContentType(path);
-			switch (mimetype) {
-			case "image/jpeg":
-			case "image/png":
-				modelAndView.addObject("mimetype", "image");
-				break;
-			case "audio/mpeg":
-				modelAndView.addObject("mimetype", "music");
-				break;
-			case "video/mp4":
-				modelAndView.addObject("mimetype", "video");
-				break;
-			default:
+			
+			String type = FileType.getKeyName(mimetype);
+			
+			if(type != null) {
+				modelAndView.addObject("mimetype", type);
+			}
+			else {
 				err = "File has invalid MIME type";
 			}
-
-			List<Tag> t = f.getTags();
-			List<String> tags = new ArrayList<String>();
-			for (int i = 0; i < t.size(); i++) {
-				tags.add(t.get(i).getName());
-			}
-			modelAndView.addObject("tags", tags);
 			
-			String md = f.getMetadata();
-			Map<String, String> metadata = new HashMap<String, String>();
-			// TODO
-			modelAndView.addObject("metadata", metadata);
+			modelAndView.addObject("tags", file.tagNameList());
+			
+			try {
+				JSONObject metadataJSON = new JSONObject(file.getMetadata());
+				modelAndView.addObject("metadata", metadataJSON);
+			} catch(JSONException e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (err != null)
