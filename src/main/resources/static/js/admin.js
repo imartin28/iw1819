@@ -14,6 +14,7 @@ $(function() {
     	let map = JSON.stringify(userIds);
     	
     	if(map != null && map != "" && map != "{}") {
+    		console.log(map);
         	$.ajax({
     			type: "POST",
     			url: "/admin/users",
@@ -21,8 +22,18 @@ $(function() {
     				"Content-Type": "application/json",				
     				"X-CSRF-TOKEN": m3.csrf.value
     			},
-    			dataType: 'json',
-    			data: map
+    			dataType : "json",
+    		    contentType: "application/json; charset=utf-8",
+    			data: map,
+    			success: function(response) {
+    				console.log("peticon ajax vuelve con exito");
+    				console.log(response);
+    				location.reload();
+    			},
+    			error:function (xhr, ajaxOptions, thrownError){
+    				console.log(xhr.status);             
+    				console.log(thrownError);     
+    			} 
     		});
     	}
     }
