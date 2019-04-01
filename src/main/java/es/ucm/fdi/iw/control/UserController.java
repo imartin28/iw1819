@@ -136,15 +136,11 @@ public class UserController {
 				f1.write(bytes);
 				f1.close();
 				
-				String metadata = "{\"name\" : \"" + file.getOriginalFilename() + "\", \"extension\" : \"" + file.getContentType()  + "\", \"size\" : \"" + file.getSize() + "\", \"path\" : \"" + f.getAbsolutePath() + "\"}";
+				String metadata = "{\"extension\" : \""  + file.getContentType()  + "\", \"size\" : \"" + file.getSize() + "\"}";
 				
-				
-				CFile fileToPersist = new CFile(metadata);			
+				CFile fileToPersist = new CFile(file.getOriginalFilename(), f.getAbsolutePath(), metadata);			
 				entityManager.persist(fileToPersist);
-				
-				//entityManager.getTransaction().commit();
-				//entityManager.getTransaction().begin();
-				
+	
 				User currentUser = (User) session.getAttribute("u");
 				
 				UserFile userFile = new UserFile(currentUser, fileToPersist, "rw");

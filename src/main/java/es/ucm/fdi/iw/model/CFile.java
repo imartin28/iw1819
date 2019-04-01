@@ -34,6 +34,8 @@ public class CFile {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	
+	private String name;
+	private String path;
 	private String metadata;
 	 
 	@OneToMany(targetEntity=UserFile.class, mappedBy="file", cascade=CascadeType.ALL)
@@ -45,14 +47,40 @@ public class CFile {
 	@ManyToMany(targetEntity=Tag.class)
 	private List<Tag> tags;
 	
+	
+	
 	public CFile() {
 		
 	}
 	
-	
-	public CFile(String metadata) {
+	public CFile(String name, String path, String metadata) {
+		this.name = name;
+		this.path = path;
 		this.metadata = metadata;
 	}
+	
+	
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public String getPath() {
+		return path;
+	}
+
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+
+	
 	
 
 	public List<UserFile> getFilePermissions() {

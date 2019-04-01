@@ -1,0 +1,18 @@
+Patron password synchronizer
+
+Hay que añadir un servicio web por cada uno de los servicios que tenemos que exponga operaciones de alta, baja y modificacion de usuario 
+
+Patrones identidad
+
+	Credential Tokenizer
+
+En el constructor del delegado se crea la clase Credential Tokenizer para que el delegado no necesite saber el usuario y contraseña de Tomcat.
+
+	Assertion Builder
+
+Construye los token SAML, ya está hecho en los framework (pág. 775 del libro)
+
+
+	SingleSignOn Delegator
+
+Es como un SMR metido en un delegado

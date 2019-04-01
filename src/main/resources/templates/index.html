@@ -292,20 +292,22 @@
                             	<div th:attr="id=${'fileOptionButtons' + file.id}" class="panel-buttons-options visibility-hidden pt-2 pl-2">
                             		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn button "><i class="material-icons center-content">edit</i></button>
                             		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button "><i class="material-icons center-content">share</i></button>
-                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn button "><i class="material-icons center-content">archive</i></button>
+                            		<a th:href="@{${'/file/download/' + file.id}}" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn button "><i class="material-icons center-content">archive</i></a>
                             	
                             	</div>
                                 <div class=" file-icon-checkbox p-1">
                                    <input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">       
                                     <a href="#" class="remove-link-style"><i class="material-icons folder folder-icon">folder</i></a>
+                                    <!--  
                                     <script th:inline="javascript">
 					                 	window.addEventListener('load', () => {
 					                 		document.querySelector("#metadata" + [[${file.id}]]).innerText = JSON.parse([[${file.metadata}]]).name;						                 		
 					                 	});
                         			</script>
+                        			-->
 							     </div>
 							     <div class="file-name">
-                                    <a href="#"  class="remove-link-style" th:attr="id = ${'metadata' + file.id}"></a>  
+                                    <a href="#"  class="remove-link-style" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
                                  </div>                                    
                                
                             </div>
