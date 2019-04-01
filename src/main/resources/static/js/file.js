@@ -4,8 +4,8 @@ $(() => {
 	
    $(".custom-file-input").on("change", appearFileName);	 
    $("#delete-files").on("click", deleteFilesButtonHandler);
-   $(".panel-grid-files-element").mouseenter(mouseEnterOnFileHandler); 
-   $(".panel-grid-files-element").mouseleave(mouseLeaveFileHandler);
+  // $(".panel-grid-files-element").mouseenter(mouseEnterOnFileHandler); 
+   //$(".panel-grid-files-element").mouseleave(mouseLeaveFileHandler);
    $("#button-upload-file").on("click", uploadFileButtonHandler);
 });
 
@@ -60,11 +60,11 @@ function deleteFiles(array_IdsToDelete){
 	
 }
 
-function mouseEnterOnFileHandler(event) {
+/*function mouseEnterOnFileHandler(event) {
 	$(this).children().eq(0).removeClass("visibility-hidden");
 }
 
 function mouseLeaveFileHandler(event) {
 	
 	$(this).children().eq(0).addClass("visibility-hidden");
-}
+}*/
