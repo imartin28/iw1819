@@ -13,7 +13,6 @@ public interface FileRepository extends JpaRepository<CFile, Long> {
 	
 	List<CFile> findAll();
 	
-	//void deleteInBatch(List<CFile> files);
 	void delete(CFile file);
 	
 	List<CFile> findAllById(List<Long> ids);

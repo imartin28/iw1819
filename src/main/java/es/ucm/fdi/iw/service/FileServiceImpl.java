@@ -41,6 +41,13 @@ public class FileServiceImpl implements FileService {
 		return fileRepo.findAllById(ids);
 	}
 
+	@Override
+	public void deleteFiles(List<CFile> files) {
+		for (CFile file : files) {
+			this.deleteFile(file);
+		}
+	}
+
 	
 	
 

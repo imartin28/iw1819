@@ -299,12 +299,8 @@
                                    <input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">       
                                     <a href="#" class="remove-link-style"><i class="material-icons folder folder-icon">folder</i></a>
                                     <script th:inline="javascript">
-                							
-					                	var metadataJSON = JSON.parse([[${file.metadata}]]);
 					                 	window.addEventListener('load', () => {
-					                 		const e = document.querySelector("#metadata" + [[${file.id}]]);
-					                 		e.innerText = metadataJSON.name;						                 		
-					                 		 
+					                 		document.querySelector("#metadata" + [[${file.id}]]).innerText = JSON.parse([[${file.metadata}]]).name;						                 		
 					                 	});
                         			</script>
 							     </div>

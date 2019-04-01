@@ -20,7 +20,13 @@ import javax.persistence.OneToMany;
 @NamedQueries({
 @NamedQuery(name="FilesUser", query="SELECT cf "
 		+ " FROM UserFile uf JOIN uf.file cf "
-		+ " WHERE uf.user.id = :id_currentUser ")
+		+ " WHERE uf.user.id = :id_currentUser "),
+@NamedQuery(name="findAllById", query="SELECT file "
+		+ " FROM CFile file"
+		+ " WHERE file.id IN :ids "),
+@NamedQuery(name="deleteInBatch", query="DELETE "
+		+ " FROM CFile file"
+		+ " WHERE file.id IN :ids ")
 })
 public class CFile {
 	

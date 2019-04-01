@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -115,15 +116,14 @@ public class FileController {
 	@PostMapping("/deleteFiles")
 	@Transactional
 	public String deleteFiles(@RequestBody List<Long> ids) {
+		List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class)
+				.setParameter("ids", ids)
+				.getResultList();
 		
 		
-		List<CFile> files = fileService.getAllById(ids);
+		// Hay que borrar los ficheros del disco duro
 		
-		
-		for (CFile file : files) {
-			fileService.deleteFile(file);
-		}
-		
+		fileService.deleteFiles(files);
 		return "redirect:/user/";
 	}
 	
