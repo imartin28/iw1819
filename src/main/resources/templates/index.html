@@ -37,25 +37,13 @@
         <div class="row">
             <div class="col-10 panel mx-auto">
                 <div class="row">
-                    <div class="col-3 border-right d-flex flex-column justify-content-center ">
-                    	<h3 class="center-content mb-2">Upload File</h3>
-                    		<div class="custom-file mb-5 ">
-  
-	                          <form th:if="${session.u != null}" method="POST" th:action="@{/user/{id}/file/(id=${session.u.id})}" enctype="multipart/form-data" >
-	                        		<input  type="file" class="custom-file-input" id="customFile" name="file"/>
-	                        		<label class="custom-file-label" for="customFile">Choose file</label>
-	                        		<!-- <input type="hidden" th:name="${_csrf.parameterName)" th:value="$(_csrf.token)"/>-->
-	                        		<button type="submit" id="button-upload-file" class="btn button d-flex align-items-center mt-3 button-upload"><i class="material-icons mr-2">unarchive</i>Upload File</button>
-	                        		<input type="hidden" th:value="@{session.u.id}" name="userId" id="userId">
-	                        	</form>
-                        	
-                        	
-                			</div>
+                    <div class="col-3 border-right d-flex flex-column  files-left-panel ">
+                    	
                                             	
                         	
                     
                     		
-                        <div class="d-flex flex-column align-items-center pb-2 pt-2  border-top files-left-panel mb-4 mt-5">
+                        <div class="d-flex flex-column align-items-center pb-2 pt-2    mb-4 mt-5">
                        	 <h3>Tags</h3>
                             <form class="form-inline center-content searchForm mb-2">
                                 <input class="form-control" type="search" placeholder="Search a tag" aria-label="Search">
@@ -71,7 +59,7 @@
 								</button>
                                                        
                             
-                            <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags">
+                            <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags ">
                                 <div class="d-flex align-items-center ">
                                     <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
                                     <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
@@ -79,6 +67,7 @@
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">menu</i></button>
                                 <div class="dropdown-menu">
+                                	
                                     <a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalEdit' + tag.id}"><i class="material-icons mr-2">edit</i>Edit</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalDelete' + tag.id}"><i class="material-icons mr-2">delete_outline</i>Delete</a>
                                 </div>
@@ -175,6 +164,13 @@
 						          <div class="form-group">
 						            <label for="recipient-name" class="col-form-label">Introduce the name of the new tag:</label>
 						            <input type="text" class="form-control" id="recipient-name" name="tagName">
+						            
+						           <!--  <input type="text" th:field="*{tagName}" class="form-control" id="recipient-name" name="tagName">
+						            <label th:if="${#fields.hasErrors('tag_name')}" th:errors="*{tag_name}"></label>-->
+						          </div>
+						          <div class="form-group">
+						            <label for="recipient-name" class="col-form-label">Choose a color:</label>
+						            <input type="color"  id="recipient-name" name="tagColor">
 						          </div>
 						          <div class="form-group">
 						            <label for="exampleFormControlSelect1">Nest the tag in:</label>
@@ -260,7 +256,7 @@
                             </table>
                         </div> -->
 
-                        <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show ">
+                        <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show">
                             <nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -283,19 +279,20 @@
 		                            </form>                        
 		                           
 		                        </div>
-                                <button id="delete-files" class="btn button-second"><i class="material-icons center-content">delete</i></button>
+                                
                             </nav>
                            
                            
-                           <div class="panel-grid-files" >
-                            <div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2 "> 
-                            	<div th:attr="id=${'fileOptionButtons' + file.id}" class="panel-buttons-options visibility-hidden pt-2 pl-2">
-                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn button "><i class="material-icons center-content">edit</i></button>
-                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button "><i class="material-icons center-content">share</i></button>
+                           <div class="panel-grid-files border border-dark" >
+                            <div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2  "> 
+                            	<div th:attr="id=${'fileOptionButtons' + file.id}" class="panel-buttons-options visibility-hidden pl-2">
+                            		<a class="btn button" href="#" data-toggle="modal" th:attr="data-target=${'#modalEditNameFile' + file.id}"><i class="material-icons center-content">edit</i></a>
+                               		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button "><i class="material-icons center-content">share</i></button>
                             		<a th:href="@{${'/file/download/' + file.id}}" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn button "><i class="material-icons center-content">archive</i></a>
-                            	
+                            		<button id="delete-files" class="btn button-second"><i class="material-icons center-content">delete</i></button>
                             	</div>
-                                <div class=" file-icon-checkbox p-1">
+                                <div class=" file-icon-checkbox p-1 ml-4 ">
+                                	<a href="#" data-toggle="modal"  th:attr="data-target=${'#modalViewAllTag' + file.id}" ><i class="material-icons icon-tag mr-2 center-content remove-link-style">bookmark</i></a>
                                    <input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">       
                                     <a href="#" class="remove-link-style"><i class="material-icons folder folder-icon">folder</i></a>
                                     <!--  
@@ -306,13 +303,108 @@
                         			</script>
                         			-->
 							     </div>
+							     
 							     <div class="file-name">
-                                    <a href="#"  class="remove-link-style" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
-                                 </div>                                    
+                                    <a href="#"  class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
+                                 </div>   
+                                 <div class="center-content mt-1">
+                                 	<label class="tags-style" th:each="tag : ${file.tags}" th:text="${tag.name}" th:attr="style=${'background-color:' + tag.color}"></label>
+                                 </div>
+                                                                  
                                
                             </div>
+                            
                            </div>
                         </div>
+                         
+                        <h3 class="center-content mt-4">Upload File</h3>
+                    		<div class="custom-file mb-5 pb-5 ">
+  								
+	                          <form th:if="${session.u != null}" method="POST" th:action="@{/user/{id}/file/(id=${session.u.id})}" enctype="multipart/form-data" >
+	                        		<input  type="file" class="custom-file-input" id="customFile" name="file"/>
+	                        		<label class="custom-file-label" for="customFile">Choose file</label>
+	                        		<!-- <input type="hidden" th:name="${_csrf.parameterName)" th:value="$(_csrf.token)"/>-->
+	                        		<button type="submit" id="button-upload-file" class="btn button d-flex align-items-center mt-3  button-upload"><i class="material-icons mr-2">unarchive</i>Upload File</button>
+	                        		<input type="hidden" th:value="@{session.u.id}" name="userId" id="userId">
+	                        	</form>
+                        	
+                        	
+                			</div>
+                       
+                        <!-- Modal Edit File Name-->
+								<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalEditNameFile' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+								  <div class="modal-dialog" role="document">
+								    <div class="modal-content">
+								      <div class="modal-header">
+								        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Modify name of the file ' + file.name}"></h5>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          <span aria-hidden="true">&times;</span>
+								        </button>
+								      </div>
+								      <div class="modal-body">
+								      	<form method="POST" action="#" th:action="@{/file/modifyFileName}">
+								          <div class="form-group">
+						            		<label for="recipient-name" class="col-form-label">Introduce the new name of the file:</label>
+						            		<input type="text" class="form-control" id="recipient-name" name="fileName" th:value="${file.name}">
+						            		<input type="hidden" name="idFile" th:value="${file.id}">
+						          		  </div>
+								           
+								          							           
+					
+								          <div class="modal-footer">						      	
+									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+									        <button type="submit" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
+								  	      </div>
+								        </form>
+								      </div>
+								      
+								    </div>
+								  </div>
+								</div>
+								
+						
+						
+						
+							<!-- Modal View All Tags-->
+								<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalViewAllTag' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+								  <div class="modal-dialog" role="document">
+								    <div class="modal-content">
+								    <div class="modal-header">
+								        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Nest the file ' + file.name + ' in tag'}"></h5>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          <span aria-hidden="true">&times;</span>
+								        </button>
+								      </div>
+								         <div class="modal-body">
+									      	<form method="POST" action="#" th:action="@{/file/nestFileInTag}">
+									          <div class="form-group">
+							            		<label for="recipient-name" class="col-form-label">Choose the tag:</label>
+							            		<ul>
+							            		  <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags ">
+					                                <div class="d-flex align-items-center ">
+					                                    <input type ="checkbox" th:value="${tag.id}"  name="id_tag" class="mr-4 file-checkbox"> 
+					                                    <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
+					                                    <a class="remove-link-style" href="#" th:text="${tag.name}"></a>
+					                                    <input type="hidden" th:value="${file.id}" name="id_file">
+					                                  
+					                                </div>
+	    
+					                              </li>
+					                              </ul>
+							          		  </div>       							           
+					
+									          <div class="modal-footer">						      	
+										        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+										        <button type="submit" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
+									  	      </div>
+								  	      </form>
+								       	</div>
+								      </div>
+								      
+								    </div>
+								  </div>
+								
+								
 
                         <div id="action-button-container" class="row pt-2 mx-1 d-none">
                             <div class="d-flex flex-column w-100">

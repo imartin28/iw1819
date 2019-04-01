@@ -3,6 +3,7 @@ package es.ucm.fdi.iw.control;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -105,12 +106,17 @@ public class UserController {
 			return "user";
 		}
 		
+		
+		
 		log.info("Uploading photo for user {}", id);
+		
 		
 		
 		/* Comprobar que existen el directorio del usuario y el fichero, y crearlos en caso contrario */
 		
 		File f = localData.getFile("/user" + id + "/", file.getOriginalFilename());
+		System.out.println("TIPOOOOOOOUUUUUUUUU " + f.toURL().openConnection().getContentType());
+		
 		if (!f.exists()) {
 			File folder = localData.getFolder("user" + id);
 			f = new File(folder.getAbsolutePath() +  "/" + file.getOriginalFilename());

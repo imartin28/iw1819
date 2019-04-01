@@ -47,6 +47,13 @@ function deleteFiles(array_IdsToDelete){
 		headers: {
 			"Content-Type": "application/json",				
 			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(){
+			location.reload();
+			console.log("exito");
+		},
+		error : function(){
+			console.log("error");
 		}
 		
 	});

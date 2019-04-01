@@ -24,10 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -176,19 +179,55 @@ public class FileController {
 	}
 	
 	
+	@PostMapping("/modifyFileName")
+	@Transactional
+	public String postModifyFileName(@RequestParam("idFile") Long id, @RequestParam("fileName") String name) {
+		
+		
+		CFile file = fileService.findById(id);	
+		
+		
+		file.setName(name);
+		
+		return "redirect:/user/";
+	}
 	
 	
 	@PostMapping("/deleteFiles")
 	@Transactional
-	public String deleteFiles(@RequestBody List<Long> ids) {
+	@ResponseBody
+	public String deleteFiles(@RequestBody List<Long> ids, HttpServletResponse response) {
 		List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class)
 				.setParameter("ids", ids)
 				.getResultList();
 		
 		
+		response.setStatus(200);
 		// Hay que borrar los ficheros del disco duro
 		
 		fileService.deleteFiles(files);
+		return "{}";
+	}
+	
+	
+	
+	
+	
+	
+	@PostMapping("/nestFileInTag")
+	@Transactional
+	public String nestFileInTag( @RequestParam("id_tag") Long idTag, @RequestParam("id_file") Long idFile) {
+		
+		CFile file = fileService.findById(idFile);
+		
+		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", idTag).getSingleResult();
+		
+	
+		file.getTags().add(tag);
+		
+		
+		
+		
 		return "redirect:/user/";
 	}
 	
@@ -197,8 +236,6 @@ public class FileController {
 	@PostMapping("/newTag")
 	@Transactional
 	public String postTag(Model model, HttpSession session, @RequestParam("tagName") String name, @RequestParam("parentId") Long parentId) {
-		
-		
 		Tag parentTag = null;
 		if(parentId != null) {
 			parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId).getSingleResult();
@@ -208,9 +245,36 @@ public class FileController {
 		entityManager.persist(tag);
 		entityManager.flush();
 		
-		
-		return "redirect:/user/";
+	
+	return "redirect:/user/";
 	}
+	/*public ModelAndView postTag(Model model, HttpSession session, @RequestParam("tagName") String name, @RequestParam("tagColor") String color, @RequestParam("parentId") Long parentId, BindingResult bindingResult) {
+		
+		ModelAndView modelAndView = null;
+		Tag tagWithSameName = entityManager.createNamedQuery("findByName", Tag.class).setParameter("name", name).getSingleResult();
+	    if(tagWithSameName == null) {
+	    	Tag parentTag = null;
+ 			if(parentId != null) {
+ 				parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId).getSingleResult();
+ 			}
+ 			Tag tag = new Tag(name, color, parentTag, (User)session.getAttribute("u"));
+ 		
+ 			entityManager.persist(tag);
+ 			entityManager.flush();
+ 			
+ 			modelAndView = new ModelAndView("redirect:/user/");
+	     } else {
+	    	 bindingResult.rejectValue("tag_name", "Another tag with that name already exists");
+	    	 
+	    	 modelAndView = new ModelAndView("index", bindingResult.getModel());
+	    	 
+	     }
+		
+		
+		
+		
+		return modelAndView;
+	}*/
 	
 	
 	
