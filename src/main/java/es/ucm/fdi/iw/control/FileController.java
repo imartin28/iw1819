@@ -126,7 +126,7 @@ public class FileController {
 			
 			String mimetype = (file.getMimetype() != null && !file.getMimetype().equalsIgnoreCase("") ? file.getMimetype().split("/")[0] : null);
 			
-			String url = "/file/user" + currentUser.getId() + "/" + fileId + "." + file.getExtension() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=2" : "");
+			String url = "/file/user" + currentUser.getId() + "/" + fileId + "." + file.getExtension() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
 			modelAndView.addObject("fileurl", url);
 			
 			if(mimetype != null && !mimetype.equalsIgnoreCase("")) {
