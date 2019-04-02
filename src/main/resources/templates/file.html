@@ -99,13 +99,17 @@
                             </div>
                        	</div>
                         <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
+                        
                         	<img src="${fileurl}" width="50%" height="50%" th:case="'image'">
-                            <audio controls th:case="'music'">
+                        	
+                            <audio controls th:case="'audio'">
                             	<source th:src="${fileurl}" type="audio/mpeg">
                             </audio>
+                            
                             <video width="50%" height="50%" controls th:case="'video'">
                             	<source src="${fileurl}" type="video/mp4">
                             </video>
+                            
                             <div th:case="*">Mediaplayer</div>
                        	</div>
                        	<div id="tags">
@@ -113,10 +117,10 @@
                             <div class="title" th:text="${tag}">Tag</div>
                             </th:block>
                        	</div>
-                        <div id="metadata">
-                           	<th:block th:each="data : ${metadata}">
-                           	<div class="title" th:text="${data.getKey()}">Title</div>
-                            <div class="description" th:text="${data.getValue()}">Description</div>
+                        <div id="metadata" th:if="${metadata != null}">
+                           	<th:block th:each="data : ${metadata.instanceMap}">
+                           	<div class="title" th:text="${data.key}">Title</div>
+                            <div class="description" th:text="${data.value}">Description</div>
                            	</th:block>
                         </div>
                     </div>

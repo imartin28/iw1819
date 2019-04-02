@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
@@ -21,16 +21,12 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -52,6 +47,7 @@ import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserFile;
 import es.ucm.fdi.iw.service.FileService;
 import es.ucm.fdi.iw.service.UserService;
+import es.ucm.fdi.iw.util.JSONUtil;
 import es.ucm.fdi.iw.util.MediaTypeUtils;
 import es.ucm.fdi.iw.util.StringUtil;
 
@@ -109,26 +105,25 @@ public class FileController {
 	
 	
 	@GetMapping("/{id}")
-	public String getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long id, @ModelAttribute ("userId") Long userId) throws IOException {
+	public String getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) throws IOException {
 		
 		String err = "File not found";
 		
-		CFile file = fileService.findById(id);
+		CFile file = fileService.findById(fileId);
+		User currentUser = (User) session.getAttribute("u");
 		
-		if (file != null) {
+		if (file != null && currentUser != null) {
 			err = null;
-			modelAndView.addObject("filename", id);
+			modelAndView.addObject("filename", fileId);
 			
-			String p = "/user" + userId + "/" + id;
-			modelAndView.addObject("fileurl", p);
+			String url = "/file/user" + currentUser.getId() + "/" + fileId;
+			modelAndView.addObject("fileurl", url);
 			
-			Path path = Paths.get(p);
-			String mimetype = Files.probeContentType(path);
+			String[] extension = file.getName().split("/");
+			String mimetype = extension[0];
 			
-			String type = FileType.getKeyName(mimetype);
-			
-			if(type != null) {
-				modelAndView.addObject("mimetype", type);
+			if(mimetype != null && !mimetype.equalsIgnoreCase("")) {
+				modelAndView.addObject("mimetype", mimetype);
 			}
 			else {
 				err = "File has invalid MIME type";
@@ -138,7 +133,8 @@ public class FileController {
 			
 			try {
 				JSONObject metadataJSON = new JSONObject(file.getMetadata());
-				modelAndView.addObject("metadata", metadataJSON);
+				Map<String, Object> metadataMapObject = JSONUtil.toMap(metadataJSON);
+				modelAndView.addObject("metadata", metadataMapObject);
 			} catch(JSONException e) {
 				e.printStackTrace();
 			}

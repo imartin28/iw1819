@@ -100,8 +100,7 @@
 								            <input type="color"  id="recipient-name" name="colorTag" th:value="${tag.color}">
 								            <input type="hidden"  th:value="${tag.id}" name="idTag">
 								          </div>
-								           
-					
+
 								          <div class="modal-footer">						      	
 									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
 									        <button type="submit" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
@@ -252,7 +251,7 @@
                         			-->
                         			
                         			<div class="file-name">
-                                       <a href="#"  class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
+                                       <a th:href="@{/file/__${file.id}__}" class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
                                     </div> 
 							     </div>
 							     

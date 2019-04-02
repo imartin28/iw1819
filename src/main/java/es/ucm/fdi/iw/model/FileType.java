@@ -1,9 +1,9 @@
 package es.ucm.fdi.iw.model;
 
 public enum FileType {
-	Image("image", new String[] {"image/jpeg", "image/png"}),
-	Video("video", new String[] {"video/mp4"}),
-	Audio("music", new String[] {"audio/mpeg", "audio/mp3"});
+	Image("image", new String[] {"jpeg", "png"}),
+	Video("video", new String[] {"mp4, ogg"}),
+	Audio("audio", new String[] {"mpeg", "mp3"});
 	
     private final String keyName;
     private String[] types;
