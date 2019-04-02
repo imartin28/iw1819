@@ -1,15 +1,20 @@
 $(() => {
-	
-	 
-	
    $(".custom-file-input").on("change", appearFileName);	 
    $("#delete-files").on("click", deleteFilesButtonHandler);
-  // $(".panel-grid-files-element").mouseenter(mouseEnterOnFileHandler); 
-   //$(".panel-grid-files-element").mouseleave(mouseLeaveFileHandler);
-   $("#button-upload-file").on("click", uploadFileButtonHandler);
-   $(".file-upload").file_upload();
+   //$(".file-upload").file_upload();
+   $("#select-all-files").on("change", selectAllFilesCheckBoxHandler);
 });
 
+
+
+function selectAllFilesCheckBoxHandler(){
+	
+	if( $(this).is(':checked') ){
+		$("input[name='file-check']").prop("checked", true);
+    } else {
+    	$("input[name='file-check']").prop("checked", false);
+    }
+}
 
 
 

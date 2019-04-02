@@ -78,7 +78,7 @@
 	
 }
 
-.panel-buttons-options > .button , .panel-buttons-options > .button-second{
+.panel-buttons-options > .button , .panel-buttons-options > .button-second {
 
 	border-radius: 10px;
 	width: 35px;
@@ -87,12 +87,15 @@
 	
 }
 
-.panel-buttons-options{
+.panel-select-all-and-options{
+	display:flex;
+	justify-content:flex-start;
+}
+
+.panel-select-all-and-options > input[type="checkbox"]{
 	
+	margin-left:1.8em;
 	
-	/*position: absolute;
-	margin-left: 75%;
-	margin-top: 2%;*/
 }
 
 .files-left-panel{

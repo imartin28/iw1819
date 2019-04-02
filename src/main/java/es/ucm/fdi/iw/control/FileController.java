@@ -240,7 +240,7 @@ public class FileController {
         MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, file.getName());
   
  
-        File f = new File(file.getPath() + file.getId());
+        File f = new File(file.getPath() + "/" + file.getId());
         InputStreamResource resource = new InputStreamResource(new FileInputStream(f));
  
         return ResponseEntity.ok()
