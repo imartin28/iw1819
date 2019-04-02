@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,12 +14,18 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.FileItemIterator;
+import org.apache.tomcat.util.http.fileupload.FileItemStream;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
+import org.apache.tomcat.util.http.fileupload.util.Streams;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,7 +156,7 @@ public class FileController {
 	
 	@PostMapping("/{id}")
 	@Transactional
-	public String postFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id, Model model, HttpSession session) {
+	public String postFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id, Model model, HttpSession session, HttpServletRequest request) {
 		
 		try {
 		User target = userService.findById(id);
@@ -167,18 +175,13 @@ public class FileController {
 		
 		/* Comprobar que existen el directorio del usuario y el fichero, y crearlos en caso contrario */
 		
-		File f = null;
 		File folder = localData.getFolder("user" + id);
-		String metadata = "{\", \"size\" : \"" + file.getSize() + "\"}";
-		CFile fileToPersist = new CFile(file.getOriginalFilename(), folder.getAbsolutePath(), metadata);			
+		CFile fileToPersist = new CFile(file.getOriginalFilename(), file.getSize(), file.getContentType());			
 		entityManager.persist(fileToPersist);
 		
+		fileToPersist.setPath(folder.getAbsolutePath() + "/" + fileToPersist.getId() + fileToPersist.getExtension());
 		
-		fileToPersist.setPath(fileToPersist.getPath() + "/" + fileToPersist.getId());
-		
-		String mimetype = file.getContentType();
-		fileToPersist.setMimetype(mimetype);
-		f = new File(folder.getAbsolutePath() + "/" + fileToPersist.getId());
+		File f = new File(folder.getAbsolutePath() + "/" + fileToPersist.getId());
 		
 		try {
 			if (f.createNewFile()) {
@@ -191,7 +194,6 @@ public class FileController {
 		}
 		
 
-		
 		if (file.isEmpty()) {
 			log.info("failed to upload file : empty file?");
 		} else {
@@ -217,6 +219,8 @@ public class FileController {
 		}catch(Exception e) {
 			log.warn("ERROR DESCONOCIDO" , e);
 		}
+		
+		
 		return "redirect:/user/";
 	}
 	
@@ -340,8 +344,13 @@ public class FileController {
 	@Transactional
 	public String postDeleteTag(@RequestParam("idTag") Long tagId, HttpSession session) {
 		
-		entityManager.createQuery("DELETE FROM CFile_Tags WHERE tags_id = :tagId").setParameter("tagId", tagId).executeUpdate();
+	
 		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", tagId).getSingleResult();		
+		
+		for (CFile file : tag.getFiles()) {
+			
+		}
+		
 		entityManager.remove(tag);
 		
 		return "redirect:/user/";
