@@ -183,9 +183,9 @@ public class FileController {
 		CFile fileToPersist = new CFile(file.getOriginalFilename(), file.getSize(), file.getContentType());			
 		entityManager.persist(fileToPersist);
 		
-		fileToPersist.setPath(folder.getAbsolutePath() + "/" + fileToPersist.getId() + fileToPersist.getExtension());
+		fileToPersist.setPath(folder.getAbsolutePath() + "/" + fileToPersist.getId() + "." + fileToPersist.getExtension());
 		
-		File f = new File(folder.getAbsolutePath() + "/" + fileToPersist.getId());
+		File f = new File(fileToPersist.getPath());
 		
 		try {
 			if (f.createNewFile()) {
