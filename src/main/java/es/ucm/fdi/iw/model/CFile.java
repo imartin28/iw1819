@@ -36,6 +36,7 @@ public class CFile {
 	
 	private String name;
 	private String path;
+	private String mimetype;
 	private String metadata;
 	 
 	@OneToMany(targetEntity=UserFile.class, mappedBy="file", cascade=CascadeType.ALL)
@@ -60,6 +61,14 @@ public class CFile {
 	}
 	
 	
+	public String getMimetype() {
+		return mimetype;
+	}
+
+	public void setMimetype(String mimetype) {
+		this.mimetype = mimetype;
+	}
+
 	public String getName() {
 		return name;
 	}

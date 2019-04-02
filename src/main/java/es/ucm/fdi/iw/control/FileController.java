@@ -171,27 +171,28 @@ public class FileController {
 		
 		/* Comprobar que existen el directorio del usuario y el fichero, y crearlos en caso contrario */
 		
-		File f = null;//localData.getFile("/user" + id, "/");
+		File f = null;
 		File folder = localData.getFolder("user" + id);
-		String metadata = "{\"extension\" : \""  + file.getContentType()  + "\", \"size\" : \"" + file.getSize() + "\"}";
+		String metadata = "{\", \"size\" : \"" + file.getSize() + "\"}";
 		CFile fileToPersist = new CFile(file.getOriginalFilename(), folder.getAbsolutePath(), metadata);			
 		entityManager.persist(fileToPersist);
 		
+		
 		fileToPersist.setPath(fileToPersist.getPath() + "/" + fileToPersist.getId());
 		
-			
-			
-			/*File folder = localData.getFolder("user" + id);*/
-			f = new File(folder.getAbsolutePath() + "/" + fileToPersist.getId());
-			try {
-			 if (f.createNewFile()){
-			        System.out.println("File is created!");
-			      }else{
-			        System.out.println("File already exists.");
-			      }
-			} catch (IOException e) {
-				e.printStackTrace();
+		String mimetype = file.getContentType();
+		fileToPersist.setMimetype(mimetype);
+		f = new File(folder.getAbsolutePath() + "/" + fileToPersist.getId());
+		
+		try {
+			if (f.createNewFile()) {
+		        System.out.println("File is created!");
+			} else {
+		        System.out.println("File already exists.");
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 
 		
@@ -199,17 +200,11 @@ public class FileController {
 			log.info("failed to upload file : empty file?");
 		} else {
 			try {
-				
 				FileOutputStream f1 = new FileOutputStream(f);
 				byte[] bytes = file.getBytes();
 				f1.write(bytes);
 				f1.close();
-				
-				/*String metadata = "{\"extension\" : \""  + file.getContentType()  + "\", \"size\" : \"" + file.getSize() + "\"}";
-				
-				CFile fileToPersist = new CFile(file.getOriginalFilename(), f.getAbsolutePath(), metadata);			
-				entityManager.persist(fileToPersist);*/
-	
+			
 				User currentUser = (User) session.getAttribute("u");
 				
 				UserFile userFile = new UserFile(currentUser, fileToPersist, "rw");
