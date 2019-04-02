@@ -141,6 +141,8 @@
 								    </div>
 								  </div>
 								</div>
+								
+								
 									
 									
                                
@@ -230,7 +232,7 @@
 	                            	
 	                               	<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button-second "><i class="material-icons center-content">share</i></button>
 	                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn button-second "><i class="material-icons center-content">archive</i></button>
-	                            		<button id="delete-files" class="btn button-second" ><i class="material-icons center-content">delete</i></button>
+	                            		<button class="btn button-second" data-toggle="modal" data-target="#modalDeleteFiles"><i class="material-icons center-content">delete</i></button>
                             		</div>
                             		
                                  
@@ -246,9 +248,9 @@
                                     <a href="#" class="remove-link-style mr-3 icon-type" th:attr="data-mimetype=${file.mimetype}"> 
                                    		
                                         <i th:if="${#strings.contains(file.mimetype, 'text')}" class="material-icons folder  color-icon " > insert_drive_file</i>
-                                         <i th:if="${#strings.contains(file.mimetype, 'audio')}" class="material-icons folder  color-icon " >music_note</i>
-                                         <i th:if="${#strings.contains(file.mimetype, 'image')}" class="material-icons folder  color-icon " >photo</i>
-                                         <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Video.keyName)}" class="material-icons folder  color-icon " >videocam</i>
+                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Audio.keyName)}" class="material-icons folder  color-icon " >music_note</i>
+                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Image.keyName)}" class="material-icons folder  color-icon " >photo</i>
+                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Video.keyName)}" class="material-icons folder  color-icon " >videocam</i>
                                        
 	                                     
                                     </a>
@@ -335,8 +337,31 @@
 								  </div>
 								</div>
 								
+								<!-- Modal Delete Files -->
+								<div class="modal fade" id="modalDeleteFiles" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+								  <div class="modal-dialog" role="document">
+								    <div class="modal-content">
+								      <div class="modal-header">
+								        <h5 class="modal-title" id="exampleModalLabel">Delete files</h5>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          <span aria-hidden="true">&times;</span>
+								        </button>
+								      </div>
+								      <div class="modal-body">
+						         		  <label class="col-form-label">Are you sure you want to delete the selected files?</label>
+						         		  
+								          <div class="modal-footer">						      	
+									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+									        <button type="submit" id="delete-files" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Delete files</button>
+								  	      </div>
+								      </div>
+								    </div>
+								  </div>
+								</div>
+								
+								
 						
-                        <!-- Modal Delete File Name-->
+                        <!-- Modal Modify File Name-->
 								<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalEditNameFile' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
 								  <div class="modal-dialog" role="document">
 								    <div class="modal-content">
@@ -367,6 +392,7 @@
 								  </div>
 								</div>
 								
+								 
 						
 						
 						
