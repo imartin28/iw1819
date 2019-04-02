@@ -1,6 +1,7 @@
 $(() => {
    $(".custom-file-input").on("change", appearFileName);	 
    $("#delete-files").on("click", deleteFilesButtonHandler);
+   $("#download-files").on("click", downloadFilesButtonHandler);
    //$(".file-upload").file_upload();
    $("#select-all-files").on("change", selectAllFilesCheckBoxHandler);
 });
@@ -34,11 +35,49 @@ function deleteFilesButtonHandler(){
 		array_IdsToDelete.push(file.val());		
 	});
 
-	
-	
 	deleteFiles(array_IdsToDelete);
+}
+
+
+function downloadFilesButtonHandler(){
+	let filesChecked = $("input[name='file-check']:checked");
+	
+	let array_IdsToDownload = [];
+	
+	filesChecked.each(function(){
+		let file = $(this);		
+		array_IdsToDownload.push(file.val());		
+	});
+
+	downloadFiles(array_IdsToDownload);
+}
+
+
+function downloadFiles(array_IdsToDownload){
+
+
+	
+	$.ajax({
+		type:"POST",
+		url:"",
+		data: JSON.stringify(array_IdsToDownload),
+		dataType: 'json',
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(){
+			location.reload();
+			console.log("exito");
+		},
+		error : function(){
+			console.log("error");
+		}
+		
+	});
 	
 }
+
 
 
 function deleteFiles(array_IdsToDelete){
@@ -65,12 +104,3 @@ function deleteFiles(array_IdsToDelete){
 	});
 	
 }
-
-/*function mouseEnterOnFileHandler(event) {
-	$(this).children().eq(0).removeClass("visibility-hidden");
-}
-
-function mouseLeaveFileHandler(event) {
-	
-	$(this).children().eq(0).addClass("visibility-hidden");
-}*/

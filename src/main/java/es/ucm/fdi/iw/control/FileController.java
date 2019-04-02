@@ -268,6 +268,16 @@ public class FileController {
 		return "redirect:/user/";
 	}
 	
+
+	@PostMapping("/deleteFile")
+	@Transactional
+	public String postDeleteFile(@RequestParam("idFile") Long id) {
+		CFile file = fileService.findById(id);		
+		entityManager.remove(file);
+		
+		return "redirect:/user/";
+	}
+	
 	
 	@PostMapping("/deleteFiles")
 	@Transactional
@@ -324,34 +334,6 @@ public class FileController {
 	
 	return "redirect:/user/";
 	}
-	/*public ModelAndView postTag(Model model, HttpSession session, @RequestParam("tagName") String name, @RequestParam("tagColor") String color, @RequestParam("parentId") Long parentId, BindingResult bindingResult) {
-		
-		ModelAndView modelAndView = null;
-		Tag tagWithSameName = entityManager.createNamedQuery("findByName", Tag.class).setParameter("name", name).getSingleResult();
-	    if(tagWithSameName == null) {
-	    	Tag parentTag = null;
- 			if(parentId != null) {
- 				parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId).getSingleResult();
- 			}
- 			Tag tag = new Tag(name, color, parentTag, (User)session.getAttribute("u"));
- 		
- 			entityManager.persist(tag);
- 			entityManager.flush();
- 			
- 			modelAndView = new ModelAndView("redirect:/user/");
-	     } else {
-	    	 bindingResult.rejectValue("tag_name", "Another tag with that name already exists");
-	    	 
-	    	 modelAndView = new ModelAndView("index", bindingResult.getModel());
-	    	 
-	     }
-		
-		
-		
-		
-		return modelAndView;
-	}*/
-	
 	
 	
 	@PostMapping("/modifyTag")
