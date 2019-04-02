@@ -124,7 +124,7 @@ public class FileController {
 			err = null;
 			modelAndView.addObject("filename", file.getName());
 			
-			String url = "/file/user" + currentUser.getId() + "/" + fileId;
+			String url = "/file/user" + currentUser.getId() + "/" + fileId + "." + file.getExtension();
 			modelAndView.addObject("fileurl", url);
 			
 			
