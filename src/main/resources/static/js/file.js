@@ -7,6 +7,7 @@ $(() => {
   // $(".panel-grid-files-element").mouseenter(mouseEnterOnFileHandler); 
    //$(".panel-grid-files-element").mouseleave(mouseLeaveFileHandler);
    $("#button-upload-file").on("click", uploadFileButtonHandler);
+   $(".file-upload").file_upload();
 });
 
 
