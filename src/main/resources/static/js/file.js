@@ -4,8 +4,25 @@ $(() => {
    $("#download-files").on("click", downloadFilesButtonHandler);
    //$(".file-upload").file_upload();
    $("#select-all-files").on("change", selectAllFilesCheckBoxHandler);
+   changeFilesIcons();
+  
 });
 
+
+function changeFilesIcons(){
+	$(".icon-type").each(function(){
+		
+		let file = $(this);
+		let mimetype = file.attr("data-mimetype");
+		
+		
+		mimetype.split("/")[0];
+		console.log("tipo " + mimetype.split("/")[0]);
+		
+		
+	});
+	
+}
 
 
 function selectAllFilesCheckBoxHandler(){

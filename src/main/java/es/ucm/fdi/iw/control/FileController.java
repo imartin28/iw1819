@@ -303,7 +303,7 @@ public class FileController {
 		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", idTag).getSingleResult();
 		
 	
-		file.getTags().add(tag);
+		tag.getFiles().add(file);
 		
 		
 		
@@ -347,17 +347,10 @@ public class FileController {
 	@Transactional
 	public String postDeleteTag(@RequestParam("idTag") Long tagId, HttpSession session) {
 		
-	
 		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", tagId).getSingleResult();		
-		
-		for (CFile file : tag.getFiles()) {
-			
-		}
-		
+		tag.getFiles().removeAll(tag.getFiles());
 		entityManager.remove(tag);
 		
 		return "redirect:/user/";
 	}
-	
-	
 }

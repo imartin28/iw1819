@@ -228,11 +228,13 @@
                            		
                            		<div class="pl-2" >
 	                            	
-	                               		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button-second "><i class="material-icons center-content">share</i></button>
+	                               	<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button-second "><i class="material-icons center-content">share</i></button>
 	                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn button-second "><i class="material-icons center-content">archive</i></button>
-	                            		<button id="delete-files" class="btn button-second"><i class="material-icons center-content">delete</i></button>
+	                            		<button id="delete-files" class="btn button-second" ><i class="material-icons center-content">delete</i></button>
                             		</div>
-                                
+                            		
+                                 
+								
                            </div>
                            
                            <div class="panel-grid-files " >
@@ -241,7 +243,15 @@
                                 <div class=" file-icon-checkbox p-1 ml-4 ">
                                 	
                                    <input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">       
-                                    <a href="#" class="remove-link-style mr-3"><i class="material-icons folder  color-icon">folder</i></a>
+                                    <a href="#" class="remove-link-style mr-3 icon-type" th:attr="data-mimetype=${file.mimetype}"> 
+                                   		
+                                        <i th:if="${#strings.contains(file.mimetype, 'text')}" class="material-icons folder  color-icon " > insert_drive_file</i>
+                                         <i th:if="${#strings.contains(file.mimetype, 'audio')}" class="material-icons folder  color-icon " >music_note</i>
+                                         <i th:if="${#strings.contains(file.mimetype, 'image')}" class="material-icons folder  color-icon " >photo</i>
+                                         <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Video.keyName)}" class="material-icons folder  color-icon " >videocam</i>
+                                       
+	                                     
+                                    </a>
                                     <!--  
                                     <script th:inline="javascript">
 					                 	window.addEventListener('load', () => {
@@ -294,7 +304,6 @@
                         	
                 			</div>
                        </div>
-                       
                        
                         <!-- Modal Delete File -->
 								<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalDeleteFile' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">

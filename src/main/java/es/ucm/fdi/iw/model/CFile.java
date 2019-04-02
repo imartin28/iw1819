@@ -49,7 +49,7 @@ public class CFile {
 	@ManyToMany(targetEntity=CGroup.class, mappedBy="files")
 	private List<CGroup> groups;
 
-	@ManyToMany(targetEntity=Tag.class)
+	@ManyToMany(targetEntity=Tag.class, mappedBy="files")
 	private List<Tag> tags;
 	
 	
@@ -163,7 +163,7 @@ public class CFile {
 	
 
 	private String getExtension(String name) {
-		String pattern = "^[^\\.]+\\.([a-z]+)$";
+		String pattern = "^[^\\.]+\\.([a-z0-9]+)$";
 		Pattern r = Pattern.compile(pattern);
 		Matcher m = r.matcher(name);
 		if (m.find( )) {
