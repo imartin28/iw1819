@@ -49,7 +49,7 @@ public class CFile {
 	@ManyToMany(targetEntity=CGroup.class, mappedBy="files")
 	private List<CGroup> groups;
 
-	@ManyToMany(targetEntity=Tag.class)
+	@ManyToMany(targetEntity=Tag.class, mappedBy="files")
 	private List<Tag> tags;
 	
 	

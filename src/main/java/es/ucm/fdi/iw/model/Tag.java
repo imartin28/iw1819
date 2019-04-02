@@ -43,7 +43,7 @@ public class Tag {
 	@JoinColumn(name="parent_id")
 	private List<Tag> children;
 	
-	@ManyToMany(targetEntity=CFile.class, mappedBy="tags")
+	@ManyToMany(targetEntity=CFile.class)
 	private List<CFile> files;
 	
 	@ManyToOne(targetEntity=User.class)
