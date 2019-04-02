@@ -1,6 +1,0 @@
-pequeño,uno,no,+
-pequeño,varios,si,-
-mediano,uno,no,+
-grande,varios,no,-
-pequeño,uno,si,+
-grande,uno,si,-

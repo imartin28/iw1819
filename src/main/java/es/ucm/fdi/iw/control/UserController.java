@@ -93,78 +93,7 @@ public class UserController {
 	}	
 	
 	
-	@PostMapping("/{id}/file")
-	@Transactional
-	public String postFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id, Model model, HttpSession session) {
-		
-		try {
-		User target = userService.findById(id);
-		model.addAttribute("user", target);
-		
-		User requester = (User) session.getAttribute("u");
-		if (requester.getId() != target.getId()) {
-			return "user";
-		}
-		
-		
-		
-		log.info("Uploading photo for user {}", id);
-		
-		
-		
-		/* Comprobar que existen el directorio del usuario y el fichero, y crearlos en caso contrario */
-		
-		File f = localData.getFile("/user" + id + "/", file.getOriginalFilename());
-		System.out.println("TIPOOOOOOOUUUUUUUUU " + f.toURL().openConnection().getContentType());
-		
-		if (!f.exists()) {
-			File folder = localData.getFolder("user" + id);
-			f = new File(folder.getAbsolutePath() +  "/" + file.getOriginalFilename());
-			try {
-			 if (f.createNewFile()){
-			        System.out.println("File is created!");
-			      }else{
-			        System.out.println("File already exists.");
-			      }
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		
-		if (file.isEmpty()) {
-			log.info("failed to upload file : empty file?");
-		} else {
-			try {
-				
-				FileOutputStream f1 = new FileOutputStream(f);
-				byte[] bytes = file.getBytes();
-				f1.write(bytes);
-				f1.close();
-				
-				String metadata = "{\"extension\" : \""  + file.getContentType()  + "\", \"size\" : \"" + file.getSize() + "\"}";
-				
-				CFile fileToPersist = new CFile(file.getOriginalFilename(), f.getAbsolutePath(), metadata);			
-				entityManager.persist(fileToPersist);
 	
-				User currentUser = (User) session.getAttribute("u");
-				
-				UserFile userFile = new UserFile(currentUser, fileToPersist, "rw");
-				entityManager.persist(userFile);				
-				
-				entityManager.flush();
-				
-				log.info("Succesfully uploaded file for user {} into {}", id, f.getAbsolutePath());
-			} catch (Exception e) {
-				System.out.println("Error uploading file of user " + id + " " + e);
-			}
-		}
-		
-		}catch(Exception e) {
-			log.warn("ERROR DESCONOCIDO" , e);
-		}
-		return "redirect:/user/";
-	}
 	
 	
 	@GetMapping("/profile")
