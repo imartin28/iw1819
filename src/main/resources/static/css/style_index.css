@@ -47,11 +47,14 @@
 .panel-grid-files{
 	display: grid;
 	grid-template-columns: 1fr;	
+	box-shadow: inset 4px -2px 31px -12px rgba(0,0,0,0.52);
+	border-radius:10px;
+	border: 1px solid grey;
 
 	
+	max-height:500px;
 	
-	
-	/*overflow-y: scroll;*/
+	overflow-y: auto;
 	
 }
 
@@ -300,6 +303,21 @@ hr {
 
   /*    FILE   */
   
+  
+  
+  .border-upload-file{
+  	
+  	border-radius:10px;
+  	border: 2px dashed grey;
+  	
+  }
+  
+  .border-upload-file:hover{
+  	background-color: #f3f6f9;
+  }
+  
+  
+  
   #tags {
   	  display: flex;
       justify-content: start;
@@ -351,6 +369,12 @@ hr {
   #metadata .description {
       font-style: italic;
   }
+
+
+
+
+
+
 
   /*    CHAT    */
 
