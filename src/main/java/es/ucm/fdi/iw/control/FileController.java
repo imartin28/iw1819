@@ -299,15 +299,9 @@ public class FileController {
 	public String nestFileInTag( @RequestParam("id_tag") Long idTag, @RequestParam("id_file") Long idFile) {
 		
 		CFile file = fileService.findById(idFile);
-		
 		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", idTag).getSingleResult();
 		
-	
 		tag.getFiles().add(file);
-		
-		
-		
-		
 		return "redirect:/user/";
 	}
 	
