@@ -100,14 +100,14 @@
                        	</div>
                         <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
                         
-                        	<img src="${fileurl}" width="50%" height="50%" th:case="'image'">
+                        	<img th:src="${fileurl}" width="50%" height="50%" th:case="'image'">
                         	
                             <audio controls th:case="'audio'">
                             	<source th:src="${fileurl}" type="audio/mpeg">
                             </audio>
                             
                             <video width="50%" height="50%" controls th:case="'video'">
-                            	<source src="${fileurl}" type="video/mp4">
+                            	<source th:src="${fileurl}" type="video/mp4">
                             </video>
                             
                             <div th:case="*">Mediaplayer</div>
