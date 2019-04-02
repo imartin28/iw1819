@@ -177,7 +177,7 @@ public class FileController {
 		CFile fileToPersist = new CFile(file.getOriginalFilename(), folder.getAbsolutePath(), metadata);			
 		entityManager.persist(fileToPersist);
 		
-		
+		fileToPersist.setPath(fileToPersist.getPath() + "/" + fileToPersist.getId());
 		
 			
 			
@@ -259,12 +259,8 @@ public class FileController {
 	@Transactional
 	public String postModifyFileName(@RequestParam("idFile") Long id, @RequestParam("fileName") String name) {
 		
-		
 		CFile file = fileService.findById(id);	
-		
-		
 		file.setName(name);
-		
 		return "redirect:/user/";
 	}
 	
@@ -340,8 +336,6 @@ public class FileController {
 	@Transactional
 	public String postModifyTag(@RequestParam("colorTag") String color, @RequestParam("idTag") Long id, @RequestParam("tagName") String name) {
 		
-		
-		
 		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", id).getSingleResult();		
 		tag.setColor(color);
 		tag.setName(name);
@@ -353,11 +347,10 @@ public class FileController {
 
 	@PostMapping("/deleteTag")
 	@Transactional
-	public String postDeleteTag(@RequestParam("idTag") Long id) {
+	public String postDeleteTag(@RequestParam("idTag") Long tagId, HttpSession session) {
 		
-		
-		
-		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", id).getSingleResult();		
+		entityManager.createQuery("DELETE FROM CFile_Tags WHERE tags_id = :tagId").setParameter("tagId", tagId).executeUpdate();
+		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", tagId).getSingleResult();		
 		entityManager.remove(tag);
 		
 		return "redirect:/user/";
