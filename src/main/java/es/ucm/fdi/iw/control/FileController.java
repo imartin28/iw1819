@@ -113,7 +113,7 @@ public class FileController {
 	
 	
 	@GetMapping("/{id}")
-	public String getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) throws IOException {
+	public ModelAndView getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) throws IOException {
 		
 		String err = "File not found";
 		
@@ -122,13 +122,13 @@ public class FileController {
 		
 		if (file != null && currentUser != null) {
 			err = null;
-			modelAndView.addObject("filename", fileId);
+			modelAndView.addObject("filename", file.getName());
 			
 			String url = "/file/user" + currentUser.getId() + "/" + fileId;
 			modelAndView.addObject("fileurl", url);
 			
-			String[] extension = file.getName().split("/");
-			String mimetype = extension[0];
+			
+			String mimetype = file.getMimetype().split("/")[0];
 			
 			if(mimetype != null && !mimetype.equalsIgnoreCase("")) {
 				modelAndView.addObject("mimetype", mimetype);
@@ -148,9 +148,13 @@ public class FileController {
 			}
 		}
 
-		if (err != null)
-			return "redirect:/user/";
-		else return "file";
+		String viewName = "redirect:/user/";
+		if (err == null)
+			viewName = "file";
+		
+		modelAndView.setViewName(viewName);
+		
+		return modelAndView;
 	}
 	
 	
