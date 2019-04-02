@@ -124,11 +124,10 @@ public class FileController {
 			err = null;
 			modelAndView.addObject("filename", file.getName());
 			
-			String url = "/file/user" + currentUser.getId() + "/" + fileId + "." + file.getExtension();
+			String mimetype = (file.getMimetype() != null && !file.getMimetype().equalsIgnoreCase("") ? file.getMimetype().split("/")[0] : null);
+			
+			String url = "/file/user" + currentUser.getId() + "/" + fileId + "." + file.getExtension() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=2" : "");
 			modelAndView.addObject("fileurl", url);
-			
-			
-			String mimetype = file.getMimetype().split("/")[0];
 			
 			if(mimetype != null && !mimetype.equalsIgnoreCase("")) {
 				modelAndView.addObject("mimetype", mimetype);
