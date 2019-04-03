@@ -72,12 +72,12 @@
 		<ul>
 			<li>
 				<p>
-					<a href="http://localhost:8080/login">Login</a> - vista para iniciar sesión así como para poder crear una cuenta nueva.
+					<a href="http://localhost:8080/login">Login</a> - vista para iniciar sesión y poder crear una cuenta nueva.
 				</p>
 			</li>
 			<li>
 				<p>
-					<a href="http://localhost:8080/admin/addAdmin">Error</a>
+					<a href="http://localhost:8080/error">Error</a> - vista que muestra el error producido en la aplicación, si esta se encuentra en modo debig, muestra también el log de la excepción (stacktrace).
 				</p>
 			</li>
 		</ul>
@@ -85,12 +85,12 @@
 		<ul>
 			<li>
 				<p>
-					<a href="http://localhost:8080/user/">Ver perfil</a>
+					<a href="http://localhost:8080/user/profile?userId=1">Ver perfil</a> - vista que permite ver todos los datos del usuario indicado en la url mediante id, si el perfil es el del usuario de la sesión, permite modificarlo redirigiendo a <a href="localhost:8080/user/modifyProfile?userId=1">modificar perfil</a>
 				</p>
 			</li>
 			<li>
 				<p>
-					<a href="http://localhost:8080/user/modifyProfile">Modificar perfil</a>
+					<a href="localhost:8080/user/modifyProfile?userId=1">Modificar perfil</a>
 				</p>
 			</li>
 		</ul>
@@ -215,6 +215,9 @@
 			</li>
 			<li>
 				Al hacer click en Sign up dentro de la vista inicial, no permite volver al formulario de login, por lo que es necesario recargar la página
+			</li>
+			<li>
+				Al crear una nueva cuenta aparece como nombre y apellidos 'null null';
 			</li>
 		</ul>
 	</div>
