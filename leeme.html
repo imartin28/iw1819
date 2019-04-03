@@ -21,44 +21,93 @@
 	<p>
 		Soporta los siguientes roles:
 		<ul>
-		<li>
-		El <b>administrador</b> (usuario: a, clave: a) es el encargado de gestionar la aplicación. Debe asegurarse que el contenido que suben los usuarios a la aplicación es adecuado
-		y no incumple ninguna ley. Podrá eliminar usuarios y eliminar contenido.
-		<li>
-		Un <b>usuario</b>  puede hacer solicitudes de amistad a otros usuarios, subir contenido, crear grupos, crear listas de reproducción, chatear con otros usuarios y ver su contenido.
-		</li>
+			<li>
+				<p>
+					El <b>administrador</b> (usuario: a, clave: a) es el encargado de gestionar la aplicación. Debe asegurarse que el contenido que suben los usuarios a la aplicación es adecuado
+					y no incumple ninguna ley. Podrá eliminar usuarios y eliminar contenido.
+				</p>
+			</li>
+			<li>
+				<p>
+					Un <b>usuario</b>  puede hacer solicitudes de amistad a otros usuarios, subir contenido, crear grupos, crear listas de reproducción, chatear con otros usuarios y ver su contenido.
+				</p>
+			</li>
 		</ul>
 	</p>
+
 	<h2>Vistas</h2>
-		<ul>
-		 
-		<li><a href="http://localhost:8080/">Home</a> - vista inicial. Permite ver el contenido subido por el usuario actual. Para ello el usuario debe haber inciado sesión, si no lo está se mostrará la pantalla de login.
-			El usuario puede subir archivos de distintos tamaños, puede subirlos tanto haciendo drag and drop como clicando en el botón. También puede editar el nombre, añadir tags, descargarlo y borrarlo. 
-			Si se suben varios archivos, se pueden seleccionar los que el usuario desee, así como seleccionar todos en el checkbox y eliminarlos.
-			Por otro lado, se pueden crear tags, darles un color, modificar tanto el nombre como el color, y borrarlos.
-			Si se pincha en el nombre de un archivo se puede ver su respectiva vista, donde se mostrará la imagen o se reproducirá el sonido o el video, en función del tipo de archivo.
-		<li><a href="http://localhost:8080/login">Login</a> - vista para iniciar sesión así como para poder crear una cuenta nueva.
-		<li><a href="http://localhost:8080/admin">Admin</a> - vista del administrador. 
-		Permite administrar usuarios (eliminarlos) y administrar el contenido de todos los usuarios.
-		<li><a href="http://localhost:8080/friends">Amigos</a> - vista de amigos de un usuario. Permite ver los amigos y las solicitudes de amistad recibidas de un usuario.
-		<li><a href="http://localhost:8080/groups">Grupos</a> - vista de grupos. Muestra los grupos a los que pertence un usuario. También permite crear un nuevo grupo.
-		<li><a href="http://localhost:8080/chat">Chat</a> - vista de chat. Muestra la vista de chat de un grupo, permitiendo escribir un nuevo mensaje. Además muestra todos los archivos que los miembros del grupo 
-			han compartido, permitiendo al usuario actual compartir un nuevo archivo.
-		<li><a href="http://localhost:8080/player">Reproductor</a> - vista para el reproductor.
-		<li><a href="http://localhost:8080/share">Compartir</a> - vista para compartir archivos. Permite ver el archivo a compartir, buscar amigos y/o grupos, seleccionarlos y compartir el archivo con ellos.
-		</ul>
+	<ul>
+		<li>
+			<p>
+				<a href="http://localhost:8080/">Home</a> - vista inicial. Permite ver el contenido subido por el usuario actual. Para ello el usuario debe haber inciado sesión, si no lo está se mostrará la pantalla de login.
+				El usuario puede subir archivos de distintos tamaños, puede subirlos tanto haciendo drag and drop como clicando en el botón. También puede editar el nombre, añadir tags, descargarlo y borrarlo. 
+				Si se suben varios archivos, se pueden seleccionar los que el usuario desee, así como seleccionar todos en el checkbox y eliminarlos.
+				Por otro lado, se pueden crear tags, darles un color, modificar tanto el nombre como el color, y borrarlos.
+				Si se pincha en el nombre de un archivo se puede ver su respectiva vista, donde se mostrará la imagen o se reproducirá el sonido o el video, en función del tipo de archivo.
+			</p>
+		</li>
+		<li>
+			<p>
+				<a href="http://localhost:8080/login">Login</a> - vista para iniciar sesión así como para poder crear una cuenta nueva.
+			</p>
+		</li>
+		<li>
+			<p>
+				<a href="http://localhost:8080/admin">Admin</a> - vista del administrador. 
+				Permite administrar usuarios (eliminarlos) y administrar el contenido de todos los usuarios.
+			</p>
+		</li>
+		<li>
+			<p>
+				<a href="http://localhost:8080/friends">Amigos</a> - vista de amigos de un usuario. Permite ver los amigos y las solicitudes de amistad recibidas de un usuario.
+			</p>
+		</li>
+		<li>
+			<p>
+				<a href="http://localhost:8080/groups">Grupos</a> - vista de grupos. Muestra los grupos a los que pertence un usuario. También permite crear un nuevo grupo.
+			</p>
+		</li>
+		<li>
+			<p>
+				<a href="http://localhost:8080/chat">Chat</a> - vista de chat. Muestra la vista de chat de un grupo, permitiendo escribir un nuevo mensaje. Además muestra todos los archivos que los miembros del grupo 
+				han compartido, permitiendo al usuario actual compartir un nuevo archivo.
+			</p>
+		</li>
+		<li>
+			<p>
+				<a href="http://localhost:8080/player">Reproductor</a> - vista para el reproductor.
+			</p>
+		</li>
+		<li>
+			<p>
+				<a href="http://localhost:8080/share">Compartir</a> - vista para compartir archivos. Permite ver el archivo a compartir, buscar amigos y/o grupos, seleccionarlos y compartir el archivo con ellos.
+			</p>
+		</li>	
+	</ul>
+
 	<h2>Recursos</h2>
-		<ul>
-		<li><a href="src/main/resources/static/img/logo.png"/>Logotipo, obtenido de la 
-		<a href="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Backofenthermometer.jpg/170px-Backofenthermometer.jpg">entrada de wikipedia para
-		 termómetro</a>, con licencia <a href="https://en.wikipedia.org/wiki/Thermometer#/media/File:Backofenthermometer.jpg">CC BY-SA 3.0</a>.
-		</ul>
+	<ul>
+		<li>
+			<p>
+				<a href="src/main/resources/static/img/logo.png"/>Logotipo, obtenido de la 
+				<a href="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Backofenthermometer.jpg/170px-Backofenthermometer.jpg">entrada de wikipedia para
+					termómetro</a>, con licencia <a href="https://en.wikipedia.org/wiki/Thermometer#/media/File:Backofenthermometer.jpg">CC BY-SA 3.0</a>.
+			</p>
+		</li>
+	</ul>
+
 	<h2 class="nota">Notas</h2>
 	<ul class="nota">
-	<li> <a name="plantilla">[1]</a> Todo lo que aparece en gris no tendría porqué aparecer en un leeme.html
-	vuestro, y se incluye sólo como notas aclarativas. 
-	<li> <a name="karma">[2]</a> Lo del <a href="https://es.wikipedia.org/wiki/Karma">karma</a> no se debe entender 
-	en tono religioso, sino en sentido figurativo de "hacerlo bien o mal".	
+		<li>
+			<p>
+				<a name="plantilla">[1]</a> Todo lo que aparece en gris no tendría porqué aparecer en un leeme.html vuestro, y se incluye sólo como notas aclarativas.
+			</p>
+		</li>
+		<li>
+			<p>
+				<a name="karma">[2]</a> Lo del <a href="https://es.wikipedia.org/wiki/Karma">karma</a> no se debe entender en tono religioso, sino en sentido figurativo de "hacerlo bien o mal".
+			</p>
+		</li>
 	</ul>
 </body>
 </html>
