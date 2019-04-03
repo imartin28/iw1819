@@ -4,148 +4,334 @@
 	<meta charset="utf-8">
 	<title>Leeme: M3</title>
 	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+		}
+		hr {
+			margin-top: 0;
+		}
+		.container {
+			padding: 0 20px 20px 20px;
+		}
 		.nota { color: gray; }
 		.centered {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 		}
+		.dark-background {
+			margin: 0;
+			padding: 20px;
+			background-color: #343A40;
+		}
+		.text-underline {
+			text-decoration: underline;
+		}
 	</style>
 </head>
 <body>
-	<h1 class="centered"><img src="src/main/resources/static/img/m3-tab.png"  width="auto" height="100px"></h1>
+	<h1 class="centered dark-background"><img src="src/main/resources/static/img/m3-tab.png"  width="auto" height="100px"></h1>
 	<hr>
-	<h1>Léeme</h1>
-	<h2>Objetivo</h2>
-	<p>
-		Un gestor multimedia para gestionar y compartir todos tus vídeos, canciones e imágenes.
-	</p>
-	<p>
-		Esta aplicación puede usarse para tener organizado y disponible online todo el contenido multimedia. Además tiene una componente social, pues
-		se podrá compartir con amigos y familia todo el contenido.
-	</p>
+	<h1 class="centered">Léeme</h1>
+	<div class="container">
+		<h2>Objetivo</h2>
+		<p>
+			Un gestor multimedia para gestionar y compartir todos tus vídeos, canciones e imágenes.
+		</p>
+		<p>
+			Esta aplicación puede usarse para tener organizado y disponible online todo el contenido multimedia. Además tiene una componente social, pues
+			se podrá compartir con amigos y familia todo el contenido.
+		</p>
 
-	<p>
-		Soporta los siguientes roles:
+		<p>
+			Soporta los siguientes roles:
+			<ul>
+				<li>
+					<p>
+						El <b>administrador</b> es el encargado de gestionar la aplicación. Debe asegurarse que el contenido que suben los usuarios a la aplicación es adecuado
+						y no incumple ninguna ley. Podrá activar/eliminar usuarios, eliminar contenido y dar de alta nuevos adminstradores.
+					</p>
+					<p>
+						Credenciales: (nick: admin, email: admin@admin.es, clave: a)
+					</p>
+				</li>
+				<li>
+					<p>
+						Un <b>usuario</b> puede hacer solicitudes de amistad a otros usuarios, subir contenido, crear grupos, crear listas de reproducción, chatear con otros usuarios y ver su contenido.
+					</p>
+					<p>
+						Credenciales: (nick: BadmintonNoob, email: flopezcarr@ucm.es, clave: a)
+					</p>
+				</li>
+			</ul>
+		</p>
+
+		<h2>Vistas</h2>
+		<h4>Sin loguearse</h4>
 		<ul>
 			<li>
 				<p>
-					El <b>administrador</b> (usuario: a, clave: a) es el encargado de gestionar la aplicación. Debe asegurarse que el contenido que suben los usuarios a la aplicación es adecuado
-					y no incumple ninguna ley. Podrá eliminar usuarios y eliminar contenido.
+					<a href="http://localhost:8080/">Home</a> - vista inicial. Permite ver el contenido subido por el usuario actual. Para ello el usuario debe haber inciado sesión, si no lo está se mostrará la pantalla de login.
+					El usuario puede subir archivos de distintos tamaños, puede subirlos tanto haciendo drag and drop como clicando en el botón. También puede editar el nombre, añadir tags, descargarlo y borrarlo. 
+					Si se suben varios archivos, se pueden seleccionar los que el usuario desee, así como seleccionar todos en el checkbox y eliminarlos.
+					Por otro lado, se pueden crear tags, darles un color, modificar tanto el nombre como el color, y borrarlos.
+					Si se pincha en el nombre de un archivo se puede ver su respectiva vista, donde se mostrará la imagen o se reproducirá el sonido o el video, en función del tipo de archivo.
 				</p>
 			</li>
 			<li>
 				<p>
-					Un <b>usuario</b>  puede hacer solicitudes de amistad a otros usuarios, subir contenido, crear grupos, crear listas de reproducción, chatear con otros usuarios y ver su contenido.
+					<a href="http://localhost:8080/login">Login</a> - vista para iniciar sesión así como para poder crear una cuenta nueva.
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/admin/addAdmin">Error</a>
 				</p>
 			</li>
 		</ul>
-	</p>
+		<h4>Logueado</h4>
+		<ul>
+			<li>
+				<p>
+					<a href="http://localhost:8080/user/">Ver perfil</a>
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/user/modifyProfile">Modificar perfil</a>
+				</p>
+			</li>
+		</ul>
+		<h5>Usuario</h5>
+		<ul>
+			<li>
+				<p>
+					<a href="http://localhost:8080/user/">Vista principal usuario</a>
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/user/file">Ver fichero</a>
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/user/friends">Amigos</a> - vista de amigos de un usuario. Permite ver los amigos y las solicitudes de amistad recibidas de un usuario.
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/user/groups">Grupos</a> - vista de grupos. Muestra los grupos a los que pertence un usuario. También permite crear un nuevo grupo.
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/user/chat">Chat</a> - vista de chat. Muestra la vista de chat de un grupo, permitiendo escribir un nuevo mensaje. Además muestra todos los archivos que los miembros del grupo 
+					han compartido, permitiendo al usuario actual compartir un nuevo archivo.
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/user/history">Historial</a>
+				</p>
+			</li>
+			<h5>Sin thymeleaf, sin acceso</h5>
+			<li>
+				<p>
+					<span class="text-underline">Compartir (share.html)</span> - vista para compartir archivos. Permite ver el archivo a compartir, buscar amigos y/o grupos, seleccionarlos y compartir el archivo con ellos.
+				</p>
+			</li>
+			<li>
+				<p>
+					<span class="text-underline">Reproductor (fragments/player.html)</span> - vista para el reproductor.
+				</p>
+			</li>
+		</ul>
+		<h5>Administrador</h5>
+		<ul>
+			<li>
+				<p>
+					<a href="http://localhost:8080/admin/users">Administrador usuarios</a> - vista del administrador. 
+					Permite administrar usuarios (eliminarlos) y administrar el contenido de todos los usuarios.
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/admin/addAdmin">Añadir administrador</a>
+				</p>
+			</li>
+		</ul>
+		<h4>Fragmentos</h4>
+		<ul>
+			<li>
+				<p>
+					Header
+					<xmp>
+					<th:block th:fragment="head">
 
-	<h2>Vistas</h2>
-	<ul>
-		<li>
-			<p>
-				<a href="http://localhost:8080/">Home</a> - vista inicial. Permite ver el contenido subido por el usuario actual. Para ello el usuario debe haber inciado sesión, si no lo está se mostrará la pantalla de login.
-				El usuario puede subir archivos de distintos tamaños, puede subirlos tanto haciendo drag and drop como clicando en el botón. También puede editar el nombre, añadir tags, descargarlo y borrarlo. 
-				Si se suben varios archivos, se pueden seleccionar los que el usuario desee, así como seleccionar todos en el checkbox y eliminarlos.
-				Por otro lado, se pueden crear tags, darles un color, modificar tanto el nombre como el color, y borrarlos.
-				Si se pincha en el nombre de un archivo se puede ver su respectiva vista, donde se mostrará la imagen o se reproducirá el sonido o el video, en función del tipo de archivo.
-			</p>
-		</li>
-		<li>
-			<p>
-				<a href="http://localhost:8080/login">Login</a> - vista para iniciar sesión así como para poder crear una cuenta nueva.
-			</p>
-		</li>
-		<li>
-			<p>
-				<a href="http://localhost:8080/admin">Admin</a> - vista del administrador. 
-				Permite administrar usuarios (eliminarlos) y administrar el contenido de todos los usuarios.
-			</p>
-		</li>
-		<li>
-			<p>
-				<a href="http://localhost:8080/friends">Amigos</a> - vista de amigos de un usuario. Permite ver los amigos y las solicitudes de amistad recibidas de un usuario.
-			</p>
-		</li>
-		<li>
-			<p>
-				<a href="http://localhost:8080/groups">Grupos</a> - vista de grupos. Muestra los grupos a los que pertence un usuario. También permite crear un nuevo grupo.
-			</p>
-		</li>
-		<li>
-			<p>
-				<a href="http://localhost:8080/chat">Chat</a> - vista de chat. Muestra la vista de chat de un grupo, permitiendo escribir un nuevo mensaje. Además muestra todos los archivos que los miembros del grupo 
-				han compartido, permitiendo al usuario actual compartir un nuevo archivo.
-			</p>
-		</li>
-		<li>
-			<p>
-				<a href="http://localhost:8080/player">Reproductor</a> - vista para el reproductor.
-			</p>
-		</li>
-		<li>
-			<p>
-				<a href="http://localhost:8080/share">Compartir</a> - vista para compartir archivos. Permite ver el archivo a compartir, buscar amigos y/o grupos, seleccionarlos y compartir el archivo con ellos.
-			</p>
-		</li>	
-	</ul>
+						<meta charset="utf-8">
+						<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+						
+						<link rel="icon" href="/img/m3-tab.png">
+						
+						<!-- Styles -->
+						<link rel="stylesheet" href="/css/bootstrap.min.css">
+						
+						<!-- Javascripts -->
+						<script src="/js/jquery-3.3.1.min.js"></script>
+						<script src="/js/popper.min.js"></script>
+						<script src="/js/bootstrap.min.js"></script>
+						
+						
+						<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+						<link rel="stylesheet" 
+							href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+							integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+							crossorigin="anonymous">
+						
+						<script type="text/javascript">
+							const m3 = {
+								socketUrl: '[[${session.ws}?:false]]',
+								apiUrl: '[[${session.ws}?@{/api/v/}:false]]',
+								csrf: {
+									name: "[[${_csrf.parameterName}]]",
+									value: "[[${_csrf.token}]]"
+								},
+								admin: [[${session.u != null && session.u.hasRole('admin')}?'true':'false']],
+								userId: [[${session.u != null}?${session.u.id}:-1]]
+							};
+						</script>
+						
+					</th:block>
+					</xmp>
+				</p>
+			</li>
+			<li>
+				<p>
+					Navbar
+					<xmp>
+					<nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex justify-content-center" th:fragment="nav">
+	
+						<link rel="stylesheet" href="/css/nav.css">
+						
+						<div class="navbar-nav flex-nowrap">
+							<a th:href="@{/}"><img class="mx-3 my-1" src="/img/logoM3.png" width="40px" height="40px"></a>
+							<th:block th:if="${session.u != null && !session.u.hasRole('admin')}">
+								<a th:href="@{/user/?nickname=__${session.u.nickname}__}" class="nav-item nav-link mx-2"><i class="material-icons">home</i></a>
+								<a href="#" class="nav-item nav-link mx-2"><i class="material-icons">folder_open</i></a>
+								<a th:href="@{/user/groups}" class="nav-item nav-link mx-2"><i class="material-icons">group</i></a>
+								<a th:href="@{/user/friends}" class="nav-item nav-link mx-2"><i class="fas fa-grin-alt"></i></a>
+								<a href="#" class="nav-item nav-link mx-2"><i class="material-icons">brightness_low</i></a>
+								<a th:href="@{/user/profile?userId=__${session.u.id}__}"><img class="border-3 rounded-circle ml-3 img-nav" src="/img/fer.jpg" width="50px" height="50px"></a>
+							</th:block>
+							<th:block th:if="${session.u != null && session.u.hasRole('admin')}">
+								<a th:href="@{/admin/users}" class="nav-item nav-link fa-icon"><i class="fas fa-users-cog"></i></a>
+								<a href="#" class="nav-item nav-link fa-icon"><i class="fas fa-copy"></i></a>
+								<a th:href="@{/admin/addAdmin}" class="nav-item nav-link fa-icon"><i class="fas fa-user-plus"></i></a>
+								<a th:href="@{/user/profile?userId=__${session.u.id}__}"><img class="border-3 rounded-circle ml-3 img-nav" src="/img/admin.png" width="50px" height="50px"></a>
+							</th:block>
+							<th:block th:if="${session.u != null}">
+								<a th:href="@{/logout}" class="nav-item nav-link fa-icon"><i class="fas fa-sign-out-alt"></i></a>
+							</th:block>
+						</div>
+						
+						<div class="debug d-flex flex-row align-items-center" th:if="${application.debug}">
+							<form id="loginUser" th:action="@{/login}" method="post" th:if="${session.u == null}">
+								<input type="hidden" name="username" value="flopezcarr@ucm.es">
+								<input type="hidden" name="password" value="a">
+								<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+								<button type="submit" class="button" form="loginUser">flopezcarr@ucm.es</button>
+							</form>
+							<form id="loginAdmin" th:action="@{/login}" method="post" th:if="${session.u == null}">
+								<input type="hidden" name="username" value="admin">
+								<input type="hidden" name="password" value="a">
+								<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+								<button type="submit" class="button" form="loginAdmin">admin@admin.es</button>
+							</form>					
+						</div>
+							
+						<!-- Modal to dsplay server messages to user -->
+						<div class="modal fade" id="msgModal" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" th:text="${title}">Error</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body py-4 px-5">
+										<span id="msg" th:text="${msg}"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<script src="/js/nav.js"></script>
 
-	<h2>Recursos</h2>
-	<ul>
-		<li>
-			<p>
-				<a href="src/main/resources/static/img/logoM3.png">Logotipo, creado por nosotros con la herramienta de software libre GIMP.</a>
-			</p>
-		</li>
+					</nav>
+					</xmp>
+				</p>
+			</li>
+		</ul>
 
-		<li>
-			<p>
-				Todas las imágenes de prueba de la aplicación están en la carpeta <a href="src/main/resources/static/img/">src/main/resources/static/img/</a>
-			</p>
-		</li>
+		<h2>Recursos</h2>
+		<ul>
+			<li>
+				<p>
+					<a href="src/main/resources/static/img/logoM3.png">Logotipo, creado por nosotros con la herramienta de software libre GIMP.</a>
+				</p>
+			</li>
 
-		<li>
-			<p>
-				<a href="https://jquery.com">JQuery</a>, framework de código abierto de Javascript que permite manipular elementos de un HTML. Código licenciado por la <a href="https://tldrlegal.com/license/mit-license">licencia MIT</a>.
+			<li>
+				<p>
+					Todas las imágenes de prueba de la aplicación están en la carpeta <a href="src/main/resources/static/img/">src/main/resources/static/img/</a>
+				</p>
+			</li>
 
-				
-			</p>
-		</li>
+			<li>
+				<p>
+					<a href="https://jquery.com">JQuery</a>, framework de código abierto de Javascript que permite manipular elementos de un HTML. Código licenciado por la <a href="https://tldrlegal.com/license/mit-license">licencia MIT</a>.
 
-		<li>
-			<p>
-				<a href="https://getbootstrap.com">Bootstrap</a>, framework de código abierto para diseño de sitios y páginas web. Código licenciado por la <a href="https://github.com/twbs/bootstrap/blob/master/LICENSE">licencia MIT</a> y documentación licenciada por <a href="https://creativecommons.org/licenses/by/3.0/">CC By 3.0</a>
-			</p>
-		</li>
+					
+				</p>
+			</li>
 
-		<li>
-			<p>
-				Para los iconos hemos utilizado <a href="https://material.io/tools/icons/?style=baseline">Material Icons</a>, licenciado por la <a href="https://www.apache.org/licenses/LICENSE-2.0.html">licencia Apache versión 2.0</a> y <a href="https://fontawesome.com">Font Awesome</a>, con una <a href="https://fontawesome.com/license#license">licencia pública</a>.
-		</li>
+			<li>
+				<p>
+					<a href="https://getbootstrap.com">Bootstrap</a>, framework de código abierto para diseño de sitios y páginas web. Código licenciado por la <a href="https://github.com/twbs/bootstrap/blob/master/LICENSE">licencia MIT</a> y documentación licenciada por <a href="https://creativecommons.org/licenses/by/3.0/">CC By 3.0</a>
+				</p>
+			</li>
 
-		<li>
-			<p>
-				 <a href="https://datatables.net">DataTables</a>, framework de Javascript para mostrar datos en tablas paginados y aplicar filtros sobre éstos. Licenciado por la <a href="https://datatables.net/license/mit">licencia MIT</a>.
-		</li>
+			<li>
+				<p>
+					Para los iconos hemos utilizado <a href="https://material.io/tools/icons/?style=baseline">Material Icons</a>, licenciado por la <a href="https://www.apache.org/licenses/LICENSE-2.0.html">licencia Apache versión 2.0</a> y <a href="https://fontawesome.com">Font Awesome</a>, con una <a href="https://fontawesome.com/license#license">licencia pública</a>.
+			</li>
 
-		<li>
-			<p>
-				 <a href="https://momentjs.com">Moment.js</a>, framework de Javascript para parsear, validar, manipular, y mostrar fechas y horas. Licenciado por la <a href="https://opensource.org/licenses/MIT">licencia MIT</a>.
-		</li>
+			<li>
+				<p>
+					<a href="https://datatables.net">DataTables</a>, framework de Javascript para mostrar datos en tablas paginados y aplicar filtros sobre éstos. Licenciado por la <a href="https://datatables.net/license/mit">licencia MIT</a>.
+			</li>
+
+			<li>
+				<p>
+					<a href="https://momentjs.com">Moment.js</a>, framework de Javascript para parsear, validar, manipular, y mostrar fechas y horas. Licenciado por la <a href="https://opensource.org/licenses/MIT">licencia MIT</a>.
+			</li>
 
 
-		
-	</ul>
+			
+		</ul>
 
-	<h2 class="nota">Notas</h2>
-	<ul class="nota">
-		<li>
-			<p>
-				
-			</p>
-		</li>
-	</ul>
+		<h2 class="nota">Notas</h2>
+		<ul class="nota">
+			<li>
+				El botón de recuérdame en el formulario de login es meramente decorativo
+			</li>
+			<li>
+				Al hacer click en Sign up dentro de la vista inicial, no permite volver al formulario de login, por lo que es necesario recargar la página
+			</li>
+		</ul>
+	</div>
 </body>
 </html>
