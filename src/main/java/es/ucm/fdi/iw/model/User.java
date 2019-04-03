@@ -63,14 +63,11 @@ public class User {
 	@OneToMany(targetEntity=Notification.class, mappedBy="user")
 	private List<Notification> notifications;
 	
-	
 	@OneToMany(targetEntity=UserFile.class, mappedBy="user")
 	private List<UserFile> files;
 	
-	
 	@ManyToMany(targetEntity=CGroup.class, mappedBy="users")
 	private List<CGroup> groups;
-	
 	
 	@OneToMany(targetEntity=Message.class, mappedBy="sender")
 	private List<Message> sentMessages;
@@ -80,7 +77,6 @@ public class User {
 
 	@OneToMany(targetEntity=Tag.class, mappedBy="user")
 	private List<Tag> tags;
-
 
 	public long getId() {
 		return id;
