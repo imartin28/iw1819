@@ -90,7 +90,8 @@
 			</li>
 			<li>
 				<p>
-					<a href="localhost:8080/user/modifyProfile?userId=1">Modificar perfil</a>
+					<a href="localhost:8080/user/modifyProfile?userId=1">Modificar perfil</a> - vista que permite ver y editar los datos del usuario indicado en la url mediante id, sólo es accesible si el id introducido coincide con el id del usuario logeado, también se permite bajo la misma condición darse de baja y modificar la contraseña.
+					En caso de que el último administrador desee darse de baja la aplicación no lo permitirá y redirigirá a la vista principal.
 				</p>
 			</li>
 		</ul>
@@ -123,7 +124,7 @@
 			</li>
 			<li>
 				<p>
-					<a href="http://localhost:8080/user/history">Historial</a>
+					<a href="http://localhost:8080/user/history">Historial</a> - vista de hisotrial. Muestra los archivos subidos recientemente.
 				</p>
 			</li>
 			<h5>Sin thymeleaf, sin acceso</h5>
@@ -148,13 +149,12 @@
 		<ul>
 			<li>
 				<p>
-					<a href="http://localhost:8080/admin/users">Administrador usuarios</a> - vista del administrador. 
-					Permite administrar usuarios (eliminarlos) y administrar el contenido de todos los usuarios.
+					<a href="http://localhost:8080/admin/users">Administrador usuarios</a> - vista del administrador. Permite administrar usuarios (activar / desactivar).
 				</p>
 			</li>
 			<li>
 				<p>
-					<a href="http://localhost:8080/admin/addAdmin">Añadir administrador</a>
+					<a href="http://localhost:8080/admin/addAdmin">Añadir administrador</a> - vista para dar de alta un nuevo administrador. Permite dar de alta un nuevo administrador.
 				</p>
 			</li>
 		</ul>
@@ -218,6 +218,9 @@
 			</li>
 			<li>
 				Al crear una nueva cuenta aparece como nombre y apellidos 'null null';
+			</li>
+			<li>
+				La aplicación no muestra correctamente los errores / notificaciones al usuario a través del modal del navbar.
 			</li>
 		</ul>
 	</div>
