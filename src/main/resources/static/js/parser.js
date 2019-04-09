@@ -49,6 +49,10 @@ $(function() {
 	    	return { ok: result, msg: (result ? null : parser.parseNameText) };
 	    },
 	    
+	    parseTagName: function parseTagName(argument, errorMessage) {
+	    	return { ok: errorMessage === "", msg: (errorMessage === "" ? null : errorMessage) };
+	    },
+	    
 	    parseNickname: function parseNickname(argument) {
 	    	let re = parser.nicknamePattern;
 	    	let result = re.test(argument);
@@ -68,12 +72,12 @@ $(function() {
 	    },
 
 	    parseInteger: function parseInteger(argument) {
-	        let result = Number.isInteger(argument);
+	        let result = Number.isInteger(Number(argument));
 	        return { ok: result, msg: (result ? null : parser.parseIntegerText) };
 	    },
 	    
 	    parseIntegerPostive: function parseIntegerPostive(argument) {
-	    	let result = Number.isInteger(argument) && Number(argument) > 0;
+	    	let result = Number.isInteger(Number(argument)) && Number(argument) > 0;
 	        return { ok: result, msg: (result ? null : parser.parseIntegerPositiveText) };
 	    },
 	    
@@ -105,7 +109,10 @@ $(function() {
 	    	$(id).removeClass("is-valid");
 	        $(id).removeClass("is-invalid");
 	        $(id).addClass("is-invalid");
-	        $(id).parent().find(".invalid-feedback").text(msg);
+	        if (msg !== undefined && msg !== null && msg !== "") {
+	        	$(id).parent().find(".invalid-feedback").text(msg);
+	        }
+	        
 	    },
 
 	    parse: function parse(id, parseFunction, opc) {

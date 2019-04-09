@@ -96,9 +96,6 @@ function downloadFiles(array_IdsToDownload){
 
 
 function deleteFiles(array_IdsToDelete){
-
-
-	
 	$.ajax({
 		type:"POST",
 		url:"/file/deleteFiles",
@@ -115,7 +112,5 @@ function deleteFiles(array_IdsToDelete){
 		error : function(){
 			console.log("error");
 		}
-		
 	});
-	
 }

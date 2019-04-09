@@ -67,8 +67,6 @@ import es.ucm.fdi.iw.util.StringUtil;
 public class FileController {
 	
 	private static final Logger log = LogManager.getLogger(FileController.class);
-
-	private static final String APPLICATION_PDF = "application/pdf";
 	
 	@Autowired
 	private FileService fileService;
@@ -404,6 +402,20 @@ public class FileController {
 		modelAndView.setViewName(viewName);
 		
 		return modelAndView;
+	}
+	
+	@GetMapping("/validateTagName")
+	public @ResponseBody String validateTagName(@RequestParam String name, HttpSession session) {
+		List<Tag> tags = entityManager.createNamedQuery("findByName", Tag.class).setParameter("name", name).getResultList();
+		Long userId = ((User) session.getAttribute("u")).getId();
+		
+		
+		
+		if (tags.size() == 0) {
+			return null;
+		} else {
+			return "A tag with the name " + name + " already exists.";
+		}
 	}
 }
 
