@@ -100,10 +100,6 @@ public class FileController {
 		}
 	}
 	
-	
-	
-	
-	
 	@GetMapping("/")
 	public String index(ModelAndView modelAndView, HttpSession session) {		
 		return "index";
@@ -244,10 +240,6 @@ public class FileController {
 		return "redirect:/user/";
 	}
 	
-	
-	
-	
-
 	@RequestMapping(value = "/download/{id}", method=RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> downloadFile(@PathVariable Long id) throws IOException {
 		
@@ -268,8 +260,6 @@ public class FileController {
                 .body(resource);
     }
 	
-	
-	
 	@PostMapping("/modifyFileName")
 	@Transactional
 	public String postModifyFileName(@RequestParam("idFile") Long id, @RequestParam("fileName") String name) {
@@ -279,8 +269,6 @@ public class FileController {
 		return "redirect:/user/";
 	}
 	
-	
-
 	@PostMapping("/deleteFile")
 	@Transactional
 	public String postDeleteFile(@RequestParam("idFile") Long id) {
@@ -297,7 +285,6 @@ public class FileController {
 		
 		return "redirect:/user/";
 	}
-	
 	
 	@PostMapping("/deleteFiles")
 	@Transactional
@@ -326,11 +313,6 @@ public class FileController {
 		return "{}";
 	}
 	
-	
-	
-	
-	
-	
 	@PostMapping("/nestFileInTag")
 	@Transactional
 	public String nestFileInTag( @RequestParam("id_tag") Long idTag, @RequestParam("id_file") Long idFile) {
@@ -342,8 +324,6 @@ public class FileController {
 		return "redirect:/user/";
 	}
 	
-	
-
 	@PostMapping("/newTag")
 	@Transactional
 	public String postTag(Model model, HttpSession session, @RequestParam("tagName") String name, @RequestParam("parentId") Long parentId) {
@@ -360,7 +340,6 @@ public class FileController {
 	return "redirect:/user/";
 	}
 	
-	
 	@PostMapping("/modifyTag")
 	@Transactional
 	public String postModifyTag(@RequestParam("colorTag") String color, @RequestParam("idTag") Long id, @RequestParam("tagName") String name) {
@@ -372,8 +351,6 @@ public class FileController {
 		return "redirect:/user/";
 	}
 	
-	
-
 	@PostMapping("/deleteTag")
 	@Transactional
 	public String postDeleteTag(@RequestParam("idTag") Long tagId, HttpSession session) {
@@ -384,4 +361,49 @@ public class FileController {
 		
 		return "redirect:/user/";
 	}
+
+	@GetMapping("{id}/share/")
+	public ModelAndView getShareFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) throws IOException {
+		
+		String err = "File not found";
+		
+		CFile file = fileService.findById(fileId);
+		User currentUser = (User) session.getAttribute("u");
+		
+		if (file != null && currentUser != null) {
+			err = null;
+			modelAndView.addObject("filename", file.getName());
+			
+			String mimetype = (file.getMimetype() != null && !file.getMimetype().equalsIgnoreCase("") ? file.getMimetype().split("/")[0] : null);
+			
+			String url = "/file/user" + currentUser.getId() + "/" + fileId + "." + file.getExtension() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
+			modelAndView.addObject("fileurl", url);
+			
+			if(mimetype != null && !mimetype.equalsIgnoreCase("")) {
+				modelAndView.addObject("mimetype", mimetype);
+			}
+			else {
+				err = "File has invalid MIME type";
+			}
+			
+			modelAndView.addObject("tags", file.tagNameList());
+			
+			try {
+				JSONObject metadataJSON = new JSONObject(file.getMetadata());
+				Map<String, Object> metadataMapObject = JSONUtil.toMap(metadataJSON);
+				modelAndView.addObject("metadata", metadataMapObject);
+			} catch(JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
+		String viewName = "redirect:/user/";
+		if (err == null)
+			viewName = "share";
+		
+		modelAndView.setViewName(viewName);
+		
+		return modelAndView;
+	}
 }
+
