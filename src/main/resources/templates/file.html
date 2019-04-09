@@ -41,14 +41,14 @@
                        	</div>
                         <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
                         
-                        	<img th:src="${fileurl}" width="50%" height="50%" th:case="'image'">
+                        	<img th:src="@{/file/contents/{id}(id=${fileId})}" width="50%" height="50%" th:case="'image'">
                         	
                             <audio controls th:case="'audio'">
-                            	<source th:src="${fileurl}" type="audio/mpeg">
+                            	<source th:src="@{/file/contents/{id}(id=${fileId})}" type="audio/mpeg">
                             </audio>
                             
                             <video width="50%" height="50%" id="videoPlay" controls th:case="'video'">
-                            	<source th:src="${fileurl}" type="video/mp4">
+                            	<source th:src="@{/file/contents/{id}(id=${fileId})}" type="video/mp4">
                             </video>
                             
                             <div th:case="*">Mediaplayer</div>

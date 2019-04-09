@@ -1,5 +1,6 @@
 package es.ucm.fdi.iw.control;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,6 +36,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
@@ -80,7 +83,8 @@ public class FileController {
     @Autowired
     private ServletContext servletContext;
 	
-	private LocalData localData = new LocalData();
+    @Autowired
+	private LocalData localData;
 	
 	/**
 	 * Function to notify the current user a message from server
@@ -105,14 +109,25 @@ public class FileController {
 		return "index";
 	}
 	
-	
-
-
-	
-	
-	
-	
-	@GetMapping("/{id}")
+	@GetMapping("/contents/{id}")
+	public StreamingResponseBody getFile(@PathVariable long id, Model model, HttpSession session) throws IOException {	
+		CFile file = fileService.findById(id);
+		Long userId = ((User) session.getAttribute("u")).getId();
+		// ojo con acceso: no basta con saber el id del fichero
+		File f = localData.getFile("user" + userId, file.getId() + "." + file.getExtension());
+		InputStream in;
+		
+		in = new BufferedInputStream(new FileInputStream(f));
+		
+		return new StreamingResponseBody() {
+			@Override
+			public void writeTo(OutputStream os) throws IOException {
+				FileCopyUtils.copy(in, os);
+			}
+		};
+	}
+		
+	@GetMapping("/show/{id}")
 	public ModelAndView getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) throws IOException {
 		
 		String err = "File not found";
@@ -126,8 +141,10 @@ public class FileController {
 			
 			String mimetype = (file.getMimetype() != null && !file.getMimetype().equalsIgnoreCase("") ? file.getMimetype().split("/")[0] : null);
 			
-			String url = "/file/user" + currentUser.getId() + "/" + fileId + "." + file.getExtension() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
-			modelAndView.addObject("fileurl", url);
+			File f = localData.getFile("user" + currentUser.getId(), file.getId() + "." + file.getExtension());
+			String url = f.getAbsolutePath() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
+			
+			modelAndView.addObject("fileId", fileId);
 			
 			if(mimetype != null && !mimetype.equalsIgnoreCase("")) {
 				modelAndView.addObject("mimetype", mimetype);
@@ -172,7 +189,7 @@ public class FileController {
 		
 		
 		
-		log.info("Uploading photo for user {}", id);
+		log.info("Uploading file for user {}", id);
 		
 		
 		
@@ -262,12 +279,21 @@ public class FileController {
 		return "redirect:/user/";
 	}
 	
+	
 
 	@PostMapping("/deleteFile")
 	@Transactional
 	public String postDeleteFile(@RequestParam("idFile") Long id) {
 		CFile file = fileService.findById(id);		
 		entityManager.remove(file);
+		
+		File f = new File(file.getPath());
+    	
+		if(f.delete()){
+			System.out.println(file.getName() + " is deleted!");
+		}else{
+			System.out.println("Delete operation is failed.");
+		}
 		
 		return "redirect:/user/";
 	}
@@ -281,6 +307,17 @@ public class FileController {
 				.setParameter("ids", ids)
 				.getResultList();
 		
+		File f = null;
+		
+		for (CFile file : files) {
+			f = new File(file.getPath());
+			
+			if(f.delete()){
+				System.out.println(file.getName() + " is deleted!");
+			}else{
+				System.out.println("Delete operation is failed.");
+			}
+		}
 		
 		response.setStatus(200);
 		// Hay que borrar los ficheros del disco duro

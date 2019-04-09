@@ -263,7 +263,7 @@
                         			-->
                         			
                         			<div class="file-name">
-                                       <a th:href="@{/file/__${file.id}__}" class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
+                                       <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
                                     </div> 
 							     </div>
 							     

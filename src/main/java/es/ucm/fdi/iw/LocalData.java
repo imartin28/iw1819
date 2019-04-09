@@ -17,24 +17,7 @@ import org.apache.commons.logging.LogFactory;
 public class LocalData {    	    
 	private static Log log = LogFactory.getLog(LocalData.class);
     private File baseFolder;
-    
-    public LocalData() {
-		this.baseFolder = new File("src/main/resources/static/file/");
-		this.baseFolder.setReadable(true); 
-		this.baseFolder.setWritable(true); 
-    	log.info("base folder is " + baseFolder.getAbsolutePath());
-    	if (!baseFolder.isDirectory()) {
-    		if (baseFolder.exists()) {
-    			log.error("exists and is not a directory -- cannot create: " + baseFolder);
-    		} else if ( ! baseFolder.mkdirs()){
-    			log.error("could not be created -- check permissions " + baseFolder);        			
-    		}
-    	} else {
-    		log.info("using already-existing base folder :-)");
-    	}
-    	baseFolder.mkdirs();
-    }
-    
+     
     public LocalData(File baseFolder) {
 		this.baseFolder = baseFolder;
     	log.info("base folder is " + baseFolder.getAbsolutePath());
@@ -77,9 +60,5 @@ public class LocalData {
      */
     public File getFile(String folderName, String fileName) {
     	return new File(getFolder(folderName), fileName);
-    }
-    
-    public String getBaseFolderPath() {
-    	return this.baseFolder.getAbsolutePath();
     }
 }

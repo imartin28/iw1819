@@ -68,31 +68,3 @@ VALUES ('#8CDE45', 'Pictures', null, 1);
 INSERT INTO TAG
 ("COLOR", "NAME", "PARENT_ID", "USER_ID" )
 VALUES ('#F60045', 'Home Videos', 1, 1);
-
-
--- FILE
-
-INSERT INTO CFILE
-("EXTENSION", "METADATA", "MIMETYPE", "NAME", "PATH", "SIZE")
-VALUES ('jpg', '{}', 'image/jpeg', 'intro_GOT.jpg', '/Users/sergio/git/m3/src/main/resources/static/file/user1/1.jpg', 95244);
-
-INSERT INTO USER_FILE
-("PERMISSION", "FILE_ID", "USER_ID" )
-VALUES ('rw', 1, 1);
-
-INSERT INTO CFILE
-("EXTENSION", "METADATA", "MIMETYPE", "NAME", "PATH", "SIZE")
-VALUES ('mp3', '{}', 'audio/mp3', 'intro_GOT.mp3', '/Users/sergio/git/m3/src/main/resources/static/file/user1/2.mp3', 3212223);
-
-INSERT INTO USER_FILE
-("PERMISSION", "FILE_ID", "USER_ID" )
-VALUES ('rw', 2, 1);
-
-INSERT INTO CFILE
-("EXTENSION", "METADATA", "MIMETYPE", "NAME", "PATH", "SIZE")
-VALUES ('mp4', '{}', 'video/mp4', 'intro_GOT.mp4', '/Users/sergio/git/m3/src/main/resources/static/file/user1/3.mp4', 8538831);
-
-INSERT INTO USER_FILE
-("PERMISSION", "FILE_ID", "USER_ID" )
-VALUES ('rw', 3, 1);
-

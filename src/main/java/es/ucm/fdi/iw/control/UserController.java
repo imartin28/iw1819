@@ -53,11 +53,7 @@ public class UserController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	private LocalData localData = new LocalData();
-	
-	
-	
+		
 	/**
 	 * Function to notify the current user a message from server
 	 * the modal is located on nav.html in order to display a message in any view
