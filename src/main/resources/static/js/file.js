@@ -72,8 +72,6 @@ function downloadFilesButtonHandler(){
 
 function downloadFiles(array_IdsToDownload){
 
-
-	
 	$.ajax({
 		type:"POST",
 		url:"",

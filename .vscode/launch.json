@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-IwApplication<M3>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "es.ucm.fdi.iw.IwApplication",
+            "projectName": "M3",
+            "args": ""
+        }
+    ]
+}
