@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -329,7 +330,7 @@ public class FileController {
 		if(parentId != null) {
 			parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId).getSingleResult();
 		}
-		Tag tag = new Tag(name, null, parentTag, (User)session.getAttribute("u"));
+		Tag tag = new Tag(name.trim(), null, parentTag, (User)session.getAttribute("u"));
 		
 		entityManager.persist(tag);
 		entityManager.flush();
@@ -405,17 +406,31 @@ public class FileController {
 	}
 	
 	@GetMapping("/validateTagName")
-	public @ResponseBody String validateTagName(@RequestParam String name, HttpSession session) {
+	public @ResponseBody String validateTagName(@RequestParam String name, @RequestParam Long tagId, HttpSession session) {
 		List<Tag> tags = entityManager.createNamedQuery("findByName", Tag.class).setParameter("name", name).getResultList();
 		Long userId = ((User) session.getAttribute("u")).getId();
 		
 		
-		
-		if (tags.size() == 0) {
-			return null;
-		} else {
+		if (containsTagWithSameNameAndDifferentUserOrSameNameAndDifferentId(tags, name, tagId, userId)) {
 			return "A tag with the name " + name + " already exists.";
+		} else {
+			return null;
 		}
+	}
+	
+	private boolean containsTagWithSameNameAndDifferentUserOrSameNameAndDifferentId(List<Tag> tags, String name, Long tagId, Long userId) {
+		boolean found = false;
+		Iterator<Tag> it = tags.iterator();
+		
+		while (!found && it.hasNext()) {
+			Tag tag = it.next();
+
+			if (tag.getName().equals(name) && (tag.getUser().getId() != userId || (tagId == null || tag.getId() != tagId))) {
+				found = true;
+			}
+		}
+		
+		return found;
 	}
 }
 
