@@ -73,7 +73,7 @@ public class UserController {
 	public String index(Model model, HttpSession session) {	
 		Long id_currentUser = ((User) session.getAttribute("u")).getId();
 		List<CFile> files_currentUser = entityManager.createNamedQuery("FilesUser", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
-		List<Tag> tags = entityManager.createNamedQuery("readAllTags", Tag.class).getResultList();
+		List<Tag> tags = entityManager.createNamedQuery("readTagsByUser", Tag.class).setParameter("userId", id_currentUser).getResultList();
 		
 		System.out.println(files_currentUser);
 		//String json = new Gson().toJson(files_currentUser);

@@ -68,3 +68,19 @@ VALUES ('#8CDE45', 'Pictures', null, 1);
 INSERT INTO TAG
 ("COLOR", "NAME", "PARENT_ID", "USER_ID" )
 VALUES ('#F60045', 'Home Videos', 1, 1);
+
+INSERT INTO TAG
+("COLOR", "NAME", "PARENT_ID", "USER_ID")
+VALUES ('#3AF132', 'Video', null, 2);
+
+INSERT INTO TAG
+("COLOR", "NAME", "PARENT_ID", "USER_ID")
+VALUES ('#F60045', 'Music', null, 2);
+
+INSERT INTO TAG
+("COLOR", "NAME", "PARENT_ID", "USER_ID")
+VALUES ('#8CDE45', 'Pictures', null, 2);
+
+INSERT INTO TAG
+("COLOR", "NAME", "PARENT_ID", "USER_ID")
+VALUES ('#9FBFFF', 'Movies', null, 2);

@@ -325,12 +325,12 @@ public class FileController {
 	
 	@PostMapping("/newTag")
 	@Transactional
-	public String postTag(Model model, HttpSession session, @RequestParam("tagName") String name, @RequestParam("parentId") Long parentId) {
+	public String postTag(Model model, HttpSession session, @RequestParam("tagName") String name, @RequestParam("tagColor") String color, @RequestParam("parentId") Long parentId) {
 		Tag parentTag = null;
 		if(parentId != null) {
 			parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId).getSingleResult();
 		}
-		Tag tag = new Tag(name.trim(), null, parentTag, (User)session.getAttribute("u"));
+		Tag tag = new Tag(name.trim(), color, parentTag, (User)session.getAttribute("u"));
 		
 		entityManager.persist(tag);
 		entityManager.flush();
@@ -411,21 +411,21 @@ public class FileController {
 		Long userId = ((User) session.getAttribute("u")).getId();
 		
 		
-		if (containsTagWithSameNameAndDifferentUserOrSameNameAndDifferentId(tags, name, tagId, userId)) {
+		if (containsTagWithSameNameAndSameUserOrDifferentTagId(tags, name, tagId, userId)) {
 			return "A tag with the name " + name + " already exists.";
 		} else {
 			return null;
 		}
 	}
 	
-	private boolean containsTagWithSameNameAndDifferentUserOrSameNameAndDifferentId(List<Tag> tags, String name, Long tagId, Long userId) {
+	private boolean containsTagWithSameNameAndSameUserOrDifferentTagId(List<Tag> tags, String name, Long tagId, Long userId) {
 		boolean found = false;
 		Iterator<Tag> it = tags.iterator();
 		
 		while (!found && it.hasNext()) {
 			Tag tag = it.next();
 
-			if (tag.getName().equals(name) && (tag.getUser().getId() != userId || (tagId == null || tag.getId() != tagId))) {
+			if (tag.getName().equals(name) && tag.getUser().getId() == userId && (tagId == null || tag.getId() != tagId)) {
 				found = true;
 			}
 		}

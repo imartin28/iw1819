@@ -19,6 +19,9 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({
 @NamedQuery(name="readAllTags", query="SELECT t "
 		+ " FROM Tag t "),
+@NamedQuery(name="readTagsByUser", query="SELECT t "
+		+ " FROM Tag t "
+		+ " WHERE user_id = :userId"),
 @NamedQuery(name="findById", query="SELECT t "
 		+ " FROM Tag t"
 		+ " WHERE id = :id"),
