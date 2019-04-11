@@ -88,10 +88,6 @@ public class UserController {
 		return "index";
 	}	
 	
-	
-	
-	
-	
 	@GetMapping("/profile")
 	public ModelAndView profile(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {
 		

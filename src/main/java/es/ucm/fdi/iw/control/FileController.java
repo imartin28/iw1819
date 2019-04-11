@@ -168,7 +168,6 @@ public class FileController {
 		return modelAndView;
 	}
 	
-	
 	@PostMapping("/{id}")
 	@Transactional
 	public String postFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id, Model model, HttpSession session, HttpServletRequest request) {
@@ -361,8 +360,8 @@ public class FileController {
 		return "redirect:/user/";
 	}
 
-	@GetMapping("{id}/share/")
-	public ModelAndView getShareFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) throws IOException {
+	@GetMapping("/share/{id}")
+	public ModelAndView getShare(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) throws IOException {
 		
 		String err = "File not found";
 		

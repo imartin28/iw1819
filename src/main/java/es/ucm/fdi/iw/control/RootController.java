@@ -176,11 +176,6 @@ public class RootController {
 		return "chats";
 	}
 	
-	@GetMapping("/share")
-	public String share(Model model) {
-		return "share";
-	}
-	
 	@GetMapping("/file")
 	public String file(Model model) {
 		return "file";
