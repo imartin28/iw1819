@@ -301,6 +301,7 @@
 	                        		
 	                        		<button type="submit" id="button-upload-file" class="btn button d-flex align-items-center mt-3  button-upload"><i class="material-icons mr-2">unarchive</i>Upload File</button>
 	                        		<input type="hidden" th:value="@{session.u.id}" name="userId" id="userId">
+	                        		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	                        	</form>
                         	
                         	
