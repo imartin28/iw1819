@@ -65,7 +65,7 @@
                                 <div class="d-flex align-items-center ">
                                     <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
                                     <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
-                                    <a class="remove-link-style" href="#" th:text="${tag.name}"></a>
+                                    <a class="remove-link-style" href="#" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}"></a>
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
                                 <div class="dropdown-menu">
@@ -207,10 +207,12 @@
 
                         <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show">
                             <nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item"><a href="#">Library</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Data</li>
+                                <ol th:if="${parentTag != null}" class="breadcrumb">
+                                	<li class="breadcrumb-item"><a href="#" th:href="@{${'/user/showContent/' + parentTag.id}}" th:text="${parentTag.name}">Home</a></li>
+                                    <li th:each="tag : ${tagsHierarchy}" class="breadcrumb-item"><a href="#" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}">Home</a></li>
+                                    
+                                    
+                                    <!--  <li th:if="${status.last}" th:text="${tag.name}" class="breadcrumb-item active" aria-current="page"></li>-->
                                 </ol>
                                 
                                 <div class="d-flex flex-column align-items-center ">
@@ -416,7 +418,7 @@
 					                                <div class="d-flex align-items-center ">
 					                                    <input type ="checkbox" th:value="${tag.id}"  name="id_tag" class="mr-4 file-checkbox"> 
 					                                    <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
-					                                    <a class="remove-link-style" href="#" th:text="${tag.name}"></a>
+					                                    <a class="remove-link-style" th:text="${tag.name}"></a>
 					                                    <input type="hidden" th:value="${file.id}" name="id_file">
 					                                </div>
 	    

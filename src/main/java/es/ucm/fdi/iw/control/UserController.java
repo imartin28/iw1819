@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -80,6 +83,8 @@ public class UserController {
 		
 		model.addAttribute("files", files_currentUser);
 		model.addAttribute("tags", tags);
+		model.addAttribute("parentTag", null);
+		model.addAttribute("currentTag", null);
 		
 		if(!files_currentUser.isEmpty()) {
 			System.out.println(files_currentUser.get(0).getMetadata());
@@ -374,6 +379,35 @@ public class UserController {
 		
 		return modelAndView;
 	}
+	
+	@GetMapping("/showContent/{tagId}")
+	public String showContentOfTag(Model model, @PathVariable long tagId,
+			HttpSession session) {
+		Tag tag = entityManager.createNamedQuery("findById", Tag.class).setParameter("id", tagId)
+				.getSingleResult();
+		Long userId = ((User) session.getAttribute("u")).getId();
+		List<Tag> tags = entityManager.createNamedQuery("readTagsByUser", Tag.class).setParameter("userId", userId).getResultList();
+		LinkedList<Tag> tagsHierarchy = new LinkedList<>();
+		
+		model.addAttribute("files", tag.getFiles());
+		model.addAttribute("tags", tags);
+		model.addAttribute("currentTag", tag);
+		
+		// Leer todos los tags que estén por encima en la jerarquía
+		while (tag.getParent() != null) {
+			tagsHierarchy.addFirst(tag);
+			tag = entityManager.createNamedQuery("readParentTag", Tag.class).setParameter("parentId", tag.getParent().getId())
+					.getSingleResult();
+		}
+		
+		
+		model.addAttribute("parentTag", tag);
+		model.addAttribute("tagsHierarchy", tagsHierarchy);
+		
+		return "index";
+		
+	}
+	
 	
 	@GetMapping("/friends")
 	public String friends(Model model) {

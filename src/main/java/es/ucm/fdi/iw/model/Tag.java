@@ -27,7 +27,11 @@ import javax.validation.constraints.NotNull;
 		+ " WHERE id = :id"),
 @NamedQuery(name="findByName", query="SELECT t "
 		+ " FROM Tag t"
-		+ " WHERE name = :name")
+		+ " WHERE name = :name"),
+@NamedQuery(name="readParentTag", query="SELECT tag "
+		+ " FROM Tag tag"
+		+ " WHERE id = :parentId"),
+
 })
 public class Tag {
 	
