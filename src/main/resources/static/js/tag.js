@@ -5,6 +5,7 @@ $(() => {
     $("#new-tag-name, #edit-tag-name").keyup(handleValidateTagName);
     $("#new-tag-form").submit(handleValidateTagName);
     $('.btn-edit-tag').on('click', handleEditModal);
+    $("#add-tags-to-file-button").on("click", addTagsToFileButtonHandler);
 });
 
 
@@ -69,6 +70,44 @@ function handleEditModal() {
 	$("#modalEditTag").find("#edit-tag-id").val(tagId);
 	$("#modalEditTag").find("#edit-tag-name").val(tagName);
 	$("#modalEditTag").find("#edit-tag-color").val(tagColor);
+}
+
+
+function addTagsToFileButtonHandler() {
+	let tagsChecked = $("input[name='id_tag']:checked");
+	let tagsIds = [];
+	let fileId = $(this).parent().parent().find("input[type='hidden']").val();
+
+	tagsChecked.each(function(){
+		let tag = $(this);		
+		tagsIds.push(tag.val());		
+	});
+	
+	addTagsToFile(tagsIds, fileId);
+	
+}
+
+
+function addTagsToFile(tagsIds, fileId) {
+	$.ajax({
+		type:"POST",
+		url:"/file/addTagsToFile",
+		data: JSON.stringify({tagsIds : tagsIds, fileId : fileId}),
+		contentType : 'application/json; charset=utf-8',
+        dataType : 'json',
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(){
+			location.reload();
+			console.log("exito");
+		},
+		 error: function (jqXHR, textStatus, errorThrown) {
+			 location.reload();
+             console.log("Se ha producido un error: " + errorThrown);
+        }
+	});
 }
 
 

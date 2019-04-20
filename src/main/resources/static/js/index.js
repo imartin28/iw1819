@@ -1,4 +1,4 @@
-$(function() {
+$(() => {
 
     $("#view-list").click(function() {
         $("#action-button-container").removeClass("d-none");
@@ -20,7 +20,5 @@ $(function() {
             }
         }
     });
-    
-
 });
 

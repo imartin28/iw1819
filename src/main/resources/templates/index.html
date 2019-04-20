@@ -209,10 +209,14 @@
                             <nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">
                                 <ol th:if="${parentTag != null}" class="breadcrumb">
                                 	<li class="breadcrumb-item"><a href="#" th:href="@{${'/user/showContent/' + parentTag.id}}" th:text="${parentTag.name}">Home</a></li>
-                                    <li th:each="tag : ${tagsHierarchy}" class="breadcrumb-item"><a href="#" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}">Home</a></li>
-                                    
-                                    
-                                    <!--  <li th:if="${status.last}" th:text="${tag.name}" class="breadcrumb-item active" aria-current="page"></li>-->
+                                    <li th:each="tag, status : ${tagsHierarchy}" class="breadcrumb-item">
+                                    	<a th:unless="${status.last}" href="#" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}">Home</a>
+                                    	<span th:if="${status.last}" th:text="${tag.name}"></span>
+                                    </li>
+                                </ol>
+                                
+                                <ol th:if="${parentTag == null}" class="breadcrumb">
+                                   <li class="breadcrumb-item active" aria-current="page">/</li>
                                 </ol>
                                 
                                 <div class="d-flex flex-column align-items-center ">
@@ -397,40 +401,59 @@
 								
 								 
 						
-						
+						<div class="modal fade" id="modalDeleteFiles" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+								  <div class="modal-dialog" role="document">
+								    <div class="modal-content">
+								      <div class="modal-header">
+								        <h5 class="modal-title" id="exampleModalLabel">Delete files</h5>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          <span aria-hidden="true">&times;</span>
+								        </button>
+								      </div>
+								      <div class="modal-body">
+						         		  <label class="col-form-label">Are you sure you want to delete the selected files?</label>
+						         		  
+								          <div class="modal-footer">						      	
+									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+									        <button type="submit" id="delete-files" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Delete files</button>
+								  	      </div>
+								      </div>
+								    </div>
+								  </div>
+								</div>
 						
 							<!-- Modal View All Tags-->
 								<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalViewAllTag' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
 								  <div class="modal-dialog" role="document">
 								    <div class="modal-content">
 								    <div class="modal-header">
-								        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Nest the file ' + file.name + ' in tag'}"></h5>
+								        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Nest the file ' + file.name + ' in tags'}"></h5>
 								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								          <span aria-hidden="true">&times;</span>
 								        </button>
 								      </div>
 								         <div class="modal-body">
-									      	<form method="POST" action="#" th:action="@{/file/nestFileInTag}">
-									          <div class="form-group">
-							            		<label for="recipient-name" class="col-form-label">Choose the tag:</label>
+									      
+									    
+							            		<label for="recipient-name" class="col-form-label">Choose the tags:</label>
 							            		<ul>
-							            		  <li th:each="tag : ${tags}" th:unless="${#lists.contains(file.tags, tag)}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags ">
-					                                <div class="d-flex align-items-center ">
-					                                    <input type ="checkbox" th:value="${tag.id}"  name="id_tag" class="mr-4 file-checkbox"> 
-					                                    <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
-					                                    <a class="remove-link-style" th:text="${tag.name}"></a>
-					                                    <input type="hidden" th:value="${file.id}" name="id_file">
-					                                </div>
+							            			<li th:each="tag : ${tags}" th:unless="${#lists.contains(file.tags, tag)}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags ">
+					                                	<div class="d-flex align-items-center ">
+						                                    <input type ="checkbox" th:value="${tag.id}"  name="id_tag" class="mr-4 file-checkbox file-tags"> 
+						                                    <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
+						                                    <span th:text="${tag.name}"></span>
+						                                    <input type="hidden" th:value="${file.id}" name="id_file">
+						                                </div>
 	    
-					                              </li>
+					                              	</li>
 					                              </ul>
-							          		  </div>       							           
+							          		       							           
 					
 									          <div class="modal-footer">						      	
 										        <button type="button" class="btn button-cancel" data-dismiss="modal">Cancel</button>
-										        <button type="submit" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
+										        <button type="submit" id="add-tags-to-file-button" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
 									  	      </div>
-								  	      </form>
+								  	     
 								       	</div>
 								      </div>
 								      

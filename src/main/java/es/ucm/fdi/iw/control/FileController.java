@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,7 @@ import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.util.JSONUtil;
 import es.ucm.fdi.iw.util.MediaTypeUtils;
 import es.ucm.fdi.iw.util.StringUtil;
+import es.ucm.fdi.iw.util.PostTagFile;
 
 @Controller()
 @RequestMapping("file")
@@ -306,21 +308,25 @@ public class FileController {
 		}
 
 		response.setStatus(200);
-		// Hay que borrar los ficheros del disco duro
-
 		fileService.deleteFiles(files);
 		return "{}";
 	}
 
-	@PostMapping("/nestFileInTag")
+	
+	@RequestMapping(value = "/addTagsToFile", method = RequestMethod.POST,  consumes=MediaType.APPLICATION_JSON_VALUE)
 	@Transactional
-	public String nestFileInTag(@RequestParam("id_tag") Long idTag, @RequestParam("id_file") Long idFile) {
+	public String addTagsToFile(@RequestBody PostTagFile postInfo, HttpServletResponse response) {
+		CFile file = fileService.findById(postInfo.getFileId());
+		
+		for (Long tagId : postInfo.getTagsIds()) {
+			Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", tagId)
+					.getSingleResult();
+			
+			tag.getFiles().add(file);
+		}
 
-		CFile file = fileService.findById(idFile);
-		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", idTag)
-				.getSingleResult();
-
-		tag.getFiles().add(file);
+		
+		response.setStatus(200);
 		return "redirect:/user/";
 	}
 
