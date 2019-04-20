@@ -2,7 +2,8 @@
 var correctNewTagForm = [];
 
 $(() => { 
-	$("#tagSerachInput").keyup(searchTag);
+	$("#tagSearchInput").keyup(searchTag);
+	$("#fileSearchInput").keyup(searchFile);
     $("#new-tag-name, #edit-tag-name").keyup(handleValidateTagName);
     $("#new-tag-form").submit(handleValidateTagName);
     $('.btn-edit-tag').on('click', handleEditModal);
@@ -15,11 +16,54 @@ function submitForm() {
 	return handleValidateTagName();
 };
 
-function searchTag() {
-	let linkTagNames = $("#tagList").find(".tagName");
-	let searchText = $("#tagSerachInput").val();
+function searchFile() {
+	let filesPanel = $(".panel-grid-files").find(".file-name > a");
+	let searchText = $("#fileSearchInput").val();
 	
 	if(searchText.length > 0 && searchText !== "") {
+		
+		searchText = searchText.toLowerCase().trim();
+		let files = filesPanel.filter(function (index) {
+			let fileName = $(filesPanel[index]).text();
+			fileName = fileName.toLowerCase().trim();
+			return fileName === searchText || fileName.includes(searchText);
+		});
+		
+		if(files !== null && files.length > 0) {
+			
+			if(filesPanel !== null && filesPanel.length > 0) {
+				//hideAll
+				for(let i = 0; i < filesPanel.length; i++) {
+					$(filesPanel[i]).parent().parent().parent().hide();
+				}
+				
+				for(let i = 0; i < files.length; i++) {
+					$(files[i]).parent().parent().parent().show();
+				}
+			}
+		}
+		else {
+			//hideAll
+			for(let i = 0; i < filesPanel.length; i++) {
+				$(filesPanel[i]).parent().parent().parent().hide();
+			}
+		}
+	}
+	
+	if(searchText === "") {
+		//showAll
+		for(let i = 0; i < filesPanel.length; i++) {
+			$(filesPanel[i]).parent().parent().parent().show();
+		}
+	}
+}
+
+function searchTag() {
+	let linkTagNames = $("#tagList").find(".tagName");
+	let searchText = $("#tagSearchInput").val();
+	
+	if(searchText.length > 0 && searchText !== "") {
+		
 		searchText = searchText.toLowerCase().trim();
 		let tags = linkTagNames.filter(function (index) {
 			let tagName = $(linkTagNames[index]).text();
