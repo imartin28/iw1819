@@ -1,12 +1,78 @@
 $(() => {
-   $(".custom-file-input").on("change", appearFileName);	 
-   $("#delete-files").on("click", deleteFilesButtonHandler);
-   $("#download-files").on("click", downloadFilesButtonHandler);
-   //$(".file-upload").file_upload();
-   $("#select-all-files").on("change", selectAllFilesCheckBoxHandler);
-   changeFilesIcons();
+	$("#fileSearchForm").submit(function() { return false });
+	$("#fileSearchInput").keyup(searchFile);
+	$(".custom-file-input").on("change", appearFileName);	 
+	$("#delete-files").on("click", deleteFilesButtonHandler);
+	$("#download-files").on("click", downloadFilesButtonHandler);
+	//$(".file-upload").file_upload();
+	$("#select-all-files").on("change", selectAllFilesCheckBoxHandler);
+	changeFilesIcons();
   
 });
+
+function searchFile() {
+	let filesPanel = $(".panel-grid-files").find(".file-name > a");
+	let searchText = $("#fileSearchInput").val();
+	
+	if(searchText.length > 0 && searchText !== "") {
+		
+		searchText = searchText.toLowerCase().trim();
+		let files = filesPanel.filter(function (index) {
+			let fileName = $(filesPanel[index]).text();
+			fileName = fileName.toLowerCase().trim();
+			return fileName === searchText || fileName.includes(searchText);
+		});
+		
+		if(files !== null && files.length > 0) {
+			
+			if(filesPanel !== null && filesPanel.length > 0) {
+				hideAllFiles();
+				
+				for(let i = 0; i < files.length; i++) {
+					showFile(files[i]);
+				}
+			}
+		}
+		else {
+			hideAllFiles();
+		}
+	}
+	
+	if(searchText === "") {
+		showAllFiles();
+	}
+}
+
+function hideAllFiles() {
+	let files = $(".panel-grid-files").find(".file-name > a");
+	
+	if(files !== null && files.length > 0) {
+		for(let i = 0; i < files.length; i++) {
+			hideFile(files[i]);
+		}
+	}
+}
+
+function hideFile(fileNameLink) {
+	$(fileNameLink).parent().parent().parent().hide();
+	$(fileNameLink).parent().parent().find("input:checkbox").prop("disabled", true);
+	$(fileNameLink).parent().parent().find("input:checkbox").prop("checked", false);
+}
+
+function showAllFiles() {
+	let files = $(".panel-grid-files").find(".file-name > a");
+	
+	if(files !== null && files.length > 0) {
+		for(let i = 0; i < files.length; i++) {
+			showFile(files[i]);
+		}
+	}
+}
+
+function showFile(fileNameLink) {
+	$(fileNameLink).parent().parent().parent().show();
+	$(fileNameLink).parent().parent().find("input:checkbox").prop("disabled", false);
+}
 
 
 function changeFilesIcons(){
@@ -27,11 +93,19 @@ function changeFilesIcons(){
 
 function selectAllFilesCheckBoxHandler(){
 	
-	if( $(this).is(':checked') ){
-		$("input[name='file-check']").prop("checked", true);
-    } else {
-    	$("input[name='file-check']").prop("checked", false);
-    }
+	let inputs = $("input[name='file-check']");
+	
+	if(inputs !== null && inputs.length > 0) {
+		for(let i = 0; i < inputs.length; i++) {
+			if(!$(inputs[i]).prop("disabled")) {
+				if( $(this).is(':checked') ){
+					$(inputs[i]).prop("checked", true);
+			    } else {
+			    	$(inputs[i]).prop("checked", false);
+			    }
+			}
+		}
+	}
 }
 
 
