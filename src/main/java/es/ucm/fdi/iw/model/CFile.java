@@ -171,4 +171,13 @@ public class CFile {
 		}
 		return "";
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof CFile)) {
+			return false;
+		} else {
+			return this.id == ((CFile) o).id;
+		}
+	}
 }

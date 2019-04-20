@@ -275,7 +275,11 @@
 							     
 							       
                                  <div class="center-content mt-1">
-                                 	<label class="tags-style" th:each="tag : ${file.tags}" th:text="${tag.name}" th:attr="style=${'background-color:' + tag.color}"></label>
+                                 	<div class="tags-style" th:each="tag : ${file.tags}"  th:attr="style=${'background-color:' + tag.color}">
+                                 	<span th:text="${tag.name}"></span>
+                                 	<button type="button" class="remove-tag-from-file-button" th:attr="data-file-id=${file.id}, data-tag-id=${tag.id}">x</button>	
+                                 </div>
+                                 	
                                  </div>
                                   <div class="dropdown">
 									  <button class="btn button-options-dropdown dropdown-toggle center-content mr-5" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

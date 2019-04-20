@@ -6,6 +6,7 @@ $(() => {
     $("#new-tag-form").submit(handleValidateTagName);
     $('.btn-edit-tag').on('click', handleEditModal);
     $("#add-tags-to-file-button").on("click", addTagsToFileButtonHandler);
+    $(".remove-tag-from-file-button").on("click", removeTagFromFileButtonHandler);
 });
 
 
@@ -110,6 +111,31 @@ function addTagsToFile(tagsIds, fileId) {
 	});
 }
 
+
+function removeTagFromFileButtonHandler() {
+	let fileId = $(this).attr("data-file-id");
+	let tagId = $(this).attr("data-tag-id");
+	
+	$.ajax({
+		type:"POST",
+		url:"/file/removeTagFromFile",
+		data: JSON.stringify({tagId : tagId, fileId : fileId}),
+		contentType : 'application/json; charset=utf-8',
+        dataType : 'json',
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(){
+			location.reload();
+			console.log("exito");
+		},
+		 error: function (jqXHR, textStatus, errorThrown) {
+			 location.reload();
+             console.log("Se ha producido un error: " + errorThrown);
+        }
+	});
+}
 
 
 

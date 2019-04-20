@@ -64,6 +64,7 @@ import es.ucm.fdi.iw.service.FileService;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.util.JSONUtil;
 import es.ucm.fdi.iw.util.MediaTypeUtils;
+import es.ucm.fdi.iw.util.PostDeleteTagFromFile;
 import es.ucm.fdi.iw.util.StringUtil;
 import es.ucm.fdi.iw.util.PostTagFile;
 
@@ -327,6 +328,18 @@ public class FileController {
 
 		
 		response.setStatus(200);
+		return "redirect:/user/";
+	}
+	
+	@PostMapping("/removeTagFromFile")
+	@Transactional
+	public String removeTagFromFile(@RequestBody PostDeleteTagFromFile postInfo) {
+		CFile file = fileService.findById(postInfo.getFileId());
+		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", postInfo.getTagId())
+				.getSingleResult();
+		
+		tag.getFiles().remove(file);
+		
 		return "redirect:/user/";
 	}
 
