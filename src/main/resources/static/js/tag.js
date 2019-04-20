@@ -2,6 +2,7 @@
 var correctNewTagForm = [];
 
 $(() => { 
+	$("#tagSerachInput").keyup(searchTag);
     $("#new-tag-name, #edit-tag-name").keyup(handleValidateTagName);
     $("#new-tag-form").submit(handleValidateTagName);
     $('.btn-edit-tag').on('click', handleEditModal);
@@ -14,6 +15,77 @@ function submitForm() {
 	return handleValidateTagName();
 };
 
+function searchTag() {
+	let linkTagNames = $("#tagList").find(".tagName");
+	let searchText = $("#tagSerachInput").val();
+	
+	if(searchText.length > 0 && searchText !== "") {
+		searchText = searchText.toLowerCase().trim();
+		let tags = linkTagNames.filter(function (index) {
+			let tagName = $(linkTagNames[index]).text();
+			tagName = tagName.toLowerCase().trim();
+			return tagName === searchText || tagName.includes(searchText);
+		});
+		
+		if(tags !== null && tags.length > 0) {
+			let tagsLi = $("#tagList").find("li");
+			
+			if(tagsLi !== null && tagsLi.length > 0) {
+				hideAllTagsLi();
+				
+				for(let i = 0; i < tags.length; i++) {
+					showTagLi($(tags[i]).parent().parent());
+				}
+			}
+		}
+		else {
+			//hideAll
+			hideAllTagsLi();
+		}
+	}
+	
+	if(searchText === "") {
+		showAllTagsLi();
+	}
+}
+
+function hideTagLi(li) {
+	if($(li).hasClass("d-flex")) {
+		$(li).removeClass("d-flex");
+	}
+	if(!$(li).hasClass("d-none")) {
+		$(li).addClass("d-none");
+	}
+}
+
+function hideAllTagsLi() {
+	let tagsLi = $("#tagList").find("li");
+	
+	if(tagsLi !== null && tagsLi.length > 0) {
+		for(let i = 0; i < tagsLi.length; i++) {
+			hideTagLi(tagsLi[i]);
+		}
+	}
+}
+
+function showTagLi(li) {
+	if(!$(li).hasClass("d-flex")) {
+		$(li).addClass("d-flex");
+	}
+	if($(li).hasClass("d-none")) {
+		$(li).removeClass("d-none");
+	}
+}
+
+function showAllTagsLi() {
+	let tagsLi = $("#tagList").find("li");
+	
+	if(tagsLi !== null && tagsLi.length > 0) {
+		for(let i = 0; i < tagsLi.length; i++) {
+			showTagLi(tagsLi[i]);
+		}
+	}
+}
 
 function handleValidateTagName(event) {
 	let target = $(event.target);
