@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	lang="es">
+<head>
+	<title>Search fragment - rest intentionally left empty</title>
+</head>
+<body>
+	
+	<th:block th:fragment="search">
+		<form id="userSearchForm" class="form-inline center-content searchForm" method="GET" th:action="@{/user/search}">
+        	<input id="userSearchInput" class="form-control" type="text" name="searchText" placeholder="Search a user" aria-label="Search">
+        	<button class="btn button-search" type="submit"><i class="material-icons center-content">search</i></button>
+    	</form>
+    	
+    	<script src="/js/search-user.js"></script>
+	</th:block>
+
+</body>
+</html>

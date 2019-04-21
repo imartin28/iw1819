@@ -24,5 +24,7 @@ public interface UserService {
 	
 	User findByEmailAndPasswordAndActive(String email, String password);
 	
+	List<User> findByEmailOrNicknameOrNameOrLastName(String searchText);
+	
 	int adminCount();
 }

@@ -49,7 +49,7 @@
 	            <tbody th:if="${users != null}">     
 	                <tr th:id="${user.id}" th:each=" user, iStat : ${users}" th:if="${session.u.id != user.id}">
 	                	<th th:text="${user.active}" th:classappend="${user.active} ? active-text : inactive-text"></th>
-	                	<td th:text="${user.email}"></td>
+	                	<td><a th:href="@{/user/profile?userId=__${user.id}__}" th:text="${user.email}"></a></td>
 	                	<td th:text="${'@'+user.nickname}"></td>
 	                    <td th:text="${user.name}"></td>
 	                    <td th:text="${user.lastName}"></td>

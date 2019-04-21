@@ -95,6 +95,19 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public List<User> findByEmailOrNicknameOrNameOrLastName(String searchText) {
+		List<User> users = null;
+		
+		if(searchText != null && !searchText.isEmpty()) {
+			searchText = searchText.toLowerCase().trim();
+			users = this.userRepo.findByEmailOrNicknameOrNameOrLastNameOrEmailLikeOrNicknameLikeOrNameLikeOrLastNameLike(
+					searchText, searchText, searchText, searchText, searchText, searchText, searchText, searchText);
+		}
+		
+		return users;
+	}
+	
+	@Override
 	public int adminCount() {
 		return entityManager.createNamedQuery("User.listAdmin", User.class).getResultList().size();
 	}

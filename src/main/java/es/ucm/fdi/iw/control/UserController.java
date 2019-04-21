@@ -3,15 +3,18 @@ package es.ucm.fdi.iw.control;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +94,23 @@ public class UserController {
 		}
 
 		return "index";
-	}	
+	}
+	
+	@GetMapping("/search")
+	public ModelAndView searchUser(ModelAndView modelAndView, HttpSession session, HttpServletRequest request,
+			@RequestParam("searchText") String searchText) {
+
+		if(searchText != null && !searchText.isEmpty()) {
+			List<User> users = userService.findByEmailOrNicknameOrNameOrLastName(searchText);
+			
+			if(users != null && users.size() > 0) {
+				modelAndView.addObject("users", users);
+			}
+		}
+		
+		modelAndView.setViewName("results");
+		return modelAndView;
+	}
 	
 	@GetMapping("/profile")
 	public ModelAndView profile(ModelAndView modelAndView, HttpSession session, SessionStatus status, @ModelAttribute ("userId") Long userId) {

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<th:block th:replace="fragments/head :: head"></th:block>
+	
+	<!-- Put additional css and js sources -->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">    
+    <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
+    
+    <title>M3- Friends</title>
+</head>
+
+<body> 
+        
+	<nav th:replace="fragments/nav :: nav"></nav>
+        
+    <div class="row justify-content-center mt-5">
+           
+        <div class="col-auto">
+                    
+            <div class="panel mt-3">
+
+	            <ul class="list-group list-group-flush" th:if="${users != null}">
+	                <li class="list-group-item d-flex flex-row align-items-center my-2" 
+	                	th:id="${user.id}" th:each=" user, iStat : ${users}" th:if="${session.u.id != user.id}">
+	                	
+	                    <img class="profile-image" src="/img/fer.jpg">
+	                    <div class="d-flex flex-column align-items-center mr-3">
+	                    	<a class="link profile-name name" th:href="@{/user/profile?userId=__${user.id}__}" th:text="${user.name + ' ' + user.lastName}"></a>
+			            	<span class="nick text-center" th:text="${'@'+user.nickname}"></span>
+	                    </div>
+	                    
+			            <span class="text-center mr-2" th:text="${user.email}"></span>
+			            <span class="text-center mr-2" th:if="${user.birthdate != null}" 
+			            	th:text="${(#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' años'}"></span>
+			            <span class="bio text-center" th:text="${user.description}"></span>
+			            <a href="#" class="btn button d-flex flex-row align-items-center"><i class="material-icons mr-2">person_add</i>Add friend</a>
+	                </li>
+	            </ul>
+
+            </div>
+
+        </div>
+        
+	</div>
+          
+</body>
+</html>
