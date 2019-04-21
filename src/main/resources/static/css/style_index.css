@@ -159,14 +159,14 @@ ul > .button {
 
 .button {
     background: linear-gradient(0deg, rgba(62,181,169,1) 0%, rgba(111,226,204,1) 100%);
-    color: white;
+    color: white !important;
     border-radius: 30px; 
 }
 
 .button:hover {
     background: none;
     border-color: #5FD1C1 !important;
-    color: #5FD1C1;
+    color: #5FD1C1 !important;
 }
 
 .button-options-dropdown{

@@ -26,7 +26,7 @@
                     
             <div class="panel mt-3">
 
-	            <ul class="list-group list-group-flush" th:if="${users != null}">
+	            <ul class="list-group list-group-flush" th:if="${users != null && users.size() > 0}">
 	                <li class="list-group-item d-flex flex-row align-items-center my-2" 
 	                	th:id="${user.id}" th:each=" user, iStat : ${users}" th:if="${session.u.id != user.id}">
 	                	
@@ -43,6 +43,12 @@
 			            <a href="#" class="btn button d-flex flex-row align-items-center"><i class="material-icons mr-2">person_add</i>Add friend</a>
 	                </li>
 	            </ul>
+	            
+	            <div class="d-flex flex-column justify-content-center align-items-center pt-4 pb-3 px-4"
+	            	th:unless="${users != null && users.size() > 0}">
+	            	<span>No user found</span>
+	            	<span><i class="far fa-frown"></i></span>	
+	            </div>
 
             </div>
 
