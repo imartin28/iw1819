@@ -1,10 +1,5 @@
 package es.ucm.fdi.iw.control;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,9 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +20,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
+import es.ucm.fdi.iw.model.Friend;
 import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
-import es.ucm.fdi.iw.model.UserFile;
 import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
@@ -427,6 +417,67 @@ public class UserController {
 		
 	}
 	
+	@PostMapping("/addFriend")
+	public ModelAndView addFriend(ModelAndView modelAndView, HttpSession session, 
+			@ModelAttribute ("userId") String userId, @ModelAttribute ("message") String message) {
+		String err = "User not found";
+		User userLogged = null;
+		User friendRequestUser = null;
+		
+		if(userId != null && !userId.isEmpty()) {
+			Long userIdLong = Long.valueOf(userId);
+			
+			if(userIdLong != null) {
+				userLogged = (User)session.getAttribute("u");
+				
+				if(userLogged != null && userLogged.getId() != userIdLong) {
+					friendRequestUser = userService.findById(userIdLong);
+					
+					if(friendRequestUser != null && friendRequestUser.isActive()) {
+						User userLoggedDatabase = userService.findById(userLogged.getId());
+						
+						if(userLoggedDatabase != null && userLoggedDatabase.isActive()) {
+							err = null;
+							List<Friend> friends = friendRequestUser.getFriends();
+							boolean found = false;
+							
+							if(friends == null) {
+								friends = new ArrayList<Friend>();
+							}
+							else {
+								int i = 0;
+								while(i < friends.size()) {
+									found = (friends.get(i).getTargetUser().getId() == userLoggedDatabase.getId());
+									i++;
+								}
+							}
+							
+							if(!found) {
+								friends.add(new Friend(userLoggedDatabase, message));
+								friendRequestUser.setFriends(friends);
+								
+								friendRequestUser = userService.save(friendRequestUser);
+							}
+							else
+								err = "The user "+friendRequestUser.getNickname()+"is already your friend";
+						}
+					}
+				}
+			}
+		}
+		
+		if(err != null) {
+			modelAndView.setViewName("redirect:/");
+			this.notifyModal(modelAndView, "Error", err);
+		}
+		else if(friendRequestUser != null){
+			modelAndView.setViewName("redirect:/user/profile");
+			modelAndView.addObject("userId", userId);
+			this.notifyModal(modelAndView, "Petición enviada", "Se ha enviado una petición de amistad al usuario" + friendRequestUser.getNickname());
+		}
+		
+		return modelAndView;
+	}
 	
 	@GetMapping("/friends")
 	public String friends(Model model) {

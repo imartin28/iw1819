@@ -26,6 +26,12 @@ import javax.persistence.OneToMany;
 	@NamedQuery(name="User.byEmailAndPassword",
 	query="SELECT u FROM User u "
 			+ "WHERE (u.email = :userEmail AND u.password = :userPassword AND u.active = 1)"),
+	@NamedQuery(name="User.findUser",
+	query="SELECT u FROM User u "
+			+ "WHERE (u.email = ?1 OR u.nickname = ?1 OR u.name = ?1 OR u.lastName = ?1) OR "+
+			"(LOWER(u.email) = ?1 OR LOWER(u.nickname) = ?1 OR LOWER(u.name) = ?1 OR LOWER(u.lastName) = ?1) OR "+
+			"(u.email LIKE ?2 OR u.nickname LIKE ?2 OR u.name LIKE ?2 OR u.lastName LIKE ?2) AND "+
+			"u.active = 1"),
 	
 	//Admin
 	@NamedQuery(name="User.listAdmin",

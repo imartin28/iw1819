@@ -17,7 +17,17 @@ public class Friend {
 	private User targetUser;
 	
 	private boolean accepted;
+	
+	private String message;
+	
+	public Friend() { }
 
+	public Friend(User targetUser, String message) {
+		this.targetUser = targetUser;
+		this.message = message;
+		this.accepted = false;
+	}
+	
 	public long getId() {
 		return id;
 	}
@@ -40,6 +50,14 @@ public class Friend {
 
 	public void setAccepted(boolean accepted) {
 		this.accepted = accepted;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

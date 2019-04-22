@@ -100,8 +100,10 @@ public class UserServiceImpl implements UserService {
 		
 		if(searchText != null && !searchText.isEmpty()) {
 			searchText = searchText.toLowerCase().trim();
-			users = this.userRepo.findByEmailOrNicknameOrNameOrLastNameOrEmailLikeOrNicknameLikeOrNameLikeOrLastNameLike(
-					searchText, searchText, searchText, searchText, searchText, searchText, searchText, searchText);
+			users = entityManager.createNamedQuery("User.findUser", User.class)
+					.setParameter(1, searchText)
+					.setParameter(2, '%'+searchText+'%')
+					.getResultList();
 		}
 		
 		return users;
