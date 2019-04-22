@@ -373,7 +373,15 @@ hr {
 
 
 
+.remove-tag-from-file-button {
+	border: none;
+	background: none;
+}
 
+.remove-tag-from-file-button:hover {
+	cursor: pointer;
+	border: 1px solid black;
+}
 
 
 
