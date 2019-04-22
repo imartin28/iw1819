@@ -65,7 +65,7 @@
                                 <div class="d-flex align-items-center ">
                                     <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
                                     <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
-                                    <a class="remove-link-style tagName" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}"></a>
+                                    <a class="remove-link-style tagName dragtarget" ondragstart="dragStart(event)" draggable="true" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}" th:attr="data-tag-id=${tag.id}"></a>
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
                                 <div class="dropdown-menu">
@@ -246,7 +246,7 @@
                            </div>
                            
                            <div class="panel-grid-files " >
-                            <div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2  "> 
+                            <div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2 droptarget" ondrop="drop(event)" ondragover="allowDrop(event)" th:attr="data-file-id=${file.id}"> 
                             	
                                 <div class=" file-icon-checkbox p-1 ml-4 ">
                                 	
@@ -268,7 +268,7 @@
                         			</script>
                         			-->
                         			
-                        			<div class="file-name">
+                        			<div class="file-name" >
                                        <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
                                     </div> 
 							     </div>

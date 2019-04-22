@@ -212,5 +212,21 @@ function removeTagFromFileButtonHandler() {
 }
 
 
+function dragStart(event) {
+	event.dataTransfer.setData("tagId", event.target.getAttribute("data-tag-id"));
+}
+
+
+function allowDrop(event) {
+	event.preventDefault();
+}
+
+function drop(event) {
+  event.preventDefault();
+  let tagId = event.dataTransfer.getData("tagId");
+  let fileId = event.target.getAttribute("data-file-id");
+  
+  addTagsToFile([tagId], fileId);
+}
 
 
