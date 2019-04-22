@@ -10,8 +10,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +49,9 @@ public class RootController {
 
 	@Autowired 
 	private EntityManager entityManager;
+	
+	@Autowired 
+	private AuthenticationManager authenticationManager;
 	
 	@Autowired
 	UserService userService;
@@ -111,7 +117,8 @@ public class RootController {
 	}
 	
 	@PostMapping("/register")
-	public ModelAndView register(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userRegister") UserTransfer userTransfer) {
+	public ModelAndView register(ModelAndView modelAndView, HttpSession session, HttpServletRequest request,
+			@ModelAttribute ("userRegister") UserTransfer userTransfer) {
 		String err = "Please fill the fields";
 
 		User userLogged = (User)session.getAttribute("u");
@@ -140,6 +147,17 @@ public class RootController {
 						if(user != null) {
 							err = null;
 							userTransfer.setId(user.getId());
+							
+							doAutoLogin(userTransfer.getEmail(), userTransfer.getPassword(), request);	  
+					        log.info("Created & logged user {}, with ID {} and password {}", userTransfer.getEmail(), userTransfer.getId(), userTransfer.getPassword());
+					        
+					        // add 'u' session attribute
+					        session.setAttribute("u", user);
+							// add a 'ws' session variable
+							session.setAttribute("ws", request.getRequestURL().toString()
+									.replaceFirst("[^:]*", "ws")		// http[s]://... => ws://...
+									.replaceFirst("/[^/]*$", "/ws"));
+							
 						}
 						else {
 							err = "Error while trying to create the user";
@@ -169,6 +187,26 @@ public class RootController {
 		}
 		
 		return modelAndView;
+	}
+	
+	/**
+	 * Non-interactive authentication; user and password must already exist
+	 * @param username
+	 * @param password
+	 * @param request
+	 */
+	private void doAutoLogin(String username, String password, HttpServletRequest request) {
+	    try {
+	        // Must be called from request filtered by Spring Security, otherwise SecurityContextHolder is not updated
+	        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+	        token.setDetails(new WebAuthenticationDetails(request));
+	        Authentication authentication = authenticationManager.authenticate(token);
+	        log.debug("Logging in with [{}]", authentication.getPrincipal());
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	    } catch (Exception e) {
+	        SecurityContextHolder.getContext().setAuthentication(null);
+	        log.error("Failure in autoLogin", e);
+	    }
 	}
 	
 	@GetMapping("/chats")
