@@ -114,7 +114,7 @@ function validateTagName(event) {
 	
 	$.ajax({
 		type:"GET",
-		url:"/file/validateTagName",
+		url:"/tag/validateTagName",
 		async : false,
 		headers: {
 			"Content-Type": "application/json",				
@@ -166,7 +166,7 @@ function addTagsToFileButtonHandler() {
 function addTagsToFile(tagsIds, fileId) {
 	$.ajax({
 		type:"POST",
-		url:"/file/addTagsToFile",
+		url:"/tag/addTagsToFile",
 		data: JSON.stringify({tagsIds : tagsIds, fileId : fileId}),
 		contentType : 'application/json; charset=utf-8',
         dataType : 'json',
@@ -192,7 +192,7 @@ function removeTagFromFileButtonHandler() {
 	
 	$.ajax({
 		type:"POST",
-		url:"/file/removeTagFromFile",
+		url:"/tag/removeTagFromFile",
 		data: JSON.stringify({tagId : tagId, fileId : fileId}),
 		contentType : 'application/json; charset=utf-8',
         dataType : 'json',

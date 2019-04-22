@@ -88,7 +88,7 @@
 								        </button>
 								      </div>
 								      <div class="modal-body">
-						      	<form method="POST" action="#" th:action="@{/file/modifyTag}">
+						      	<form method="POST" action="#" th:action="@{/tag/modifyTag}">
 						          <div class="form-group">
 				            		<label for="tagNameEdit" class="col-form-label">Introduce the new name of the tag:</label>
 				            		<input type="text" class="form-control tag-name" id="edit-tag-name" name="tagName">
@@ -125,7 +125,7 @@
 								        </button>
 								      </div>
 								      <div class="modal-body">
-								      	<form method="POST" action="#" th:action="@{/file/deleteTag}">
+								      	<form method="POST" action="#" th:action="@{/tag/deleteTag}">
 								          <div class="form-group">
 						            		<label for="recipient-name" class="col-form-label" th:text="${'Are you sure you want to delete the tag ' + tag.name + '?' }"> </label>
 						            		<input type="hidden" name="idTag" th:value="${tag.id}">
@@ -164,7 +164,7 @@
 						        </button>
 						      </div>
 						      <div class="modal-body">
-						      	<form method="POST" action="#" th:action="@{/file/newTag}" id="new-tag-form">
+						      	<form method="POST" action="#" th:action="@{/tag/newTag}" id="new-tag-form">
 						          <div class="form-group">
 						            <label for="recipient-name" class="col-form-label">Introduce the name of the new tag:</label>
 						            <input type="text" class="form-control tag-name" id="new-tag-name" name="tagName">

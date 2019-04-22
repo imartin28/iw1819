@@ -313,76 +313,6 @@ public class FileController {
 		return "{}";
 	}
 
-	
-	@RequestMapping(value = "/addTagsToFile", method = RequestMethod.POST,  consumes=MediaType.APPLICATION_JSON_VALUE)
-	@Transactional
-	public String addTagsToFile(@RequestBody PostTagFile postInfo, HttpServletResponse response) {
-		CFile file = fileService.findById(postInfo.getFileId());
-		
-		for (Long tagId : postInfo.getTagsIds()) {
-			Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", tagId)
-					.getSingleResult();
-			
-			tag.getFiles().add(file);
-		}
-
-		
-		response.setStatus(200);
-		return "redirect:/user/";
-	}
-	
-	@PostMapping("/removeTagFromFile")
-	@Transactional
-	public String removeTagFromFile(@RequestBody PostDeleteTagFromFile postInfo) {
-		CFile file = fileService.findById(postInfo.getFileId());
-		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", postInfo.getTagId())
-				.getSingleResult();
-		
-		tag.getFiles().remove(file);
-		
-		return "redirect:/user/";
-	}
-
-	@PostMapping("/newTag")
-	@Transactional
-	public String postTag(Model model, HttpSession session, @RequestParam("tagName") String name,
-			@RequestParam("tagColor") String color, @RequestParam("parentId") Long parentId) {
-		Tag parentTag = null;
-		if (parentId != null) {
-			parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId)
-					.getSingleResult();
-		}
-		Tag tag = new Tag(name.trim(), color, parentTag, (User) session.getAttribute("u"));
-
-		entityManager.persist(tag);
-		entityManager.flush();
-
-		return "redirect:/user/";
-	}
-
-	@PostMapping("/modifyTag")
-	@Transactional
-	public String postModifyTag(@RequestParam("colorTag") String color, @RequestParam("idTag") Long id,
-			@RequestParam("tagName") String name) {
-
-		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", id).getSingleResult();
-		tag.setColor(color);
-		tag.setName(name);
-
-		return "redirect:/user/";
-	}
-
-	@PostMapping("/deleteTag")
-	@Transactional
-	public String postDeleteTag(@RequestParam("idTag") Long tagId, HttpSession session) {
-
-		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", tagId)
-				.getSingleResult();
-		tag.getFiles().removeAll(tag.getFiles());
-		entityManager.remove(tag);
-
-		return "redirect:/user/";
-	}
 
 	@GetMapping("/share/{id}")
 	public ModelAndView getShare(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
@@ -431,34 +361,4 @@ public class FileController {
 		return modelAndView;
 	}
 
-	@GetMapping("/validateTagName")
-	public @ResponseBody String validateTagName(@RequestParam String name, @RequestParam Long tagId,
-			HttpSession session) {
-		List<Tag> tags = entityManager.createNamedQuery("findByName", Tag.class).setParameter("name", name)
-				.getResultList();
-		Long userId = ((User) session.getAttribute("u")).getId();
-
-		if (containsTagWithSameNameAndSameUserOrDifferentTagId(tags, name, tagId, userId)) {
-			return "A tag with the name " + name + " already exists.";
-		} else {
-			return null;
-		}
-	}
-
-	private boolean containsTagWithSameNameAndSameUserOrDifferentTagId(List<Tag> tags, String name, Long tagId,
-			Long userId) {
-		boolean found = false;
-		Iterator<Tag> it = tags.iterator();
-
-		while (!found && it.hasNext()) {
-			Tag tag = it.next();
-
-			if (tag.getName().equals(name) && tag.getUser().getId() == userId
-					&& (tagId == null || tag.getId() != tagId)) {
-				found = true;
-			}
-		}
-
-		return found;
-	}
 }
