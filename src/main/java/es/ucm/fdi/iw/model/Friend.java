@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -14,6 +15,7 @@ public class Friend {
 	private long id;
 	
 	@OneToOne(targetEntity=User.class)
+	@JoinColumn(name="id")
 	private User targetUser;
 	
 	private boolean accepted;

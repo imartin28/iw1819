@@ -3,12 +3,14 @@ package es.ucm.fdi.iw.control;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +31,9 @@ public class FriendController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	EntityManager entityManager;
+	
 	/**
 	 * Function to notify the current user a message from server
 	 * the modal is located on nav.html in order to display a message in any view
@@ -45,6 +50,7 @@ public class FriendController {
 	
 	
 	@PostMapping("/addFriendRequest")
+	@Transactional
 	public ModelAndView addFriendRequest(ModelAndView modelAndView, HttpSession session, 
 			@ModelAttribute ("userId") String userId, @ModelAttribute ("message") String message) {
 		String err = "User not found";
@@ -80,7 +86,10 @@ public class FriendController {
 							}
 							
 							if(!found) {
-								friends.add(new Friend(userLoggedDatabase, message));
+								Friend friend = new Friend(userLoggedDatabase, message);
+								//entityManager.persist(friend);
+								
+								friends.add(friend);
 								friendRequestUser.setFriends(friends);
 								
 								friendRequestUser = userService.save(friendRequestUser);
@@ -111,6 +120,7 @@ public class FriendController {
 	}
 	
 	@PostMapping("/resolveFriendRequest")
+	@Transactional
 	public ModelAndView resolveFriendRequest(ModelAndView modelAndView, HttpSession session, 
 			@ModelAttribute ("friendUserId") String userId, @ModelAttribute ("accept") String accept) {
 		String err = "User not found";
@@ -188,6 +198,7 @@ public class FriendController {
 	
 	
 	@PostMapping("/removeFriend")
+	@Transactional
 	public ModelAndView addFriend(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userId") String userId) {
 		String err = "User not found";
 		User userLogged = null;
