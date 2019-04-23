@@ -1,6 +1,5 @@
 package es.ucm.fdi.iw.control;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,14 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import es.ucm.fdi.iw.integration.DAOFriend;
 import es.ucm.fdi.iw.model.Friend;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.util.StringUtil;
-
-
-
 
 @Controller()
 @RequestMapping("user")
@@ -65,20 +60,19 @@ public class FriendController {
 		err = null;
 		
 		List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
+		Friend friendship = entityManager.createNamedQuery("readFriendship", Friend.class).setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId()).getSingleResult();
 		
-		
-		
-		if(!usersAreAlreadyFriends(friendRequestUser, friends)) {
-			Friend friend = new Friend(userLogged, friendRequestUser, message);
-			entityManager.persist(friend);
-		} else {
-			Friend friendship = entityManager.createNamedQuery("readFriendship", Friend.class).setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId()).getSingleResult();
-			if(friendship.isAccepted())
-				err = "The user " + friendRequestUser.getNickname() + "is already your friend";
-			else
-				err = "You have already sent a friend request to " + friendRequestUser.getNickname() +" before, please wait for an answer";
+		if(friends != null && friends.size() > 0 && friendship != null) {
+			if(!usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
+				Friend friend = new Friend(userLogged, friendRequestUser, message);
+				entityManager.persist(friend);
+			} else {
+				if(friendship.isAccepted())
+					err = "The user " + friendRequestUser.getNickname() + "is already your friend";
+				else
+					err = "You have already sent a friend request to " + friendRequestUser.getNickname() +" before, please wait for an answer";
+			}
 		}
-	
 		
 		if(err != null) {
 			modelAndView.setViewName("redirect:/");
@@ -111,13 +105,15 @@ public class FriendController {
 			
 			if(friendRequestUser != null && friendRequestUser.isActive()) {
 				err = null;
-				List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", friendRequestUser.getId()).getResultList();
+				List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class)
+						.setParameter("userId", friendRequestUser.getId()).getResultList();
+				List<Friend> friendship = entityManager.createNamedQuery("readFriendship", Friend.class)
+						.setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId())
+						.getResultList();
 				
-				if(friends != null && friends.size() > 0) {
-					if(usersAreAlreadyFriends(friendRequestUser, friends)) {
+				if(friends != null && friends.size() > 0 && friendship != null) {
+					if(usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
 						if(accept.equalsIgnoreCase("true")) {
-							Friend friendship = entityManager.createNamedQuery("readFriendship", Friend.class).setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId()).getSingleResult();
-							
 							friendship.setAccepted(true);
 						}
 					} else {
@@ -127,9 +123,6 @@ public class FriendController {
 				}
 			}
 		}
-		
-		
-		
 		
 		modelAndView.setViewName("redirect:/user/friends");
 		
@@ -233,14 +226,14 @@ public class FriendController {
 		return modelAndView;
 	}
 	
-	private boolean usersAreAlreadyFriends(User secondUser, List<User> friendsOfFirstUser) {
+	private boolean usersAreAlreadyFriends(User secondUser, List<User> friendsOfFirstUser, Friend friendship) {
 		boolean found = false;
 		int i = 0;
 		
 		
 		// Check if they are already friends
 		while(!found && i < friendsOfFirstUser.size()) {
-			found = friendsOfFirstUser.get(i).getId() == secondUser.getId();
+			found = friendsOfFirstUser.get(i).getId() == secondUser.getId() && friendship.isAccepted();
 			i++;
 		}
 		

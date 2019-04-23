@@ -34,8 +34,8 @@ function resolveFriendRequest(these, event, accepted) {
 	let send = (userId !== null && userId !== "");
 	
 	if(send) {
-		$("#friendUserId").val(userId);
-		$("#formResolveFriendRequest").submit();
+		$(these).parent().find("#friendUserId").val(userId);
+		$(these).parent().submit();
 	}
 	
 	return send;
