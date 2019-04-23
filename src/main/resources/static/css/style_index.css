@@ -370,6 +370,25 @@ hr {
   #metadata .description {
       font-style: italic;
   }
+  
+  #editMetadata {
+  	  display: grid;
+      grid-template-columns: auto auto;
+      justify-content: center;
+      margin: 20px;
+  }
+  
+  #editMetadata .title {
+      color: rgba(62,181,169,1);
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+  }
+  
+  .metadata-buttons {
+      justify-content: center;
+  }
 
 
 
