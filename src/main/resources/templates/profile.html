@@ -23,7 +23,8 @@
     <div class="container mt-4">
         <div class="left-panel-index col-3 mx-auto" th:if="${user != null}">
             <img class="avatar center-content" src="/img/sexy-guille.jpeg">
-            <p class="name text-center" th:text="${user.name + ' ' + user.lastName}"></p>
+            <p class="name text-center" th:if="${user.name != null && user.name != '' && user.lastName != null && user.lastName != ''}"
+            	th:text="${user.name + ' ' + user.lastName}"></p>
             <p class="nick text-center" th:text="${'@'+user.nickname}"></p>
             <p class="text-center" th:text="${user.email}"></p>
             <p class="text-center" th:if="${user.birthdate != null}" 
