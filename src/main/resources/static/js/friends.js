@@ -30,11 +30,12 @@ function resolveFriendRequest(these, event, accepted) {
 	event.preventDefault();
 	
 	$("#accept").val(accepted);
-	let userId = $(this).parent().parent().find("input").val();
+	let userId = $(these).parent().parent().parent().find(".userIdFriendRequest").val();
 	let send = (userId !== null && userId !== "");
 	
 	if(send) {
 		$("#friendUserId").val(userId);
+		$("#formResolveFriendRequest").submit();
 	}
 	
 	return send;

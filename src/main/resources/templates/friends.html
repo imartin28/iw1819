@@ -82,7 +82,7 @@
 			                <li class="list-group-item d-flex flex-row align-items-center my-2" 
 			                	th:id="${user.id}" th:each=" friend, iStat : ${friends}" th:if="${friend != null && !friend.accepted && friend.firstUser.id != session.u.id}" th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
 			                	
-			                	<input type="hidden" th:value="${user.id}">
+			                	<input type="hidden" class="userIdFriendRequest" th:value="${user.id}">
 			                	
 			                    <img class="profile-image" src="/img/fer.jpg">
 			                    
@@ -99,7 +99,7 @@
 					            
 					            <div class="d-flex flex-column align-items-center justify-content-center">
 						            <form id="formResolveFriendRequest" method="POST" th:action="@{/user/resolveFriendRequest}">
-				    					<input type="hidden" th:id="friendUserId" th:name="friendUserId">
+				    					<input type="hidden" th:id="friendUserId" th:name="friendUserId" >
 				    					<input type="hidden" th:id="accept" th:name="accept">
 				    					
 				    					<button type="submit" id="btnAccept" class="btn button center-content button-accept-friendship-request"><i class="material-icons">check</i>Accept</button>
