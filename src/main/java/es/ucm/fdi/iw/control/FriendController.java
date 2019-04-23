@@ -87,9 +87,6 @@ public class FriendController {
 		return modelAndView;
 	}
 	
-	
-	
-	
 	@PostMapping("/resolveFriendRequest")
 	@Transactional
 	public ModelAndView resolveFriendRequest(ModelAndView modelAndView, HttpSession session, 
@@ -107,10 +104,12 @@ public class FriendController {
 				err = null;
 				List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class)
 						.setParameter("userId", friendRequestUser.getId()).getResultList();
-				List<Friend> friendship = entityManager.createNamedQuery("readFriendship", Friend.class)
+				List<Friend> friendships = entityManager.createNamedQuery("readFriendship", Friend.class)
 						.setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId())
 						.getResultList();
 				
+				
+				Friend f = friendships.isEmpty() ? null : friendships.get(0);
 				if(friends != null && friends.size() > 0 && friendship != null) {
 					if(usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
 						if(accept.equalsIgnoreCase("true")) {
