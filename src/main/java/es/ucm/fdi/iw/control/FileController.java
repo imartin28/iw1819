@@ -360,5 +360,52 @@ public class FileController {
 
 		return modelAndView;
 	}
+	
+	@GetMapping("/edit/{id}")
+	public ModelAndView getEdit(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
+			throws IOException {
+		String err = "File not found";
+
+		CFile file = fileService.findById(fileId);
+		User currentUser = (User) session.getAttribute("u");
+
+		if (file != null && currentUser != null) {
+			err = null;
+			modelAndView.addObject("filename", file.getName());
+
+			String mimetype = (file.getMimetype() != null && !file.getMimetype().equalsIgnoreCase("")
+					? file.getMimetype().split("/")[0]
+					: null);
+
+			File f = localData.getFile("user" + currentUser.getId(), file.getId() + "." + file.getExtension());
+			String url = f.getAbsolutePath() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
+
+			modelAndView.addObject("fileId", fileId);
+
+			if (mimetype != null && !mimetype.equalsIgnoreCase("")) {
+				modelAndView.addObject("mimetype", mimetype);
+			} else {
+				err = "File has invalid MIME type";
+			}
+
+			modelAndView.addObject("tags", file.tagNameList());
+
+			try {
+				JSONObject metadataJSON = new JSONObject(file.getMetadata());
+				Map<String, Object> metadataMapObject = JSONUtil.toMap(metadataJSON);
+				modelAndView.addObject("metadata", metadataMapObject);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
+		String viewName = "redirect:/user/";
+		if (err == null)
+			viewName = "modifyFile";
+
+		modelAndView.setViewName(viewName);
+
+		return modelAndView;
+	}
 
 }
