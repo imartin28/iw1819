@@ -17,10 +17,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import es.ucm.fdi.iw.integration.DAOFriend;
 import es.ucm.fdi.iw.model.Friend;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.util.StringUtil;
+
+
+
 
 @Controller()
 @RequestMapping("user")
@@ -31,8 +35,9 @@ public class FriendController {
 	@Autowired
 	private UserService userService;
 	
+	
 	@Autowired
-	EntityManager entityManager;
+	private EntityManager entityManager;
 	
 	/**
 	 * Function to notify the current user a message from server
@@ -52,59 +57,28 @@ public class FriendController {
 	@PostMapping("/addFriendRequest")
 	@Transactional
 	public ModelAndView addFriendRequest(ModelAndView modelAndView, HttpSession session, 
-			@ModelAttribute ("userId") String userId, @ModelAttribute ("message") String message) {
+			@ModelAttribute ("userId") Long userId, @ModelAttribute ("message") String message) {
 		String err = "User not found";
-		User userLogged = null;
-		User friendRequestUser = null;
+		User friendRequestUser = userService.findById(userId);
+		User userLogged = (User) session.getAttribute("u");
 		
-		if(userId != null && !userId.isEmpty()) {
-			Long userIdLong = Long.valueOf(userId);
-			
-			if(userIdLong != null) {
-				userLogged = (User)session.getAttribute("u");
-				
-				if(userLogged != null && userLogged.getId() != userIdLong) {
-					friendRequestUser = userService.findById(userIdLong);
-					
-					if(friendRequestUser != null && friendRequestUser.isActive()) {
-						User userLoggedDatabase = userService.findById(userLogged.getId());
-						
-						if(userLoggedDatabase != null && userLoggedDatabase.isActive()) {
-							err = null;
-							List<Friend> friends = friendRequestUser.getFriends();
-							boolean found = false;
-							int i = 0;
-							
-							if(friends == null) {
-								friends = new ArrayList<Friend>();
-							}
-							else {
-								while(i < friends.size()) {
-									found = (friends.get(i).getTargetUser().getId() == userLoggedDatabase.getId());
-									i++;
-								}
-							}
-							
-							if(!found) {
-								Friend friend = new Friend(userLoggedDatabase, message);
-								//entityManager.persist(friend);
-								
-								friends.add(friend);
-								friendRequestUser.setFriends(friends);
-								
-								friendRequestUser = userService.save(friendRequestUser);
-							}
-							else {
-								if(friends.get(i-1).isAccepted())
-									err = "The user "+friendRequestUser.getNickname()+"is already your friend";
-								else
-									err = "You sended a friend request to "+friendRequestUser.getNickname()+" before, please wait for an answer";
-							}
-						}
-					}
-				}
-			}
+		err = null;
+		
+		List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
+		
+		
+		
+		if(!usersAreAlreadyFriends(friendRequestUser, friends)) {
+			Friend friend = new Friend(userLogged, friendRequestUser, message);
+			entityManager.persist(friend);
+		} else {
+			Friend friendship = entityManager.createNamedQuery("readFriendship", Friend.class).setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId()).getSingleResult();
+			if(friendship.isAccepted())
+				err = "The user " + friendRequestUser.getNickname() + "is already your friend";
+			else
+				err = "You have already sent a friend request to " + friendRequestUser.getNickname() +" before, please wait for an answer";
 		}
+	
 		
 		if(err != null) {
 			modelAndView.setViewName("redirect:/");
@@ -113,87 +87,58 @@ public class FriendController {
 		else if(friendRequestUser != null){
 			modelAndView.setViewName("redirect:/user/profile");
 			modelAndView.addObject("userId", userId);
-			this.notifyModal(modelAndView, "Friend request sended", "Yo have send a friend request to user " + friendRequestUser.getNickname());
+			this.notifyModal(modelAndView, "Friend request sent", "Yo have sent a friend request to user " + friendRequestUser.getNickname());
 		}
 		
 		return modelAndView;
 	}
 	
+	
+	
+	
 	@PostMapping("/resolveFriendRequest")
 	@Transactional
 	public ModelAndView resolveFriendRequest(ModelAndView modelAndView, HttpSession session, 
-			@ModelAttribute ("friendUserId") String userId, @ModelAttribute ("accept") String accept) {
+			@ModelAttribute ("friendUserId") Long userId, @ModelAttribute ("accept") String accept) {
 		String err = "User not found";
 		User userLogged = null;
 		User friendRequestUser = null;
 		
-		if(userId != null && !userId.isEmpty() && accept != null && !accept.isEmpty()) {
-			Long userIdLong = Long.valueOf(userId);
+		userLogged = (User)session.getAttribute("u");
+		
+		if(userLogged != null && userLogged.getId() != userId) {
+			friendRequestUser = userService.findById(userId);
 			
-			if(userIdLong != null) {
-				userLogged = (User)session.getAttribute("u");
+			if(friendRequestUser != null && friendRequestUser.isActive()) {
+				err = null;
+				List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", friendRequestUser.getId()).getResultList();
 				
-				if(userLogged != null && userLogged.getId() != userIdLong) {
-					friendRequestUser = userService.findById(userIdLong);
-					
-					if(friendRequestUser != null && friendRequestUser.isActive()) {
-						User userLoggedDatabase = userService.findById(userLogged.getId());
-						
-						if(userLoggedDatabase != null && userLoggedDatabase.isActive()) {
-							err = null;
-							List<Friend> friends = friendRequestUser.getFriends();
-							boolean found = false;
+				if(friends != null && friends.size() > 0) {
+					if(usersAreAlreadyFriends(friendRequestUser, friends)) {
+						if(accept.equalsIgnoreCase("true")) {
+							Friend friendship = entityManager.createNamedQuery("readFriendship", Friend.class).setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId()).getSingleResult();
 							
-							if(friends != null && friends.size() > 0) {
-								int i = 0;
-								while(i < friends.size()) {
-									found = (friends.get(i).getTargetUser().getId() == userLoggedDatabase.getId());
-									i++;
-								}
-								
-								if(found) {
-									if(accept.equalsIgnoreCase("true")) {
-										friends.get(i-1).setAccepted(true);
-										
-										List<Friend> friendsUserLogged = userLoggedDatabase.getFriends();
-										found = false;
-										i = 0;
-										while(i < friendsUserLogged.size()) {
-											found = (friendsUserLogged.get(i).getTargetUser().getId() == friendRequestUser.getId());
-											i++;
-										}
-										
-										if(found) {
-											friendsUserLogged.get(i-1).setAccepted(true);
-											
-											friendRequestUser.setFriends(friends);
-											userLoggedDatabase.setFriends(friendsUserLogged);
-											
-											friendRequestUser = userService.save(friendRequestUser);
-											userLoggedDatabase = userService.save(userLoggedDatabase);
-										}
-									}
-									else if(accept.equalsIgnoreCase("false")) {
-										friends.remove(i-1);
-										friendRequestUser.setFriends(friends);
-										friendRequestUser = userService.save(friendRequestUser);
-									}
-								}
-								else
-									err = "The user "+friendRequestUser.getNickname()+"is already your friend";
-							}
+							friendship.setAccepted(true);
 						}
-					}
+					} else {
+						err = "The user "+friendRequestUser.getNickname()+"is already your friend";
+					
+					}	
 				}
 			}
 		}
 		
+		
+		
+		
 		modelAndView.setViewName("redirect:/user/friends");
+		
 		if(err != null) {
 			this.notifyModal(modelAndView, "Error", err);
 		}
 		
 		return modelAndView;
+		
 	}
 	
 	
@@ -218,14 +163,15 @@ public class FriendController {
 						
 						if(userLoggedDatabase != null && userLoggedDatabase.isActive()) {
 							err = null;
-							List<Friend> friendsTargetUser = friendRequestUser.getFriends();
-							List<Friend> friends = userLoggedDatabase.getFriends();
+							List<User> friendsTargetUser = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
+							List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userLogged.getId()).getResultList();
 							
 							if(friendsTargetUser != null && friends != null) {
 								boolean found = false;
 								int i = 0;
-								while(i < friendsTargetUser.size()) {
-									found = (friendsTargetUser.get(i).getTargetUser().getId() == userLoggedDatabase.getId());
+								// Check if they are already friends
+								while(!found && i < friends.size()) {
+									found = friends.get(i).getId() == friendRequestUser.getId();
 									i++;
 								}
 								
@@ -234,17 +180,18 @@ public class FriendController {
 									
 									found = false;
 									i = 0;
-									while(i < friends.size()) {
-										found = (friends.get(i).getTargetUser().getId() == friendRequestUser.getId());
+									// Check if they are already friends
+									while(!found && i < friends.size()) {
+										found = friends.get(i).getId() ==friendRequestUser.getId();
 										i++;
 									}
 									
 									if(found) {
 										friendsTargetUser.remove(targetUserIndex);
-										friendRequestUser.setFriends(friendsTargetUser);
+										//friendRequestUser.setFriends(friendsTargetUser);
 										
-										friends.remove(i-1);
-										userLoggedDatabase.setFriends(friends);
+									
+										//userLoggedDatabase.setFriends(friends);
 										
 										friendRequestUser = userService.save(friendRequestUser);
 										userLoggedDatabase = userService.save(userLoggedDatabase);
@@ -278,11 +225,28 @@ public class FriendController {
 		User userLogged = (User)session.getAttribute("u");
 		
 		if(userLogged != null) {
-			modelAndView.addObject("friends", userLogged.getFriends());
+			List<Friend> friendships = entityManager.createNamedQuery("readFriendshipsOfUser", Friend.class).setParameter("userId", userLogged.getId()).getResultList();
+			modelAndView.addObject("friends", friendships);
 		}
 		modelAndView.setViewName("friends");
 		
 		return modelAndView;
 	}
+	
+	private boolean usersAreAlreadyFriends(User secondUser, List<User> friendsOfFirstUser) {
+		boolean found = false;
+		int i = 0;
+		
+		
+		// Check if they are already friends
+		while(!found && i < friendsOfFirstUser.size()) {
+			found = friendsOfFirstUser.get(i).getId() == secondUser.getId();
+			i++;
+		}
+		
+		return found;
+	}
 
 }
+
+

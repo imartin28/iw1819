@@ -4,10 +4,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 @Entity
+@NamedQueries({
+	@NamedQuery(name="readFriendshipsOfUser", query="SELECT f "
+			+ " FROM Friend f "
+			+ " WHERE f.firstUser.id = :userId OR f.secondUser.id = :userId"),
+	@NamedQuery(name="readFriendship", query="SELECT f "
+			+ " FROM Friend f "
+			+ " WHERE f.firstUser.id = :firstUserId AND f.secondUser.id = :secondUserId"
+			+ "	OR f.secondUser.id = :firstUserId AND f.firstUser.id = :secondUserId"),
+})
 public class Friend {
 	
 	@Id
@@ -15,8 +25,10 @@ public class Friend {
 	private long id;
 	
 	@OneToOne(targetEntity=User.class)
-	@JoinColumn(name="id")
-	private User targetUser;
+	private User firstUser;
+	
+	@OneToOne(targetEntity=User.class)
+	private User secondUser;
 	
 	private boolean accepted;
 	
@@ -24,8 +36,9 @@ public class Friend {
 	
 	public Friend() { }
 
-	public Friend(User targetUser, String message) {
-		this.targetUser = targetUser;
+	public Friend(User firstUser, User secondUser, String message) {
+		this.firstUser = firstUser;
+		this.secondUser = secondUser;
 		this.message = message;
 		this.accepted = false;
 	}
@@ -38,12 +51,20 @@ public class Friend {
 		this.id = id;
 	}
 
-	public User getTargetUser() {
-		return targetUser;
+	public User getFirstUser() {
+		return firstUser;
 	}
 
-	public void setTargetUser(User targetUser) {
-		this.targetUser = targetUser;
+	public void setFirstUser(User firstUser) {
+		this.firstUser = firstUser;
+	}
+	
+	public User getSecondUser() {
+		return secondUser;
+	}
+
+	public void setSecondUser(User secondUser) {
+		this.secondUser = secondUser;
 	}
 
 	public boolean isAccepted() {

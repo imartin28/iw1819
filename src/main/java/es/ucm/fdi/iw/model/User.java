@@ -10,10 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+
+import es.ucm.fdi.iw.integration.DAOFriend;
+import es.ucm.fdi.iw.integration.impl.DAOFriendImpl;
 
 @Entity
 @NamedQueries({
@@ -32,6 +34,10 @@ import javax.persistence.OneToMany;
 			"(LOWER(u.email) = ?1 OR LOWER(u.nickname) = ?1 OR LOWER(u.name) = ?1 OR LOWER(u.lastName) = ?1) OR "+
 			"(u.email LIKE ?2 OR u.nickname LIKE ?2 OR u.name LIKE ?2 OR u.lastName LIKE ?2) AND "+
 			"u.active = 1"),
+	@NamedQuery(name="readFriendsOfUser", query="SELECT user "
+			+ " FROM User user "
+			+ " WHERE user.id IN (SELECT friend.firstUser.id FROM Friend friend WHERE friend.secondUser.id = :userId) "
+			+ " OR user.id IN (SELECT friend2.secondUser.id FROM Friend friend2 WHERE friend2.firstUser.id = :userId)"),
 	
 	//Admin
 	@NamedQuery(name="User.listAdmin",
@@ -63,9 +69,6 @@ public class User {
 	
 	private String roles;
 	
-	@ManyToOne(targetEntity=User.class)
-	private List<Friend> friends;
-	
 	@OneToMany(targetEntity=Notification.class, mappedBy="user")
 	private List<Notification> notifications;
 	
@@ -83,7 +86,7 @@ public class User {
 
 	@OneToMany(targetEntity=Tag.class, mappedBy="user")
 	private List<Tag> tags;
-
+	
 	public long getId() {
 		return id;
 	}
@@ -164,14 +167,6 @@ public class User {
 		this.active = active;
 	}
 
-	public List<Friend> getFriends() {
-		return friends;
-	}
-
-	public void setFriends(List<Friend> friends) {
-		this.friends = friends;
-	}
-
 	public List<Notification> getNotifications() {
 		return notifications;
 	}
@@ -230,6 +225,11 @@ public class User {
 	public void addRole(String roleName) {
 		this.roles += ','+roleName;
 	}
+	
+	public List<Friend> getFriends() {
+		return new DAOFriendImpl().getFriendsOfUser(this.id);
+	}
+	
 
 	@Override
 	public String toString() {

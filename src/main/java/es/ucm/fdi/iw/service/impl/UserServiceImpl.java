@@ -1,4 +1,4 @@
-package es.ucm.fdi.iw.service;
+package es.ucm.fdi.iw.service.impl;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import es.ucm.fdi.iw.integration.UserRepository;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
