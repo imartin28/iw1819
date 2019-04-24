@@ -60,19 +60,21 @@ public class FriendController {
 		err = null;
 		
 		List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
-		Friend friendship = entityManager.createNamedQuery("readFriendship", Friend.class).setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId()).getSingleResult();
+		List<Friend> friendships = entityManager.createNamedQuery("readFriendship", Friend.class)
+				.setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId())
+				.getResultList();
+		Friend friendship = friendships.isEmpty() ? null : friendships.get(0);
 		
-		if(friends != null && friends.size() > 0 && friendship != null) {
-			if(!usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
-				Friend friend = new Friend(userLogged, friendRequestUser, message);
-				entityManager.persist(friend);
-			} else {
-				if(friendship.isAccepted())
-					err = "The user " + friendRequestUser.getNickname() + "is already your friend";
-				else
-					err = "You have already sent a friend request to " + friendRequestUser.getNickname() +" before, please wait for an answer";
-			}
+		if(!usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
+			Friend friend = new Friend(userLogged, friendRequestUser, message);
+			entityManager.persist(friend);
+		} else {
+			if(friendship.isAccepted())
+				err = "The user " + friendRequestUser.getNickname() + "is already your friend";
+			else
+				err = "You have already sent a friend request to " + friendRequestUser.getNickname() +" before, please wait for an answer";
 		}
+		
 		
 		if(err != null) {
 			modelAndView.setViewName("redirect:/");
@@ -107,19 +109,15 @@ public class FriendController {
 				List<Friend> friendships = entityManager.createNamedQuery("readFriendship", Friend.class)
 						.setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId())
 						.getResultList();
+				Friend friendship = friendships.isEmpty() ? null : friendships.get(0);
 				
-				
-				Friend f = friendships.isEmpty() ? null : friendships.get(0);
-				if(friends != null && friends.size() > 0 && friendship != null) {
-					if(usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
-						if(accept.equalsIgnoreCase("true")) {
-							friendship.setAccepted(true);
-						}
-					} else {
-						err = "The user "+friendRequestUser.getNickname()+"is already your friend";
-					
-					}	
-				}
+				if(usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
+					if(accept.equalsIgnoreCase("true")) {
+						friendship.setAccepted(true);
+					}
+				} else {
+					err = "The user "+friendRequestUser.getNickname()+"is already your friend";
+				}	
 			}
 		}
 		
@@ -226,14 +224,16 @@ public class FriendController {
 	}
 	
 	private boolean usersAreAlreadyFriends(User secondUser, List<User> friendsOfFirstUser, Friend friendship) {
+		
 		boolean found = false;
 		int i = 0;
 		
-		
-		// Check if they are already friends
-		while(!found && i < friendsOfFirstUser.size()) {
-			found = friendsOfFirstUser.get(i).getId() == secondUser.getId() && friendship.isAccepted();
-			i++;
+		if(friendsOfFirstUser != null && friendsOfFirstUser.size() > 0 && friendship != null) {
+			// Check if they are already friends
+			while(!found && i < friendsOfFirstUser.size()) {
+				found = friendsOfFirstUser.get(i).getId() == secondUser.getId() && friendship.isAccepted();
+				i++;
+			}
 		}
 		
 		return found;

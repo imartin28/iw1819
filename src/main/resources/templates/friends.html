@@ -24,11 +24,11 @@
         
     <div class="row justify-content-center mt-4">
            
-        <div class="col-8">
+        <div class="col-7">
                     
             <div class="panel">
             
-				<ul class="nav nav-tabs nav-fill center-content" id="myTab" role="tablist">
+				<ul class="nav nav-tabs nav-fill center-content mb-2" id="myTab" role="tablist">
 					<li class="nav-item">
 					    <a class="nav-link active" id="friends-tab" data-toggle="tab" href="#friend" 
 					    	role="tab" aria-controls="friends" aria-selected="true"><i class="far fa-grin-alt mr-2"></i>Friends</a>
@@ -43,7 +43,7 @@
                     <div class="tab-pane fade show active" id="friend" role="tabpanel" aria-labelledby="friends-tab">
                     
 		            	<ul class="list-group list-group-flush" th:if="${friends != null && friends.size() > 0}">
-			                <li class="list-group-item d-flex flex-row align-items-center my-2" 
+			                <li class="list-group-item d-flex flex-row justify-content-center align-items-center py-5" 
 			                	th:id="${user.id}" th:each=" friend, iStat : ${friends}" th:if="${friend != null && friend.accepted}" th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
 			                	
 			                	<input type="hidden" th:value="${user.id}">
@@ -61,7 +61,7 @@
 					            	th:text="${(#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' años'}"></span>
 					            <span class="bio text-center" th:text="${user.description}"></span>
 					            
-					            <button class="btn button d-flex flex-row align-items-center btnRemoveFriend">
+					            <button class="btn button d-flex flex-row align-items-center btnRemoveFriend ml-2">
 					            	<i class="fas fa-user-times mr-2"></i>Remove friend
 					            </button>
 
@@ -79,7 +79,7 @@
                     <div class="tab-pane fade" id="friendship-request" role="tabpanel" aria-labelledby="friendship-request-tab">
 
 						<ul class="list-group list-group-flush" th:if="${friends != null && friends.size() > 0}">
-			                <li class="list-group-item d-flex flex-row align-items-center my-2" 
+			                <li class="list-group-item d-flex flex-row justify-content-center align-items-center py-5" 
 			                	th:id="${user.id}" th:each=" friend, iStat : ${friends}" th:if="${friend != null && !friend.accepted && friend.firstUser.id != session.u.id}" th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
 			                	
 			                	<input type="hidden" class="userIdFriendRequest" th:value="${user.id}">
@@ -97,13 +97,13 @@
 					            	th:text="${(#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' años'}"></span>
 					            <span class="bio text-center" th:text="${user.description}"></span>
 					            
-					            <div class="d-flex flex-column align-items-center justify-content-center">
+					            <div class="form-group d-flex flex-column align-items-center justify-content-center ml-2 my-0">
 						            <form id="formResolveFriendRequest" method="POST" th:action="@{/user/resolveFriendRequest}">
 				    					<input type="hidden" th:id="friendUserId" th:name="friendUserId" >
 				    					<input type="hidden" th:id="accept" th:name="accept">
 				    					
-				    					<button type="submit" id="btnAccept" class="btn button center-content button-accept-friendship-request"><i class="material-icons">check</i>Accept</button>
-                                		<button type="submit" id="btnReject" class="btn button center-content button-discard-friendship-request"><i class="material-icons">close</i>Discard</button>  
+				    					<button type="submit" id="btnAccept" class="btn button center-content"><i class="material-icons mr-2">check</i>Accept</button>
+                                		<button type="submit" id="btnReject" class="btn button center-content"><i class="material-icons mr-2">close</i>Discard</button>  
 				    				</form>      
 					            </div>
 
@@ -134,13 +134,13 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body pt-1 pb-0">
+				<div class="modal-body">
 			    	<form id="formRemoveFriend" method="POST" th:action="@{/user/removeFriend}">
 			    	
 			    		<input type="hidden" th:id="userId" th:name="userId">
 			    		
-			        	<div class="form-group">
-	            			<p>Are you sure you want to remove your friend <span id="userNameSpan" class="nick"></span>?</p>
+			        	<div class="form-group text-center m-0">
+	            			<p class="m-0">Are you sure you want to remove your friend <span id="userNameSpan" class="nick"></span>?</p>
 	          		  	</div>
 	
 			        </form>
