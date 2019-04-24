@@ -83,7 +83,10 @@ public class TagController {
 			Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", tagId)
 					.getSingleResult();
 			
-			tag.getFiles().add(file);
+			if(!tag.getFiles().contains(file)) {
+				tag.getFiles().add(file);
+			}
+			
 		}
 
 		

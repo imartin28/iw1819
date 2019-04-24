@@ -174,7 +174,7 @@ public class CFile {
 	
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof CFile)) {
+		if(!(o instanceof CFile)) {
 			return false;
 		} else {
 			return this.id == ((CFile) o).id;
