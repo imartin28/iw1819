@@ -115,7 +115,7 @@ public class FileController {
 		CFile file = fileService.findById(id);
 		Long userId = ((User) session.getAttribute("u")).getId();
 		// ojo con acceso: no basta con saber el id del fichero
-		File f = localData.getFile("user" + userId, file.getId() + "." + file.getExtension());
+		File f = localData.getFile("files", file.getSha256() + "." + file.getExtension());
 		InputStream in;
 
 		in = new BufferedInputStream(new FileInputStream(f));
@@ -145,7 +145,7 @@ public class FileController {
 					? file.getMimetype().split("/")[0]
 					: null);
 
-			File f = localData.getFile("user" + currentUser.getId(), file.getId() + "." + file.getExtension());
+			File f = localData.getFile("files", file.getSha256() + "." + file.getExtension());
 			String url = f.getAbsolutePath() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
 
 			modelAndView.addObject("fileId", fileId);
@@ -196,30 +196,27 @@ public class FileController {
 		 * caso contrario
 		 */
 
-		File folder = localData.getFolder("user" + user.getId());
-		CFile fileBBDD = fileService.findBysha256(sha256);
+		File folder = localData.getFolder("files");
+		List<CFile> filesBBDD = fileService.findAllBysha256(sha256);
 
-		if (fileBBDD == null) {
-			uploadFile(sha256, file, folder, user);
-		} else {
-			fileBBDD.increaseNumberOfReferences();
-			UserFile userFile = new UserFile(user, fileBBDD, "rw");
-			entityManager.persist(userFile);
-			
+		CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
+		fileToPersist.setPath(
+				folder.getAbsolutePath() + "/" + fileToPersist.getSha256() + "." + fileToPersist.getExtension());
+		entityManager.persist(fileToPersist);
+		
+		UserFile userFile = new UserFile(user, fileToPersist, "rw");
+		entityManager.persist(userFile);
+		
+		if (filesBBDD.size() == 0) {
+			uploadFile(sha256, file, fileToPersist, user);
 		}
 
 		return "redirect:/user/";
 	}
 
-	private void uploadFile(String sha256, MultipartFile file, File folder, User user) {
-
+	private void uploadFile(String sha256, MultipartFile file, CFile fileToPersist, User user) {
 		try {
-			CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
-			entityManager.persist(fileToPersist);
-
-			fileToPersist.setPath(
-					folder.getAbsolutePath() + "/" + fileToPersist.getId() + "." + fileToPersist.getExtension());
-
+			
 			File f = new File(fileToPersist.getPath());
 
 			try {
@@ -242,9 +239,6 @@ public class FileController {
 
 					// Guardar datos del fichero en la base de datos
 
-					UserFile userFile = new UserFile(user, fileToPersist, "rw");
-					entityManager.persist(userFile);
-
 					log.info("Succesfully uploaded file for user {} into {}", user.getId(), f.getAbsolutePath());
 				} catch (Exception e) {
 					System.out.println("Error uploading file of user " + user.getId() + " " + e);
@@ -257,7 +251,7 @@ public class FileController {
 
 	}
 
-	@RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
+	@RequestMapping(value="/download/{id}", method = RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> downloadFile(@PathVariable Long id) throws IOException {
 
 		CFile file = fileService.findById(id);
@@ -289,11 +283,15 @@ public class FileController {
 	@Transactional
 	public String postDeleteFile(@RequestParam("idFile") Long fileId, HttpSession session) {
 		CFile file = fileService.findById(fileId);
-		Long userId = ((User) session.getAttribute("u")).getId();
+		List<CFile> filesWithSameSha256 =  fileService.findAllBysha256(file.getSha256());
 		
-		if (file.getNumberOfReferences() == 1) {
-			entityManager.remove(file);
-			
+		for(Tag tag : file.getTags()) {
+			tag.getFiles().remove(file);
+		}
+		
+		entityManager.remove(file);
+		
+		if (filesWithSameSha256.size() == 1) {
 			File f = new File(file.getPath());
 
 			if (f.delete()) {
@@ -301,13 +299,8 @@ public class FileController {
 			} else {
 				System.out.println("Delete operation is failed.");
 			}
-
-		} else {
-			file.decreaseNumberOfReferences();
-			UserFile userFile =  entityManager.createNamedQuery("userFile", UserFile.class).setParameter("userId", userId).setParameter("fileId", fileId).getSingleResult();
-			entityManager.remove(userFile);
-		}
-		
+		} 
+	
 		return "redirect:/user/";
 	}
 
@@ -398,7 +391,7 @@ public class FileController {
 					? file.getMimetype().split("/")[0]
 					: null);
 
-			File f = localData.getFile("user" + currentUser.getId(), file.getId() + "." + file.getExtension());
+			File f = localData.getFile("files", file.getSha256() + "." + file.getExtension());
 			String url = f.getAbsolutePath() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
 
 			modelAndView.addObject("fileId", fileId);

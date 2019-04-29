@@ -44,7 +44,6 @@ public class CFile {
 	private String extension;
 	private Long size;
 	private String metadata;
-	private Integer numberOfReferences;
 	 
 	@OneToMany(targetEntity=UserFile.class, mappedBy="file", cascade=CascadeType.ALL)
 	private List<UserFile> filePermissions;
@@ -68,7 +67,6 @@ public class CFile {
 		this.size = size;
 		this.mimetype = mimetype;
 		this.metadata = "{}";
-		this.numberOfReferences = 1;
 	}
 
 	
@@ -122,23 +120,7 @@ public class CFile {
 	public void setSha256(String sha256) {
 		this.sha256 = sha256;
 	}
-
-	public Integer getNumberOfReferences() {
-		return numberOfReferences;
-	}
 	
-	public void increaseNumberOfReferences() {
-		++this.numberOfReferences;
-	}
-	
-	public void decreaseNumberOfReferences() {
-		--this.numberOfReferences;
-	}
-
-	public void setNumberOfReferences(Integer numberOfReferences) {
-		this.numberOfReferences = numberOfReferences;
-	}
-
 	public List<UserFile> getFilePermissions() {
 		return filePermissions;
 	}
