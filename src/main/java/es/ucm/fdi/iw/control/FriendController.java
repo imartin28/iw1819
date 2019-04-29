@@ -128,9 +128,7 @@ public class FriendController {
 		}
 		
 		return modelAndView;
-		
 	}
-	
 	
 	@PostMapping("/removeFriend")
 	@Transactional

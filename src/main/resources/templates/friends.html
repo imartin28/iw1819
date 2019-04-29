@@ -44,7 +44,8 @@
                     
 		            	<ul class="list-group list-group-flush" th:if="${friends != null && friends.size() > 0}">
 			                <li class="list-group-item d-flex flex-row justify-content-center align-items-center py-5" 
-			                	th:id="${user.id}" th:each=" friend, iStat : ${friends}" th:if="${friend != null && friend.accepted}" th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
+			                	th:id="${user.id}" th:each=" friend, iStat : ${friends}" th:if="${friend != null && friend.accepted != null && friend.accepted}"
+			                	th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
 			                	
 			                	<input type="hidden" th:value="${user.id}">
 			                	
@@ -80,7 +81,8 @@
 
 						<ul class="list-group list-group-flush" th:if="${friends != null && friends.size() > 0}">
 			                <li class="list-group-item d-flex flex-row justify-content-center align-items-center py-5" 
-			                	th:id="${user.id}" th:each=" friend, iStat : ${friends}" th:if="${friend != null && !friend.accepted && friend.firstUser.id != session.u.id}" th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
+			                	th:id="${user.id}" th:each=" friend, iStat : ${friends}"
+			                	th:if="${friend != null && friend.accepted != null && !friend.accepted}" th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
 			                	
 			                	<input type="hidden" class="userIdFriendRequest" th:value="${user.id}">
 			                	
