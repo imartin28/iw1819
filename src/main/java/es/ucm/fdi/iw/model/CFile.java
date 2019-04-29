@@ -36,12 +36,15 @@ public class CFile {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	
+	
+	private String sha256;
 	private String name;
 	private String path;
 	private String mimetype;
 	private String extension;
 	private Long size;
 	private String metadata;
+	private Integer numberOfReferences;
 	 
 	@OneToMany(targetEntity=UserFile.class, mappedBy="file", cascade=CascadeType.ALL)
 	private List<UserFile> filePermissions;
@@ -58,12 +61,14 @@ public class CFile {
 		
 	}
 	
-	public CFile(String name, Long size, String mimetype) {
+	public CFile(String sha256, String name, Long size, String mimetype) {
+		this.sha256 = sha256;
 		this.name = name;
 		this.extension = getExtension(this.name);
 		this.size = size;
 		this.mimetype = mimetype;
 		this.metadata = "{}";
+		this.numberOfReferences = 1;
 	}
 
 	
@@ -110,7 +115,30 @@ public class CFile {
 		this.path = path;
 	}
 	
+	public String getSha256() {
+		return sha256;
+	}
+
+	public void setSha256(String sha256) {
+		this.sha256 = sha256;
+	}
+
+	public Integer getNumberOfReferences() {
+		return numberOfReferences;
+	}
 	
+	public void increaseNumberOfReferences() {
+		++this.numberOfReferences;
+	}
+	
+	public void decreaseNumberOfReferences() {
+		--this.numberOfReferences;
+	}
+
+	public void setNumberOfReferences(Integer numberOfReferences) {
+		this.numberOfReferences = numberOfReferences;
+	}
+
 	public List<UserFile> getFilePermissions() {
 		return filePermissions;
 	}

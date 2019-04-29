@@ -11,6 +11,8 @@ import es.ucm.fdi.iw.model.CFile;
 public interface FileRepository extends JpaRepository<CFile, Long> {
 	CFile findById(long id);
 	
+	CFile findBysha256(String sha256);
+	
 	List<CFile> findAll();
 	
 	void delete(CFile file);

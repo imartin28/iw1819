@@ -49,6 +49,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -175,29 +176,45 @@ public class FileController {
 		return modelAndView;
 	}
 
-	@PostMapping("/{id}")
+	@PostMapping("/upload")
 	@Transactional
-	public String postFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id, Model model,
+	public String postFile(@RequestParam String sha256, @RequestParam MultipartFile file, Model model,
 			HttpSession session, HttpServletRequest request) {
 
+		User user = (User) session.getAttribute("u");
+		model.addAttribute("user", user);
+
+		User requester = (User) session.getAttribute("u");
+		if (requester.getId() != user.getId()) {
+			return "user";
+		}
+
+		log.info("Uploading file for user {}", user.getId());
+
+		/*
+		 * Comprobar que existen el directorio del usuario y el fichero, y crearlos en
+		 * caso contrario
+		 */
+
+		File folder = localData.getFolder("user" + user.getId());
+		CFile fileBBDD = fileService.findBysha256(sha256);
+
+		if (fileBBDD == null) {
+			uploadFile(sha256, file, folder, user);
+		} else {
+			fileBBDD.increaseNumberOfReferences();
+			UserFile userFile = new UserFile(user, fileBBDD, "rw");
+			entityManager.persist(userFile);
+			
+		}
+
+		return "redirect:/user/";
+	}
+
+	private void uploadFile(String sha256, MultipartFile file, File folder, User user) {
+
 		try {
-			User target = userService.findById(id);
-			model.addAttribute("user", target);
-
-			User requester = (User) session.getAttribute("u");
-			if (requester.getId() != target.getId()) {
-				return "user";
-			}
-
-			log.info("Uploading file for user {}", id);
-
-			/*
-			 * Comprobar que existen el directorio del usuario y el fichero, y crearlos en
-			 * caso contrario
-			 */
-
-			File folder = localData.getFolder("user" + id);
-			CFile fileToPersist = new CFile(file.getOriginalFilename(), file.getSize(), file.getContentType());
+			CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
 			entityManager.persist(fileToPersist);
 
 			fileToPersist.setPath(
@@ -224,16 +241,13 @@ public class FileController {
 					FileUtils.copyInputStreamToFile(fileStream, f);
 
 					// Guardar datos del fichero en la base de datos
-					User currentUser = (User) session.getAttribute("u");
 
-					UserFile userFile = new UserFile(currentUser, fileToPersist, "rw");
+					UserFile userFile = new UserFile(user, fileToPersist, "rw");
 					entityManager.persist(userFile);
 
-					entityManager.flush();
-
-					log.info("Succesfully uploaded file for user {} into {}", id, f.getAbsolutePath());
+					log.info("Succesfully uploaded file for user {} into {}", user.getId(), f.getAbsolutePath());
 				} catch (Exception e) {
-					System.out.println("Error uploading file of user " + id + " " + e);
+					System.out.println("Error uploading file of user " + user.getId() + " " + e);
 				}
 			}
 
@@ -241,7 +255,6 @@ public class FileController {
 			log.warn("ERROR DESCONOCIDO", e);
 		}
 
-		return "redirect:/user/";
 	}
 
 	@RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
@@ -274,18 +287,27 @@ public class FileController {
 
 	@PostMapping("/deleteFile")
 	@Transactional
-	public String postDeleteFile(@RequestParam("idFile") Long id) {
-		CFile file = fileService.findById(id);
-		entityManager.remove(file);
+	public String postDeleteFile(@RequestParam("idFile") Long fileId, HttpSession session) {
+		CFile file = fileService.findById(fileId);
+		Long userId = ((User) session.getAttribute("u")).getId();
+		
+		if (file.getNumberOfReferences() == 1) {
+			entityManager.remove(file);
+			
+			File f = new File(file.getPath());
 
-		File f = new File(file.getPath());
+			if (f.delete()) {
+				System.out.println(file.getName() + " is deleted!");
+			} else {
+				System.out.println("Delete operation is failed.");
+			}
 
-		if (f.delete()) {
-			System.out.println(file.getName() + " is deleted!");
 		} else {
-			System.out.println("Delete operation is failed.");
+			file.decreaseNumberOfReferences();
+			UserFile userFile =  entityManager.createNamedQuery("userFile", UserFile.class).setParameter("userId", userId).setParameter("fileId", fileId).getSingleResult();
+			entityManager.remove(userFile);
 		}
-
+		
 		return "redirect:/user/";
 	}
 
@@ -312,7 +334,6 @@ public class FileController {
 		fileService.deleteFiles(files);
 		return "{}";
 	}
-
 
 	@GetMapping("/share/{id}")
 	public ModelAndView getShare(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
@@ -360,7 +381,7 @@ public class FileController {
 
 		return modelAndView;
 	}
-	
+
 	@GetMapping("/edit/{id}")
 	public ModelAndView getEdit(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
 			throws IOException {

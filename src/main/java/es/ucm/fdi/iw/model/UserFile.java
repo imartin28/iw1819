@@ -5,8 +5,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQueries({
+@NamedQuery(name="userFile", query="SELECT userFile "
+		+ " FROM UserFile userFile "
+		+ " WHERE userFile.user.id = :userId AND userFile.file.id = :fileId ")
+})
 public class UserFile {
 	
 	@Id

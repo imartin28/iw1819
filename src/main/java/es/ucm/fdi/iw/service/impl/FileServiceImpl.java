@@ -45,6 +45,11 @@ public class FileServiceImpl implements FileService {
 		}
 	}
 
+	@Override
+	public CFile findBysha256(String sha256) {
+		return fileRepo.findBysha256(sha256);
+	}
+
 	
 	
 

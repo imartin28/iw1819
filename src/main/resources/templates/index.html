@@ -305,7 +305,7 @@
                         <h3 class="center-content mt-4 pt-3 "><i class="material-icons folder color-icon">backup</i></h3>
                     		<div class="custom-file mb-5 pb-5 ">
   								
-	                          <form th:if="${session.u != null}" method="POST" th:action="@{/file/{id}/(id=${session.u.id})}" enctype="multipart/form-data" >
+	                          <form th:if="${session.u != null}" method="POST" th:action="@{/file/upload}" enctype="multipart/form-data" >
 	                        		<input  type="file" class="custom-file-input file-upload input-file-now" id="customFile" name="file"/>
 	                        		<label class="custom-file-label" for="customFile">Drag and drop a file here or click to browse</label>
 	                        		
