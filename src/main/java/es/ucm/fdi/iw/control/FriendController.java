@@ -106,18 +106,18 @@ public class FriendController {
 				err = null;
 				List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class)
 						.setParameter("userId", friendRequestUser.getId()).getResultList();
-				List<Friend> friendships = entityManager.createNamedQuery("readFriendship", Friend.class)
-						.setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId())
-						.getResultList();
+				List<Friend> friendships = entityManager.createNamedQuery("readFriendshipsOfUser", Friend.class)
+						.setParameter("userId", friendRequestUser.getId()).getResultList();
 				Friend friendship = friendships.isEmpty() ? null : friendships.get(0);
 				
-				if(usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
-					if(accept.equalsIgnoreCase("true")) {
+				if(!usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
+					if(accept != null && !accept.isEmpty() && accept.equalsIgnoreCase("true"))
 						friendship.setAccepted(true);
-					}
-				} else {
-					err = "The user "+friendRequestUser.getNickname()+"is already your friend";
-				}	
+					else
+						entityManager.remove(friendship);
+				}
+				else
+					err = "The user "+friendRequestUser.getNickname()+" is already your friend";
 			}
 		}
 		
@@ -134,65 +134,34 @@ public class FriendController {
 	
 	@PostMapping("/removeFriend")
 	@Transactional
-	public ModelAndView addFriend(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userId") String userId) {
+	public ModelAndView addFriend(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userId") Long userId) {
 		String err = "User not found";
 		User userLogged = null;
 		User friendRequestUser = null;
 		
-		if(userId != null && !userId.isEmpty()) {
-			Long userIdLong = Long.valueOf(userId);
+		if(userId != null) {
+			userLogged = (User)session.getAttribute("u");
 			
-			if(userIdLong != null) {
-				userLogged = (User)session.getAttribute("u");
+			if(userLogged != null && userLogged.getId() != userId) {
+				friendRequestUser = userService.findById(userId);
 				
-				if(userLogged != null && userLogged.getId() != userIdLong) {
-					friendRequestUser = userService.findById(userIdLong);
+				if(friendRequestUser != null && friendRequestUser.isActive()) {
+					User userLoggedDatabase = userService.findById(userLogged.getId());
 					
-					if(friendRequestUser != null && friendRequestUser.isActive()) {
-						User userLoggedDatabase = userService.findById(userLogged.getId());
+					if(userLoggedDatabase != null && userLoggedDatabase.isActive()) {
+						err = null;
 						
-						if(userLoggedDatabase != null && userLoggedDatabase.isActive()) {
-							err = null;
-							List<User> friendsTargetUser = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
-							List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userLogged.getId()).getResultList();
-							
-							if(friendsTargetUser != null && friends != null) {
-								boolean found = false;
-								int i = 0;
-								// Check if they are already friends
-								while(!found && i < friends.size()) {
-									found = friends.get(i).getId() == friendRequestUser.getId();
-									i++;
-								}
-								
-								if(found) {
-									int targetUserIndex = i-1;
-									
-									found = false;
-									i = 0;
-									// Check if they are already friends
-									while(!found && i < friends.size()) {
-										found = friends.get(i).getId() ==friendRequestUser.getId();
-										i++;
-									}
-									
-									if(found) {
-										friendsTargetUser.remove(targetUserIndex);
-										//friendRequestUser.setFriends(friendsTargetUser);
-										
-									
-										//userLoggedDatabase.setFriends(friends);
-										
-										friendRequestUser = userService.save(friendRequestUser);
-										userLoggedDatabase = userService.save(userLoggedDatabase);
-									}
-									else
-										err = "There was a error removing the user" + friendRequestUser.getNickname();
-								}
-								else
-									err = "The user "+friendRequestUser.getNickname()+"is not your friend";
-							}
+						List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class)
+								.setParameter("userId", userLogged.getId()).getResultList();
+						List<Friend> friendships = entityManager.createNamedQuery("readFriendshipsOfUser", Friend.class)
+								.setParameter("userId", friendRequestUser.getId()).getResultList();
+						Friend friendship = friendships.isEmpty() ? null : friendships.get(0);
+						
+						if(usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
+							entityManager.remove(friendship);
 						}
+						else
+							err = "The user "+friendRequestUser.getNickname()+" is not your friend";
 					}
 				}
 			}
