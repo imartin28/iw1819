@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -49,6 +50,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		        .setParameter("userLogin", login)
 		        .getSingleResult();
 		session.setAttribute("u", u);
+		
+		if(u != null) {
+			List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", u.getId()).getResultList();
+			session.setAttribute("friends", friends);
+		}
 		
 		// add a 'ws' session variable
 		session.setAttribute("ws", request.getRequestURL().toString()

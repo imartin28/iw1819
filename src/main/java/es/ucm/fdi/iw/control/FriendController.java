@@ -54,28 +54,37 @@ public class FriendController {
 	public ModelAndView addFriendRequest(ModelAndView modelAndView, HttpSession session, 
 			@ModelAttribute ("userId") Long userId, @ModelAttribute ("message") String message) {
 		String err = "User not found";
-		User friendRequestUser = userService.findById(userId);
-		User userLogged = (User) session.getAttribute("u");
+		User friendRequestUser = null;
 		
-		err = null;
-		
-		List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
-		List<Friend> friendships = entityManager.createNamedQuery("readFriendship", Friend.class)
-				.setParameter("firstUserId", userId).setParameter("secondUserId", friendRequestUser.getId())
-				.getResultList();
-		Friend friendship = friendships.isEmpty() ? null : friendships.get(0);
-		
-		if(!usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
-			Friend friend = new Friend(userLogged, friendRequestUser, message);
-			entityManager.persist(friend);
-		} else {
-			if(friendship.isAccepted())
-				err = "The user " + friendRequestUser.getNickname() + "is already your friend";
-			else
-				err = "You have already sent a friend request to " + friendRequestUser.getNickname() +" before, please wait for an answer";
+		if(userId != null) {
+			friendRequestUser = userService.findById(userId);
+			User userLogged = (User) session.getAttribute("u");
+			
+			if(userLogged != null && friendRequestUser != null && userLogged.getId() != friendRequestUser.getId()) {
+				List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
+				List<Friend> friendships = entityManager.createNamedQuery("readFriendship", Friend.class)
+						.setParameter("firstUserId", userLogged.getId()).setParameter("secondUserId", friendRequestUser.getId())
+						.getResultList();
+				Friend friendship = friendships.isEmpty() ? null : friendships.get(0);
+				
+				boolean friendRequestExists = friendship != null;
+				if(!friendRequestExists) {
+					friendship = new Friend(userLogged, friendRequestUser, message);
+				}
+
+				if(!usersAreAlreadyFriends(friendRequestUser, friends, friendship)) {
+					err =  null;
+					if(!friendRequestExists)
+						entityManager.persist(friendship);
+				} else {
+					if(friendship.isAccepted())
+						err = "The user " + friendRequestUser.getNickname() + "is already your friend";
+					else if(friendRequestExists)
+						err = "You have already sent a friend request to " + friendRequestUser.getNickname() +" before, please wait for an answer";
+				}
+			}
 		}
-		
-		
+	
 		if(err != null) {
 			modelAndView.setViewName("redirect:/");
 			this.notifyModal(modelAndView, "Error", err);
