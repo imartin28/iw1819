@@ -75,8 +75,8 @@ public class User {
 	@OneToMany(targetEntity=UserFile.class, mappedBy="user")
 	private List<UserFile> files;
 	
-	@ManyToMany(targetEntity=CGroup.class, mappedBy="users")
-	private List<CGroup> groups;
+	@OneToMany(targetEntity=CGroupUser.class, mappedBy="user")
+	private List<CGroupUser> groups;
 	
 	@OneToMany(targetEntity=Message.class, mappedBy="sender")
 	private List<Message> sentMessages;
@@ -183,11 +183,13 @@ public class User {
 		this.files = files;
 	}
 
-	public List<CGroup> getGroups() {
+	
+
+	public List<CGroupUser> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(List<CGroup> groups) {
+	public void setGroups(List<CGroupUser> groups) {
 		this.groups = groups;
 	}
 

@@ -23,20 +23,52 @@
 
 		<div class="col-6">
 		    <div class="add_group_and_search d-flex justify-content-around align-items-center">
-		        <button class="btn button add_group"><i class="material-icons mr-3">group_add</i> Create group</button>
+		        <button class="btn button add_group" data-toggle="modal" data-target="#modalNewGroup"><i class="material-icons mr-3">group_add</i> Create group</button>
 		
                 <form class="form-inline center-content searchForm">
                     <input class="form-control" type="search" placeholder="Search a group">
                     <button class="btn button button-search" type="submit"><i class="material-icons center-content">search</i></button>
                 </form>
 		    </div>
-	
+				
+				
+				<!-- Modal NewGroup-->
+						<div class="modal fade" id="modalNewGroup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title" id="exampleModalLabel">Create New Group</h5>
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						          <span aria-hidden="true">&times;</span>
+						        </button>
+						      </div>
+						      <div class="modal-body">
+						      	<form method="POST" action="#" th:action="@{/group/newGroup}" >
+						          <div class="form-group">
+						            <label for="recipient-name" class="col-form-label">Introduce the name of the new group:</label>
+						            <input type="text" class="form-control" name="groupName">
+						            <div class="invalid-feedback"></div>
+						           <!--  <input type="text" th:field="*{tagName}" class="form-control" id="recipient-name" name="tagName">
+						            <label th:if="${#fields.hasErrors('tag_name')}" th:errors="*{tag_name}"></label>-->
+						          </div>
+						          
+						          <div class="modal-footer">						      	
+							        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+							        <button id="btn-create-tag-form" type="submit" class="btn button">Create Group</button>
+						  	      </div>
+						        </form>
+						      </div>
+						    </div>
+						  </div>
+						 </div>
+					
+						  
 	        <div class="panel mt-5">
 		        <p class="title-section ml-4 center-content">GROUPS <i class="material-icons title-section ml-4">group</i></p>
-		        <ul class="list-group list-group-flush">
+		        <ul th:each="group : ${groups}" class="list-group list-group-flush">
 		            <li class="list-group-item">
 		            	<div class="btn-group dropright">
-		                	<i class="material-icons mr-3">group</i><a class="link" href="">Familia</a>
+		                	<i class="material-icons mr-3">group</i><a class="link" href="" th:text="${group.name}"></a>
 		                	<button type="button" class="btn dropdown-toggle ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 		                 	<div class="dropdown-menu">
 								<a class="dropdown-item" href="#"><i class="material-icons mr-2">remove_red_eye</i>View members</a>
@@ -46,28 +78,7 @@
 		                </div>
 		            </li>
 	
-	                <li class="list-group-item">
-						<div class="btn-group dropright">
-							<i class="material-icons mr-3">group</i><a class="link" href="">Verano</a>
-							<button type="button" class="btn dropdown-toggle ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-							<div class="dropdown-menu">
-							    <a class="dropdown-item" href="#"><i class="material-icons mr-2">remove_red_eye</i>View members</a>
-							    <a class="dropdown-item" href="#"><i class="material-icons mr-2">share</i>Share with group</a>
-							    <a class="dropdown-item" href="#"><i class="material-icons mr-2">exit_to_app</i>Leave the group</a>
-							</div>
-						</div>
-	                </li>
-	                <li class="list-group-item">
-						<div class="btn-group dropright">
-							<i class="material-icons mr-3">group</i><a class="link" href="">Quedadas</a>
-							<button type="button" class="btn dropdown-toggle ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-							<div class="dropdown-menu">
-								<a class="dropdown-item" href="#"><i class="material-icons mr-2">remove_red_eye</i>View members</a>
-								<a class="dropdown-item" href="#"><i class="material-icons mr-2">share</i>Share with group</a>
-								<a class="dropdown-item" href="#"><i class="material-icons mr-2">exit_to_app</i>Leave the group</a>
-							</div>
-						</div>
-	                </li>
+	                
 	            </ul>
         	</div>      
     	</div>

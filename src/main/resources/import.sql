@@ -51,6 +51,14 @@ INSERT INTO USER
 ("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "ROLES")
 VALUES ( 1, '', 'admin@admin.es', 'Admin', 'Admin', 'admin', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', 'admin');
 
+
+-- GROUPS
+
+INSERT INTO CGroup
+("NAME")
+VALUES ('Prueba');
+
+
 -- TAGS
 
 INSERT INTO TAG

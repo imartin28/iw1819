@@ -17,6 +17,14 @@ import javax.persistence.OneToMany;
 
 
 @Entity
+@NamedQueries({
+@NamedQuery(name="readAllGroupsOfUser", query="SELECT g "
+		+ " FROM CGroup g" 
+		+ " WHERE g.id IN (SELECT cgu.group.id "
+		+ "FROM CGroupUser cgu"
+		+ "WHERE cgu.group.id = g.id AND cgu.user.id = :userId)")
+
+})
 public class CGroup {
 	
 	@Id
@@ -25,8 +33,8 @@ public class CGroup {
 	private String name;
 	
 	
-	@ManyToMany(targetEntity=User.class)
-	private List<User> users;
+	@OneToMany(targetEntity=CGroupUser.class, mappedBy="group")
+	private List<CGroupUser> users;
 
 	@ManyToMany(targetEntity=CFile.class)
 	private List<CFile> files;
@@ -34,7 +42,17 @@ public class CGroup {
 	@OneToMany(targetEntity=Message.class, mappedBy="groupReceiver")
 	private List<Message> messages;
 	
+	public CGroup() {}
+
 	
+	public CGroup(String name) {
+		this.name = name;
+		this.users = new ArrayList<>();
+		this.files = new ArrayList<>();
+		this.messages = new ArrayList<>();
+
+	}
+
 	public List<Message> getMessages() {
 		return messages;
 	}
@@ -50,12 +68,36 @@ public class CGroup {
 	public void setFiles(List<CFile> files) {
 		this.files = files;
 	}
-	
-	public List<User> getUsers() {
+
+
+	public long getId() {
+		return id;
+	}
+
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public List<CGroupUser> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+
+	public void setUsers(List<CGroupUser> users) {
 		this.users = users;
 	}
+	
+
 }
