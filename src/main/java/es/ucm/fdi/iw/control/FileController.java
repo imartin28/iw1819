@@ -31,6 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,14 +158,8 @@ public class FileController {
 			}
 
 			modelAndView.addObject("tags", file.tagNameList());
-
-			try {
-				JSONObject metadataJSON = new JSONObject(file.getMetadata());
-				Map<String, Object> metadataMapObject = JSONUtil.toMap(metadataJSON);
-				modelAndView.addObject("metadata", metadataMapObject);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			
+			modelAndView.addObject("metadata", file.getMetadata());
 		}
 
 		String viewName = "redirect:/user/";
@@ -411,13 +406,7 @@ public class FileController {
 
 			modelAndView.addObject("tags", file.tagNameList());
 
-			try {
-				JSONObject metadataJSON = new JSONObject(file.getMetadata());
-				Map<String, Object> metadataMapObject = JSONUtil.toMap(metadataJSON);
-				modelAndView.addObject("metadata", metadataMapObject);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			modelAndView.addObject("metadata", file.getMetadata());
 		}
 
 		String viewName = "redirect:/user/";

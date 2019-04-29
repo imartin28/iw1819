@@ -12,6 +12,11 @@
 	<!-- Put additional css and js sources -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">    
     <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
+    <script type="text/javascript">
+    	const json = "[[${metadata}]]";
+		var metadata = JSON.parse(json.replace(/&quot;/g, '\"'));
+    </script>
+    <script src="/js/fileView.js"></script>
     <script src="/js/modifyFile.js"></script>
     
     <title>M3 - My files</title>
@@ -41,7 +46,7 @@
                        	</div>
                         <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
                         
-                        	<img th:src="@{/file/contents/{id}(id=${fileId})}" width="50%" height="50%" th:case="'image'">
+                        	<img th:src="@{/file/contents/{id}(id=${fileId})}" max-width="50%" max-height="50%" th:case="'image'">
                         	
                             <audio controls th:case="'audio'">
                             	<source th:src="@{/file/contents/{id}(id=${fileId})}" type="audio/mpeg">
@@ -58,17 +63,12 @@
                             <div class="title" th:text="${tag}">Tag</div>
                             </th:block>
                        	</div>
-                        <div id="metadata" th:if="${metadata != null}">
-                           	<th:block th:each="data : ${metadata}">
-                           	<div class="title" th:text="${data.getKey( )}">Title</div>
-                            <div class="description" th:text="${data.getValue()}">Description</div>
-                           	</th:block>
-                        </div>
+                        <div id="metadata"></div>
                         <div id="editMetadata">
                         	<div class="title">Key:</div>
                         	<div class="title">Value:</div>
-                        	<input type="text" class="keyMetadata-0">
-                        	<input type="text" class="valueMetadata-0">
+                        	<input type="text" id="keyMetadata-0">
+                        	<input type="text" id="valueMetadata-0">
                         </div>
                         <div class="row metadata-buttons">
                         	<a class="btn button d-flex align-items-center" id="addMetadata" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">library_add</i>Add</a>

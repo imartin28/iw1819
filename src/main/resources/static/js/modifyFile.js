@@ -1,31 +1,29 @@
+var count = 0;
+
 "use strict"
 $(function() {
-
-	var metadata = {};
-	var count = 0;
 	
 	$('#addMetadata').on("click", function() {
-		addMetadata();
-		let elem = $('#editMetadata');
-		elem.append('<input type="text" class="keyMetadata-' + count + '">');
-		elem.append('<input type="text" class="valueMetadata-' + count + '">');
+		if (addMetadata()) {
+			let elem = $('#editMetadata');
+			elem.append('<input type="text" id="keyMetadata-' + count + '">');
+			elem.append('<input type="text" id="valueMetadata-' + count + '">');
+		}
 	});
 	
 	$('#submitMetadata').on("click", function() {
 		// Pendiente realizar post de los metadatos
 	});
 	
-	initMetadata();
-	
 });
 
-function initMetadata() {
-	// Pendiente inicializar tabla con los metadatos ya incluidos en el archivo
-}
-
 function addMetadata() {
-	let key = $('#keyMetadata-' + count).text();
-	let value = $('#valueMetadata-' + count).text();
-	metadata[key] = value;
-	count++;
+	let key = $('#keyMetadata-' + count).val();
+	let value = $('#valueMetadata-' + count).val();
+	if (key != "" && value != "") {
+		metadata[key] = value;
+		count++;
+		return true;
+	}
+	else return false;
 }
