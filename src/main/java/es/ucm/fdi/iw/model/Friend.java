@@ -13,6 +13,9 @@ import javax.persistence.OneToOne;
 	@NamedQuery(name="readFriendshipsOfUser", query="SELECT f "
 			+ " FROM Friend f "
 			+ " WHERE f.firstUser.id = :userId OR f.secondUser.id = :userId"),
+	@NamedQuery(name="readFriendshipIdsOfUser", query="SELECT f.firstUser.id, f.secondUser.id "
+			+ " FROM Friend f "
+			+ " WHERE f.firstUser.id = :userId OR f.secondUser.id = :userId"),
 	@NamedQuery(name="readFriendship", query="SELECT f "
 			+ " FROM Friend f "
 			+ " WHERE f.firstUser.id = :firstUserId AND f.secondUser.id = :secondUserId"

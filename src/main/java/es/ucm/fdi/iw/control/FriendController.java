@@ -1,5 +1,6 @@
 package es.ucm.fdi.iw.control;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -193,6 +194,15 @@ public class FriendController {
 		if(userLogged != null) {
 			List<Friend> friendships = entityManager.createNamedQuery("readFriendshipsOfUser", Friend.class).setParameter("userId", userLogged.getId()).getResultList();
 			modelAndView.addObject("friends", friendships);
+			
+			List<Long> friendIds = new ArrayList<Long>();
+			for(Friend f : friendships) {
+				if(!friendIds.contains(f.getFirstUser().getId()))
+					friendIds.add(f.getFirstUser().getId());
+				if(!friendIds.contains(f.getSecondUser().getId()))
+					friendIds.add(f.getSecondUser().getId());
+			}
+			session.setAttribute("friendIds", friendIds);
 		}
 		modelAndView.setViewName("friends");
 		
