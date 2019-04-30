@@ -427,10 +427,7 @@ public class UserController {
 		
 	}
 	
-	@GetMapping("/groups")
-	public String groups(Model model) {
-		return "groups";
-	}
+	
 	
 	@GetMapping("/history")
 	public String history(Model model) {

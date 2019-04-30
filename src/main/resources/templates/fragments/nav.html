@@ -17,8 +17,9 @@
 	    <div class="navbar-nav flex-nowrap">
 	    	<a th:href="@{/}"><img class="mx-3 my-1" src="/img/logoM3.png" width="40px" height="40px"></a>
 	    	<th:block th:if="${session.u != null && !session.u.hasRole('admin')}">
+
 		        <a th:href="@{/}" class="nav-item nav-link mx-2"><i class="material-icons">folder_open</i></a>
-		        <a th:href="@{/user/groups}" class="nav-item nav-link mx-2"><i class="material-icons">group</i></a>
+		        <a th:href="@{/groups/}" class="nav-item nav-link mx-2"><i class="material-icons">group</i></a>
 		        <a th:href="@{/user/friends}" class="nav-item nav-link mx-2"><i class="fas fa-grin-alt"></i></a>
 		        <a href="#" class="nav-item nav-link mx-2"><i class="material-icons">brightness_low</i></a>
 		        <a th:href="@{/user/profile?userId=__${session.u.id}__}"><img class="border-3 rounded-circle ml-3 img-nav" src="/img/fer.jpg" width="50px" height="50px"></a>
