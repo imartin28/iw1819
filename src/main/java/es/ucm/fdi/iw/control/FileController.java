@@ -31,6 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -114,7 +116,7 @@ public class FileController {
 		CFile file = fileService.findById(id);
 		Long userId = ((User) session.getAttribute("u")).getId();
 		// ojo con acceso: no basta con saber el id del fichero
-		File f = localData.getFile("user" + userId, file.getId() + "." + file.getExtension());
+		File f = localData.getFile("files", file.getSha256() + "." + file.getExtension());
 		InputStream in;
 
 		in = new BufferedInputStream(new FileInputStream(f));
@@ -144,7 +146,7 @@ public class FileController {
 					? file.getMimetype().split("/")[0]
 					: null);
 
-			File f = localData.getFile("user" + currentUser.getId(), file.getId() + "." + file.getExtension());
+			File f = localData.getFile("files", file.getSha256() + "." + file.getExtension());
 			String url = f.getAbsolutePath() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
 
 			modelAndView.addObject("fileId", fileId);
@@ -156,14 +158,8 @@ public class FileController {
 			}
 
 			modelAndView.addObject("tags", file.tagNameList());
-
-			try {
-				JSONObject metadataJSON = new JSONObject(file.getMetadata());
-				Map<String, Object> metadataMapObject = JSONUtil.toMap(metadataJSON);
-				modelAndView.addObject("metadata", metadataMapObject);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			
+			modelAndView.addObject("metadata", file.getMetadata());
 		}
 
 		String viewName = "redirect:/user/";
@@ -175,34 +171,47 @@ public class FileController {
 		return modelAndView;
 	}
 
-	@PostMapping("/{id}")
+	@PostMapping("/upload")
 	@Transactional
-	public String postFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id, Model model,
+	public String postFile(@RequestParam String sha256, @RequestParam MultipartFile file, Model model,
 			HttpSession session, HttpServletRequest request) {
 
+		User user = (User) session.getAttribute("u");
+		model.addAttribute("user", user);
+
+		User requester = (User) session.getAttribute("u");
+		if (requester.getId() != user.getId()) {
+			return "user";
+		}
+
+		log.info("Uploading file for user {}", user.getId());
+
+		/*
+		 * Comprobar que existen el directorio del usuario y el fichero, y crearlos en
+		 * caso contrario
+		 */
+
+		File folder = localData.getFolder("files");
+		List<CFile> filesBBDD = fileService.findAllBysha256(sha256);
+
+		CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
+		fileToPersist.setPath(
+				folder.getAbsolutePath() + "/" + fileToPersist.getSha256() + "." + fileToPersist.getExtension());
+		entityManager.persist(fileToPersist);
+		
+		UserFile userFile = new UserFile(user, fileToPersist, "rw");
+		entityManager.persist(userFile);
+		
+		if (filesBBDD.size() == 0) {
+			uploadFile(sha256, file, fileToPersist, user);
+		}
+
+		return "redirect:/user/";
+	}
+
+	private void uploadFile(String sha256, MultipartFile file, CFile fileToPersist, User user) {
 		try {
-			User target = userService.findById(id);
-			model.addAttribute("user", target);
-
-			User requester = (User) session.getAttribute("u");
-			if (requester.getId() != target.getId()) {
-				return "user";
-			}
-
-			log.info("Uploading file for user {}", id);
-
-			/*
-			 * Comprobar que existen el directorio del usuario y el fichero, y crearlos en
-			 * caso contrario
-			 */
-
-			File folder = localData.getFolder("user" + id);
-			CFile fileToPersist = new CFile(file.getOriginalFilename(), file.getSize(), file.getContentType());
-			entityManager.persist(fileToPersist);
-
-			fileToPersist.setPath(
-					folder.getAbsolutePath() + "/" + fileToPersist.getId() + "." + fileToPersist.getExtension());
-
+			
 			File f = new File(fileToPersist.getPath());
 
 			try {
@@ -224,16 +233,10 @@ public class FileController {
 					FileUtils.copyInputStreamToFile(fileStream, f);
 
 					// Guardar datos del fichero en la base de datos
-					User currentUser = (User) session.getAttribute("u");
 
-					UserFile userFile = new UserFile(currentUser, fileToPersist, "rw");
-					entityManager.persist(userFile);
-
-					entityManager.flush();
-
-					log.info("Succesfully uploaded file for user {} into {}", id, f.getAbsolutePath());
+					log.info("Succesfully uploaded file for user {} into {}", user.getId(), f.getAbsolutePath());
 				} catch (Exception e) {
-					System.out.println("Error uploading file of user " + id + " " + e);
+					System.out.println("Error uploading file of user " + user.getId() + " " + e);
 				}
 			}
 
@@ -241,10 +244,9 @@ public class FileController {
 			log.warn("ERROR DESCONOCIDO", e);
 		}
 
-		return "redirect:/user/";
 	}
 
-	@RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
+	@RequestMapping(value="/download/{id}", method = RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> downloadFile(@PathVariable Long id) throws IOException {
 
 		CFile file = fileService.findById(id);
@@ -274,18 +276,26 @@ public class FileController {
 
 	@PostMapping("/deleteFile")
 	@Transactional
-	public String postDeleteFile(@RequestParam("idFile") Long id) {
-		CFile file = fileService.findById(id);
-		entityManager.remove(file);
-
-		File f = new File(file.getPath());
-
-		if (f.delete()) {
-			System.out.println(file.getName() + " is deleted!");
-		} else {
-			System.out.println("Delete operation is failed.");
+	public String postDeleteFile(@RequestParam("idFile") Long fileId, HttpSession session) {
+		CFile file = fileService.findById(fileId);
+		List<CFile> filesWithSameSha256 =  fileService.findAllBysha256(file.getSha256());
+		
+		for(Tag tag : file.getTags()) {
+			tag.getFiles().remove(file);
 		}
+		
+		entityManager.remove(file);
+		
+		if (filesWithSameSha256.size() == 1) {
+			File f = new File(file.getPath());
 
+			if (f.delete()) {
+				System.out.println(file.getName() + " is deleted!");
+			} else {
+				System.out.println("Delete operation is failed.");
+			}
+		} 
+	
 		return "redirect:/user/";
 	}
 
@@ -312,7 +322,6 @@ public class FileController {
 		fileService.deleteFiles(files);
 		return "{}";
 	}
-
 
 	@GetMapping("/share/{id}")
 	public ModelAndView getShare(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
@@ -360,7 +369,7 @@ public class FileController {
 
 		return modelAndView;
 	}
-	
+
 	@GetMapping("/edit/{id}")
 	public ModelAndView getEdit(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
 			throws IOException {
@@ -377,7 +386,7 @@ public class FileController {
 					? file.getMimetype().split("/")[0]
 					: null);
 
-			File f = localData.getFile("user" + currentUser.getId(), file.getId() + "." + file.getExtension());
+			File f = localData.getFile("files", file.getSha256() + "." + file.getExtension());
 			String url = f.getAbsolutePath() + (mimetype.equalsIgnoreCase(FileType.Video.getKeyName()) ? "#t=0.5" : "");
 
 			modelAndView.addObject("fileId", fileId);
@@ -390,13 +399,7 @@ public class FileController {
 
 			modelAndView.addObject("tags", file.tagNameList());
 
-			try {
-				JSONObject metadataJSON = new JSONObject(file.getMetadata());
-				Map<String, Object> metadataMapObject = JSONUtil.toMap(metadataJSON);
-				modelAndView.addObject("metadata", metadataMapObject);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			modelAndView.addObject("metadata", file.getMetadata());
 		}
 
 		String viewName = "redirect:/user/";

@@ -36,6 +36,8 @@ public class CFile {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	
+	
+	private String sha256;
 	private String name;
 	private String path;
 	private String mimetype;
@@ -58,7 +60,8 @@ public class CFile {
 		
 	}
 	
-	public CFile(String name, Long size, String mimetype) {
+	public CFile(String sha256, String name, Long size, String mimetype) {
+		this.sha256 = sha256;
 		this.name = name;
 		this.extension = getExtension(this.name);
 		this.size = size;
@@ -110,6 +113,13 @@ public class CFile {
 		this.path = path;
 	}
 	
+	public String getSha256() {
+		return sha256;
+	}
+
+	public void setSha256(String sha256) {
+		this.sha256 = sha256;
+	}
 	
 	public List<UserFile> getFilePermissions() {
 		return filePermissions;

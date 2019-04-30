@@ -1,6 +1,5 @@
 package es.ucm.fdi.iw.control;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,12 +23,12 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.CFile;
-import es.ucm.fdi.iw.model.Friend;
 import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
+import es.ucm.fdi.iw.service.FriendService;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.DateUtil;
@@ -43,6 +42,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private FriendService friendService;
 	
 	@Autowired
 	private EntityManager entityManager;
@@ -90,11 +92,17 @@ public class UserController {
 	public ModelAndView searchUser(ModelAndView modelAndView, HttpSession session, HttpServletRequest request,
 			@RequestParam("searchText") String searchText) {
 
+		User userLogged = (User)session.getAttribute("u");
+		
 		if(searchText != null && !searchText.isEmpty()) {
 			List<User> users = userService.findByEmailOrNicknameOrNameOrLastName(searchText);
 			
 			if(users != null && users.size() > 0) {
 				modelAndView.addObject("users", users);
+			}
+			
+			if(userLogged != null) {
+				session.setAttribute("friendIds", friendService.getFriendIdsFromUser(userLogged.getId()));
 			}
 		}
 		
@@ -112,6 +120,8 @@ public class UserController {
 			if(user != null && user.isActive()) {
 				err = null;
 				modelAndView.addObject("user", user);
+				
+				session.setAttribute("friendIds", friendService.getFriendIdsFromUser(userId));
 			}
 		}
 		

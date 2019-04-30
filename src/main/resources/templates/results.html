@@ -13,8 +13,6 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">    
     <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
     
-    <script src="/js/results.js"></script>
-    
     <title>M3- Friends</title>
 </head>
 
@@ -47,9 +45,14 @@
 			            	th:text="${(#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' años'}"></span>
 			            <span class="bio text-center" th:text="${user.description}"></span>
 			            
+			            
+			            <th:block th:if="${session.u != null && session.u.id != user.id && ((session.friendIds != null && session.friendIds.size() > 0 && !#lists.contains(session.friendIds, user.id)) || session.friendIds == null || session.friendIds.size() == 0)}">
+            
 			            <button class="btn button d-flex flex-row align-items-center btnFriendRequest">
 			            	<i class="material-icons mr-2">person_add</i>Add friend
 			            </button>
+			           	
+			            </th:block>
 	                </li>
 	            </ul>
 	            
@@ -64,36 +67,8 @@
         </div>
         
 	</div>
-
-	<!-- Modal Friend Request -->
-	<div class="modal fade" id='modalFriendRequest' tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Add new friend</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body pt-1 pb-0">
-			    	<form id="formFriendRequest" method="POST" th:action="@{/user/addFriendRequest}">
-			    	
-			    		<input type="hidden" th:id="userId" th:name="userId">
-			    		
-			        	<div class="form-group">
-	            			<label for="tagNameEdit" class="col-form-label">Send a message to <span id="userNameSpan" class="nick"></span></label>
-	            			<textarea th:id="message" th:name="message" class="form-control" rows="3" placeholder="Write a message"></textarea>
-	          		  	</div>
 	
-			        </form>
-			 	</div>
-				<div class="modal-footer d-flex justify-content-around align-items-center">						      	
-		        	<button type="submit" form="formFriendRequest" class="btn button center-content"><i class="material-icons mr-2">person_add</i>Send request</button>
-		        	<button type="button" class="btn button delete center-content" data-dismiss="modal"><i class="material-icons mr-1">close</i>Cancel</button>
-	  	      	</div>		      
-			</div>
-		</div>
-	</div>
+	<th:block th:replace="fragments/friendRequest :: friendRequest"></th:block>
           
 </body>
 </html>

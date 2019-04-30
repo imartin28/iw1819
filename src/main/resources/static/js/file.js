@@ -6,6 +6,7 @@ $(() => {
 	$("#download-files").on("click", downloadFilesButtonHandler);
 	//$(".file-upload").file_upload();
 	$("#select-all-files").on("change", selectAllFilesCheckBoxHandler);
+	$("#button-upload-file").on("click", uploadFileButtonHandler);
 	changeFilesIcons();
   
 });
@@ -127,6 +128,59 @@ function deleteFilesButtonHandler(){
 	});
 
 	deleteFiles(array_IdsToDelete);
+}
+
+
+
+function uploadFileButtonHandler(event) {
+	event.preventDefault();
+	
+	let file = document.getElementById("customFile").files[0];
+	let reader = new FileReader();
+
+	
+	reader.onload = function(event) {
+		var binary = event.target.result;
+		let sha256 = CryptoJS.SHA256(binary).toString();
+		uploadFile(sha256, file);
+	};
+	
+	reader.onerror = function() {
+        console.error("Could not read the file");
+    };
+	
+    
+    reader.readAsBinaryString(file);
+}
+
+function uploadFile(sha256, file) {
+	let formdata = new FormData();
+	formdata.append("file", file);
+	formdata.append("sha256", sha256);
+	console.log("sha256 : " + formdata.get("sha256"));
+	console.log(formdata.get("file"));
+	
+	$.ajax({
+		type:"POST",
+		url:"/file/upload",
+		data: formdata,
+		contentType : false,
+		processData : false,
+		cache : false,
+		enctype: 'multipart/form-data',
+		headers: {		
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(){
+			location.reload();
+			console.log("exito");
+		},
+		error : function(xhr, ajaxOptions, thrownError){
+			console.log(thrownError);
+			console.log(xhr);
+		}
+		
+	});
 }
 
 

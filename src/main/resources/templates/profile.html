@@ -22,14 +22,35 @@
     
     <div class="container mt-4">
         <div class="left-panel-index col-3 mx-auto" th:if="${user != null}">
+        
+        	<input type="hidden" th:value="${user.id}">
+        
             <img class="avatar center-content" src="/img/sexy-guille.jpeg">
-            <p class="name text-center" th:if="${user.name != null && user.name != '' && user.lastName != null && user.lastName != ''}"
-            	th:text="${user.name + ' ' + user.lastName}"></p>
-            <p class="nick text-center" th:text="${'@'+user.nickname}"></p>
+            
+            <div class="d-flex flex-column align-items-center mr-3">
+            	<p class="profile-name name"
+            		th:if="${user.name != null && user.name != '' && user.lastName != null && user.lastName != ''}"
+            		th:text="${user.name + ' ' + user.lastName}"></p>
+           		<span class="nick text-center" th:text="${'@'+user.nickname}"></span>
+            </div>
+
             <p class="text-center" th:text="${user.email}"></p>
+            
             <p class="text-center" th:if="${user.birthdate != null}" 
             	th:text="${ 'Edad : ' + (#dates.year(#dates.createNow()) - #dates.year(user.birthdate)) + ' años - ' + #dates.format(user.birthdate, 'dd/MM/yyyy')}"></p>
+            	
             <p class="bio text-center" th:text="${user.description}"></p>
+            
+          	<th:block th:if="${session.u != null && session.u.id != user.id && ((session.friendIds != null && session.friendIds.size() > 0 && !#lists.contains(session.friendIds, user.id)) || session.friendIds == null || session.friendIds.size() == 0)}">
+            
+            <button class="btn button d-flex flex-row align-items-center btnFriendRequest">
+            	<i class="material-icons mr-2">person_add</i>Add friend
+            </button>
+           	
+           	<th:block th:replace="fragments/friendRequest :: friendRequest"></th:block>
+           	
+            </th:block>
+            
             <a th:if="${session.u != null && session.u.id == user.id}" 
             	th:href="@{/user/modifyProfile?userId=__${user.id}__}" class="btn button content-button mt-3">
             	<i class="material-icons mr-2">edit</i>Modify profile
