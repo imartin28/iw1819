@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,8 +22,11 @@ import javax.persistence.OneToMany;
 @NamedQuery(name="readAllGroupsOfUser", query="SELECT g "
 		+ " FROM CGroup g" 
 		+ " WHERE g.id IN (SELECT cgu.group.id "
-		+ "FROM CGroupUser cgu"
-		+ "WHERE cgu.group.id = g.id AND cgu.user.id = :userId)")
+		+ " FROM CGroupUser cgu"
+		+ " WHERE cgu.group.id = g.id AND cgu.user.id = :userId)"),
+@NamedQuery(name="findAllGroupsById", query="SELECT group "
+		+ " FROM CGroup group"
+		+ " WHERE group.id IN :ids ")
 
 })
 public class CGroup {
@@ -33,7 +37,7 @@ public class CGroup {
 	private String name;
 	
 	
-	@OneToMany(targetEntity=CGroupUser.class, mappedBy="group")
+	@OneToMany(targetEntity=CGroupUser.class, mappedBy="group", cascade=CascadeType.ALL)
 	private List<CGroupUser> users;
 
 	@ManyToMany(targetEntity=CFile.class)

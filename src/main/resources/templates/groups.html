@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">    
     <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
     
+    <script type="text/javascript" src="/js/group.js"></script>
+    
     <title>M3 - Grupos</title>
 </head>
 <body> 
@@ -21,17 +23,7 @@
       
 	<div class="row justify-content-center mt-5">
 
-		<div class="col-6">
-		    <div class="add_group_and_search d-flex justify-content-around align-items-center">
-		        <button class="btn button add_group" data-toggle="modal" data-target="#modalNewGroup"><i class="material-icons mr-3">group_add</i> Create group</button>
-		
-                <form class="form-inline center-content searchForm">
-                    <input class="form-control" type="search" placeholder="Search a group">
-                    <button class="btn button button-search" type="submit"><i class="material-icons center-content">search</i></button>
-                </form>
-		    </div>
-				
-				
+		<div class="col-6">	
 				<!-- Modal NewGroup-->
 						<div class="modal fade" id="modalNewGroup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 						  <div class="modal-dialog" role="document">
@@ -43,7 +35,7 @@
 						        </button>
 						      </div>
 						      <div class="modal-body">
-						      	<form method="POST" action="#" th:action="@{/group/newGroup}" >
+						      	<form method="POST" action="#" th:action="@{/groups/newGroup}" >
 						          <div class="form-group">
 						            <label for="recipient-name" class="col-form-label">Introduce the name of the new group:</label>
 						            <input type="text" class="form-control" name="groupName">
@@ -64,10 +56,31 @@
 					
 						  
 	        <div class="panel mt-5">
-		        <p class="title-section ml-4 center-content">GROUPS <i class="material-icons title-section ml-4">group</i></p>
+	        
+	        	<p class="title-section ml-4 center-content">GROUPS <i class="material-icons title-section ml-4">group</i></p>
+		        
+		        <div class="add_group_and_search d-flex justify-content-around align-items-center pb-3 border-bottom">
+			        <button class="btn button add_group" data-toggle="modal" data-target="#modalNewGroup"><i class="material-icons mr-3">group_add</i> Create group</button>
+			        	
+			        <form class="form-inline center-content searchForm">
+	                    <input class="form-control" type="search" placeholder="Search a group">
+	                    <button class="btn button button-search" type="submit"><i class="material-icons center-content">search</i></button>
+	                </form>
+			    </div>
+
+
+		        <div class="panel-select-all-and-options center-content">
+             		<input type="checkbox" id="select-all-groups" class="ml-4">
+             		
+             		<div class="pl-2">
+	               		<button class="btn button-second" data-toggle="modal" data-target="#modalDeleteGroups"><i class="material-icons center-content">delete</i></button>
+              		</div>            	
+               </div>            
+                           
 		        <ul th:each="group : ${groups}" class="list-group list-group-flush">
 		            <li class="list-group-item">
 		            	<div class="btn-group dropright">
+		            	<input type ="checkbox" th:value="${group.id}" name="group-check" class="ml-1 mr-3 file-checkbox">   
 		                	<i class="material-icons mr-3">group</i><a class="link" href="" th:text="${group.name}"></a>
 		                	<button type="button" class="btn dropdown-toggle ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 		                 	<div class="dropdown-menu">
@@ -83,6 +96,29 @@
         	</div>      
     	</div>
 
+	</div>
+	
+	
+	<!-- Modal Delete Groups -->
+	<div class="modal fade" id="modalDeleteGroups" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Delete files</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+        	  <label class="col-form-label">Are you sure you want to delete the selected groups?</label>
+        		  
+	          <div class="modal-footer">						      	
+		        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+		        <button type="submit" id="delete-groups" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Delete groups</button>
+	  	      </div>
+	      </div>
+	    </div>
+	  </div>
 	</div>
            
 </body>

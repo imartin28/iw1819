@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -72,10 +73,10 @@ public class User {
 	@OneToMany(targetEntity=Notification.class, mappedBy="user")
 	private List<Notification> notifications;
 	
-	@OneToMany(targetEntity=UserFile.class, mappedBy="user")
+	@OneToMany(targetEntity=UserFile.class, mappedBy="user", cascade=CascadeType.ALL)
 	private List<UserFile> files;
 	
-	@OneToMany(targetEntity=CGroupUser.class, mappedBy="user")
+	@OneToMany(targetEntity=CGroupUser.class, mappedBy="user", cascade=CascadeType.ALL)
 	private List<CGroupUser> groups;
 	
 	@OneToMany(targetEntity=Message.class, mappedBy="sender")
