@@ -208,7 +208,9 @@
                         <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show">
                             <nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">
                                 <ol th:if="${parentTag != null}" class="breadcrumb">
+                                <li class="breadcrumb-item"><a th:href="@{/user/}"><i class="material-icons mt-2">home</i></a></li> 
                                 	<li class="breadcrumb-item"><a href="#" th:href="@{${'/user/showContent/' + parentTag.id}}" th:text="${parentTag.name}">Home</a></li>
+                                	   
                                     <li th:each="tag, status : ${tagsHierarchy}" class="breadcrumb-item">
                                     	<a th:unless="${status.last}" href="#" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}">Home</a>
                                     	<span th:if="${status.last}" th:text="${tag.name}"></span>
@@ -216,11 +218,10 @@
                                 </ol>
                                 
                                 <ol th:if="${parentTag == null}" class="breadcrumb">
-                                   <li class="breadcrumb-item active" aria-current="page">/</li>
+                                   <li class="breadcrumb-item center-content "><a th:href="@{/user/}"><i class=" material-icons mt-2">home</i></a>/</li> 
                                 </ol>
                                 
-                                <div class="d-flex flex-column align-items-center ">
-                               
+                                <div class="d-flex flex-column align-items-center ">                              
                        	 			
 		                            <form id="fileSearchForm" class="form-inline center-content searchForm mb-2">
 		                                <input id="fileSearchInput" class="form-control" type="search" placeholder="Search a file" aria-label="Search">
