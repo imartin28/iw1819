@@ -61,8 +61,8 @@
 							</button>
                                                        
                             
-                            <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags">
-<!--                             	th:unless="${tag.isPlaylist != null && tag.isPlaylist}"> -->
+                            <li th:each="tag : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags"
+                            	th:unless="${tag.playlist != null && tag.playlist}">
                                 <div class="d-flex align-items-center ">
                                     <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
                                     <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
@@ -72,26 +72,26 @@
                                 <div class="dropdown-menu">
                                 	
                                     <a class="dropdown-item btn-edit-tag" th:attr="data-tag-id=${tag.id}, data-tag-name=${tag.name}, data-tag-color=${tag.color}" href="#" data-toggle="modal" data-target='#modalEditTag'><i class="material-icons mr-2 color-icon">edit</i>Edit</a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalDelete' + tag.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Delete</a>
+                                    <a class="dropdown-item btn-delete-tag" href="#" data-toggle="modal" th:attr="data-target=${'#modalDelete' + tag.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Delete</a>
                                 </div>
                             </li>
                         </ul>
                         
                         
                       	<!-- Modal Edit Tag-->
-						<div class="modal fade" id='modalEditTag' tabindex="-1" role="dialog" aria-labelledby="modalEditTag" aria-hidden="true">
+						<div class="modal fade" id='modalEditTag' tabindex="-1" role="dialog" aria-hidden="true">
 							<div class="modal-dialog" role="document">
 						    	<div class="modal-content">
 						      		<div class="modal-header">
-						        		<h5 class="modal-title" id="exampleModalLabel">Modify a tag</h5>
+						        		<h5 class="modal-title" id="modalEditTagLabel">Modify a tag</h5>
 								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								          <span aria-hidden="true">&times;</span>
 								        </button>
 						      		</div>
 							      	<div class="modal-body">
-					      				<form method="POST" action="#" th:action="@{/tag/modifyTag}">
+					      				<form method="POST" id="edit-tag-form" th:action="@{/tag/modifyTag}">
 								        	<div class="form-group">
-						            			<label for="tagNameEdit" class="col-form-label">Introduce the new name of the tag:</label>
+						            			<label for="tagNameEdit" id="labelTagNameEdit" class="col-form-label">Introduce the new name of the tag:</label>
 						            			<input type="text" class="form-control tag-name" id="edit-tag-name" name="tagName">
 						            			<div class="invalid-feedback"></div>
 						          		  	</div>
@@ -101,15 +101,12 @@
 					           					<input type="color"  id="edit-tag-color" name="colorTag">
 					            				<input type="hidden" id="edit-tag-id" name="idTag">
 					          				</div>
-
-					            			<input type="hidden" id="edit-tag-isPlaylist" name="isPlaylist" value="false">
-			
-					          				<div class="modal-footer">						      	
-						        				<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
-						        				<button type="submit" id="btn-edit-tag-form" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
-					  	      				</div>
 					        			</form>
 					      			</div>
+			      					<div class="modal-footer">						      	
+				        				<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+				        				<button type="submit" form="edit-tag-form" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
+			  	      				</div>
 						    	</div>
 						  	</div>
 						</div>
@@ -126,7 +123,7 @@
 								        </button>
 								    </div>
 								    <div class="modal-body">
-								    	<form method="POST" action="#" th:action="@{/tag/deleteTag}">
+								    	<form method="POST" th:action="@{/tag/deleteTag}">
 								        	<div class="form-group">
 						            			<label for="recipient-name" class="col-form-label" th:text="${'Are you sure you want to delete the tag ' + tag.name + '?' }"> </label>
 						            			<input type="hidden" name="idTag" th:value="${tag.id}">
@@ -154,7 +151,7 @@
 								        </button>
 						     		</div>
 						      		<div class="modal-body">
-						      			<form method="POST" action="#" th:action="@{/tag/newTag}" id="new-tag-form">
+						      			<form method="POST" th:action="@{/tag/newTag}" id="new-tag-form">
 						          			<div class="form-group">
 									            <label for="recipient-name" class="col-form-label" id="labelTagName">Introduce the name of the new tag:</label>
 									            <input type="text" class="form-control tag-name" id="new-tag-name" name="tagName">
@@ -190,26 +187,27 @@
                     </div>
 
                     <div class="col-6">
-                        <div class="row align-items-center justify-content-between mb-2 px-3">
-
+                    	<div class="row align-items-center justify-content-between mb-2 px-3">
 							<a class="d-flex files-link" href="#"> 							
 								<span class="title-section">My Files</span> 
 								<i class="material-icons title-section my-auto ml-3 ">folder_open</i>
 							</a>
 						</div>
                     
-                      
-
                         <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show">
-                            <nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">
-                                <ol th:if="${parentTag != null}" class="breadcrumb">
-                                <li class="breadcrumb-item"><a th:href="@{/user/}"><i class="material-icons mt-2">home</i></a></li> 
+                        	<nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">
+                            
+                            	<ol th:if="${parentTag != null}" class="breadcrumb">
+                                
+                                	<li class="breadcrumb-item"><a th:href="@{/user/}"><i class="material-icons mt-2">home</i></a></li>
+                                
                                 	<li class="breadcrumb-item"><a href="#" th:href="@{${'/user/showContent/' + parentTag.id}}" th:text="${parentTag.name}">Home</a></li>
                                 	   
                                     <li th:each="tag, status : ${tagsHierarchy}" class="breadcrumb-item">
-                                    	<a th:unless="${status.last}" href="#" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}">Home</a>
+                                    	<a th:unless="${status.last}" href="#" th:href="@{${'/user/showContent/' + tag.id}}" th:text="${tag.name}"></a>
                                     	<span th:if="${status.last}" th:text="${tag.name}"></span>
                                     </li>
+                                    
                                 </ol>
                                 
                                 <ol th:if="${parentTag == null}" class="breadcrumb">
@@ -217,70 +215,58 @@
                                 </ol>
                                 
                                 <div class="d-flex flex-column align-items-center ">                              
-                       	 			
 		                            <form id="fileSearchForm" class="form-inline center-content searchForm mb-2">
 		                                <input id="fileSearchInput" class="form-control" type="search" placeholder="Search a file" aria-label="Search">
 		                                <button class="btn button-search" type="submit"><i class="material-icons center-content">search</i></button>
 		                            </form>                        
-		                           
 		                        </div>
                                 
-                            </nav>
+                           	</nav>
                            
-                           <div class="panel-select-all-and-options center-content">
+                           	<div class="panel-select-all-and-options center-content">
                            		<input type="checkbox" id="select-all-files">
-                           		
                            		<div class="pl-2" >
-	                            	
 	                               	<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button-second "><i class="material-icons center-content">share</i></button>
-	                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn button-second "><i class="material-icons center-content">archive</i></button>
-	                            		<button class="btn button-second" data-toggle="modal" data-target="#modalDeleteFiles"><i class="material-icons center-content">delete</i></button>
-                            		</div>
-                            		
-                                 
-								
-                           </div>
+                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn button-second "><i class="material-icons center-content">archive</i></button>
+                            		<button class="btn button-second" data-toggle="modal" data-target="#modalDeleteFiles"><i class="material-icons center-content">delete</i></button>
+                           		</div>
+                           	</div>
                            
-                           <div class="panel-grid-files " >
-                            <div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2 droptarget" ondrop="drop(event)" ondragover="allowDrop(event)" th:attr="data-file-id=${file.id}"> 
+                           	<div class="panel-grid-files " >
+                           	
+                           		<div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2 droptarget" ondrop="drop(event)" ondragover="allowDrop(event)" th:attr="data-file-id=${file.id}"> 
                             	
-                                <div class=" file-icon-checkbox p-1 ml-4 ">
+                               		<div class=" file-icon-checkbox p-1 ml-4 ">
                                 	
-                                   <input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">       
-                                    <a href="#" class="remove-link-style mr-3 icon-type" th:attr="data-mimetype=${file.mimetype}"> 
-                                   		
-                                        <i th:if="${#strings.contains(file.mimetype, 'text')}" class="material-icons folder  color-icon " > insert_drive_file</i>
-                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Audio.keyName)}" class="material-icons folder  color-icon " >music_note</i>
-                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Image.keyName)}" class="material-icons folder  color-icon " >photo</i>
-                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Video.keyName)}" class="material-icons folder  color-icon " >videocam</i>
-                                       
-	                                     
-                                    </a>
-                                    <!--  
-                                    <script th:inline="javascript">
-					                 	window.addEventListener('load', () => {
-					                 		document.querySelector("#metadata" + [[${file.id}]]).innerText = JSON.parse([[${file.metadata}]]).name;						                 		
-					                 	});
-                        			</script>
-                        			-->
-                        			
-                        			<div class="file-name" >
-                                       <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
-                                    </div> 
-							     </div>
-							     
+                                   		<input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">       
+                                    	<a href="#" class="remove-link-style mr-3 icon-type" th:attr="data-mimetype=${file.mimetype}"> 
+	                                        <i th:if="${#strings.contains(file.mimetype, 'text')}" class="material-icons folder  color-icon " > insert_drive_file</i>
+	                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Audio.keyName)}" class="material-icons folder  color-icon " >music_note</i>
+	                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Image.keyName)}" class="material-icons folder  color-icon " >photo</i>
+	                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Video.keyName)}" class="material-icons folder  color-icon " >videocam</i>
+                                    	</a>
+	                                    <!--  
+	                                    <script th:inline="javascript">
+						                 	window.addEventListener('load', () => {
+						                 		document.querySelector("#metadata" + [[${file.id}]]).innerText = JSON.parse([[${file.metadata}]]).name;						                 		
+						                 	});
+	                        			</script>
+	                        			-->
+	                        			<div class="file-name" >
+	                                       <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
+	                                    </div> 
+							     	</div>
 							       
-                                 <div class="center-content mt-1">
-                                 	<div class="tags-style" th:each="tag : ${file.tags}"  th:attr="style=${'background-color:' + tag.color}">
-                                 	<span th:text="${tag.name}"></span>
-                                 	<button type="button" class="remove-tag-from-file-button" th:attr="data-file-id=${file.id}, data-tag-id=${tag.id}">x</button>	
-                                 </div>
-                                 	
-                                 </div>
-                                  <div class="dropdown">
-									  <button class="btn button-options-dropdown dropdown-toggle center-content mr-5" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									    <i class="material-icons">more_vert</i>
-									  </button>
+									<div class="center-content mt-1">
+										<div class="tags-style" th:each="tag : ${file.tags}"  th:attr="style=${'background-color:' + tag.color}">
+											<span th:text="${tag.name}"></span>
+											<button type="button" class="remove-tag-from-file-button" th:attr="data-file-id=${file.id}, data-tag-id=${tag.id}">x</button>	
+										</div>
+									</div>
+                                	<div class="dropdown">
+										<button class="btn button-options-dropdown dropdown-toggle center-content mr-5" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<i class="material-icons">more_vert</i>
+										</button>
 										
 								    	<div th:attr="id=${'fileOptionButtons' + file.id}" class=" pl-2 dropdown-menu" aria-labelledby="dropdownMenuButton">
 		                            		<a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalEditNameFile' + file.id}"><i class=" mr-2 material-icons center-content color-icon">edit</i>Edit</a>
@@ -289,19 +275,17 @@
 		                            		<a class="dropdown-item" th:href="@{${'/file/download/' + file.id}}" data-toggle="tooltip" data-placement="bottom" title="Download"><i class="color-icon mr-2 material-icons center-content">archive</i>Download</a>
 		                            		<a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalDeleteFile' + file.id}"><i class="mr-2 material-icons color-icon center-content">delete</i>Delete</a>
 	                            		</div>
-							 
-							     </div>                                
+							   		</div>                                
                                
-                            </div>
+                            	</div>
                             
-                           </div>
+                          	</div>
                         </div>
                       
-                       <div class="file-upload-wrapper border-upload-file mt-5 pb-4">  
-                        <h3 class="center-content mt-4 pt-3 "><i class="material-icons folder color-icon">backup</i></h3>
+                       	<div class="file-upload-wrapper border-upload-file mt-5 pb-4">  
+                        	<h3 class="center-content mt-4 pt-3 "><i class="material-icons folder color-icon">backup</i></h3>
                     		<div class="custom-file mb-5 pb-5 ">
-  								
-	                          <form th:if="${session.u != null}" method="POST" th:action="@{/file/upload}" enctype="multipart/form-data" >
+	                        	<form th:if="${session.u != null}" method="POST" th:action="@{/file/upload}" enctype="multipart/form-data" >
 	                        		<input  type="file" class="custom-file-input file-upload input-file-now" id="customFile" name="file"/>
 	                        		<label class="custom-file-label" for="customFile">Drag and drop a file here or click to browse</label>
 	                        		
@@ -309,98 +293,89 @@
 	                        		<input type="hidden" th:value="@{session.u.id}" name="userId" id="userId">
 	                        		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	                        	</form>
-                        	
-                        	
                 			</div>
-                       </div>
+                       	</div>
                        
-                        <!-- Modal Delete File -->
-								<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalDeleteFile' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
-								  <div class="modal-dialog" role="document">
-								    <div class="modal-content">
-								      <div class="modal-header">
-								        <h5 class="modal-title" id="exampleModalLabel">Delete file</h5>
+                       
+                       	<!-- Modal Delete File -->
+                 		<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalDeleteFile' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+								    	<h5 class="modal-title" id="exampleModalLabel">Delete file</h5>
 								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								          <span aria-hidden="true">&times;</span>
+								        	<span aria-hidden="true">&times;</span>
 								        </button>
-								      </div>
-								      <div class="modal-body">
-								      	<form method="POST" action="#" th:action="@{/file/deleteFile}">
-								          <div class="form-group">
-						            		<label for="recipient-name" class="col-form-label" th:text="${'Are you sure you want to delete the file ' + file.name + '?' }"></label>
-						            		<input type="hidden" name="idFile" th:value="${file.id}">
-						          		  </div>
-								           
-								          							           
-					
-								          <div class="modal-footer">						      	
-									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
-									        <button type="submit" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Delete file</button>
-								  	      </div>
-								        </form>
-								      </div>
-								      
 								    </div>
-								  </div>
+								    <div class="modal-body">
+								    	<form method="POST" action="#" th:action="@{/file/deleteFile}">
+								        	<div class="form-group">
+						            			<label for="recipient-name" class="col-form-label" th:text="${'Are you sure you want to delete the file ' + file.name + '?' }"></label>
+						            			<input type="hidden" name="idFile" th:value="${file.id}">
+						          		  	</div>
+								          	<div class="modal-footer">						      	
+									        	<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+									        	<button type="submit" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Delete file</button>
+								  	      	</div>
+								       	</form>
+								    </div>
 								</div>
+							</div>
+						</div>
+						
 								
-								<!-- Modal Delete Files -->
-								<div class="modal fade" id="modalDeleteFiles" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
-								  <div class="modal-dialog" role="document">
-								    <div class="modal-content">
-								      <div class="modal-header">
-								        <h5 class="modal-title" id="exampleModalLabel">Delete files</h5>
+						<!-- Modal Delete Files -->
+						<div class="modal fade" id="modalDeleteFiles" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+								    	<h5 class="modal-title" id="exampleModalLabel">Delete files</h5>
 								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								          <span aria-hidden="true">&times;</span>
+								        	<span aria-hidden="true">&times;</span>
 								        </button>
-								      </div>
-								      <div class="modal-body">
-						         		  <label class="col-form-label">Are you sure you want to delete the selected files?</label>
-						         		  
-								          <div class="modal-footer">						      	
-									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+								    </div>
+								    <div class="modal-body">
+						         		<label class="col-form-label">Are you sure you want to delete the selected files?</label>
+								        <div class="modal-footer">						      	
+									    	<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
 									        <button type="submit" id="delete-files" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Delete files</button>
-								  	      </div>
-								      </div>
+								  	    </div>
 								    </div>
-								  </div>
 								</div>
-								
+							</div>
+						</div>
 								
 						
                         <!-- Modal Modify File Name-->
-								<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalEditNameFile' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
-								  <div class="modal-dialog" role="document">
-								    <div class="modal-content">
-								      <div class="modal-header">
-								        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Modify name of the file ' + file.name}"></h5>
+						<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalEditNameFile' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+								    	<h5 class="modal-title" id="exampleModalLabel" th:text="${'Modify name of the file ' + file.name}"></h5>
 								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								          <span aria-hidden="true">&times;</span>
+								        	<span aria-hidden="true">&times;</span>
 								        </button>
-								      </div>
-								      <div class="modal-body">
-								      	<form method="POST" action="#" th:action="@{/file/modifyFileName}">
-								          <div class="form-group">
-						            		<label for="recipient-name" class="col-form-label">Introduce the new name of the file:</label>
-						            		<input type="text" class="form-control" id="recipient-name" name="fileName" th:value="${file.name}">
-						            		<input type="hidden" name="idFile" th:value="${file.id}">
-						          		  </div>
-								           
-								          							           
-					
-								          <div class="modal-footer">						      	
-									        <button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
-									        <button type="submit" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
-								  	      </div>
-								        </form>
-								      </div>
-								      
 								    </div>
-								  </div>
+								    <div class="modal-body">
+								    	<form method="POST" action="#" th:action="@{/file/modifyFileName}">
+								        	<div class="form-group">
+						            			<label for="recipient-name" class="col-form-label">Introduce the new name of the file:</label>
+						            			<input type="text" class="form-control" id="recipient-name" name="fileName" th:value="${file.name}">
+						            			<input type="hidden" name="idFile" th:value="${file.id}">
+						          		  	</div>
+								          	<div class="modal-footer">						      	
+									        	<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+									        	<button type="submit" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
+								  	      	</div>
+								        </form>
+								   	</div>
+								      
 								</div>
+							</div>
+						</div>
 								
-								 
-						
+								
+						<!-- Modal Delete Files -->
 						<div class="modal fade" id="modalDeleteFiles" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
 								  <div class="modal-dialog" role="document">
 								    <div class="modal-content">
@@ -423,42 +398,36 @@
 								</div>
 						
 							<!-- Modal View All Tags-->
-								<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalViewAllTag' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
-								  <div class="modal-dialog" role="document">
-								    <div class="modal-content">
-								    <div class="modal-header">
-								        <h5 class="modal-title" id="exampleModalLabel" th:text="${'Nest the file ' + file.name + ' in tags'}"></h5>
-								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								          <span aria-hidden="true">&times;</span>
-								        </button>
-								      </div>
-								         <div class="modal-body">
-									      
-									    
-							            		<label for="recipient-name" class="col-form-label">Choose the tags:</label>
+							<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalViewAllTag' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+								    	<div class="modal-header">
+								        	<h5 class="modal-title" id="exampleModalLabel" th:text="${'Nest the file ' + file.name + ' in tags'}"></h5>
+								        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          		<span aria-hidden="true">&times;</span>
+								       		</button>
+								      	</div>
+								        <div class="modal-body">
+									    	<label for="recipient-name" class="col-form-label">Choose the tags:</label>
 							            		<ul>
 							            			<li th:each="tag : ${tags}" th:unless="${#lists.contains(file.tags, tag)}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags ">
 					                                	<div class="d-flex align-items-center ">
-						                                    <input type ="checkbox" th:value="${tag.id}"  name="id_tag" class="mr-4 file-checkbox file-tags"> 
-						                                    <i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
-						                                    <span th:text="${tag.name}"></span>
-						                                    <input type="hidden" th:value="${file.id}" name="id_file">
+						                               		<input type ="checkbox" th:value="${tag.id}"  name="id_tag" class="mr-4 file-checkbox file-tags"> 
+						                                	<i th:attr="style=${'color:' + tag.color}" class="material-icons icon-tag mr-2">bookmark</i>
+						                                	<span th:text="${tag.name}"></span>
+						                                	<input type="hidden" th:value="${file.id}" name="id_file">
 						                                </div>
-	    
 					                              	</li>
-					                              </ul>
-							          		       							           
-					
-									          <div class="modal-footer">						      	
-										        <button type="button" class="btn button-cancel" data-dismiss="modal">Cancel</button>
-										        <button type="submit" id="add-tags-to-file-button" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
-									  	      </div>
-								  	     
-								       	</div>
-								      </div>
+					                            </ul>
+												<div class="modal-footer">						      	
+													<button type="button" class="btn button-cancel" data-dismiss="modal">Cancel</button>
+													<button type="submit" id="add-tags-to-file-button" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Save changes</button>
+												</div>
+								       		</div>
+								      	</div>
 								      
-								    </div>
-								  </div>
+							    	</div>
+								</div>
 								
 								
 
@@ -468,33 +437,29 @@
                 	<div class="col-3 border-left d-flex flex-column files-left-panel">
                 		 <div class="d-flex flex-column align-items-center pb-2 pt-2 mb-4 mt-5">
                        	 	<h3><i class="material-icons">playlist_play</i> Playlist</h3>
-                       	 
                             <form id="tagSearchForm" class="form-inline center-content searchForm mb-2">
                                 <input id="tagSearchInput" class="form-control" type="search" placeholder="Search a playlist" aria-label="Search">
                                 <button class="btn button-search" type="submit"><i class="material-icons center-content">search</i></button>
                             </form> 
-                        
-                           
                         </div>
                         <ul id="tagList" class="list-group list-group-flush">
-                        	<button id="btn-new-playslist" type="button" class="btn button mt-auto d-flex align-items-center justify-content-center mb-3" data-toggle="modal" data-target="#modalNewTag">
+                        	<button id="btn-new-playlist" type="button" class="btn button mt-auto d-flex align-items-center justify-content-center mb-3" data-toggle="modal" data-target="#modalNewTag">
 						  		<i class="material-icons mr-2">playlist_add</i>
                            		<span>Add New Playlist</span>
 							</button>
                                                        
-                            
-                            <li th:each="playlist : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags">
-<!--                             	th:if="${tag.isPlaylist != null && tag.isPlaylist}"> -->
+                            <li th:each="playlist : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags"
+                            	th:if="${playlist.playlist != null && playlist.playlist}" th:attr="data-id=${playlist.id}">
+								
                             	<div class="d-flex align-items-center ">
                                     <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
-                                    <i th:attr="style=${'color:' + playlist.color}" class="material-icons mr-2">playlist_play</i>
+                                    <i th:attr="style=${'color:' + playlist.color}, data-color=${playlist.color}" class="material-icons mr-2">playlist_play</i>
                                     <a class="remove-link-style tagName dragtarget" ondragstart="dragStart(event)" draggable="true" th:href="@{${'/user/showContent/' + playlist.id}}" th:text="${playlist.name}" th:attr="data-tag-id=${playlist.id}"></a>
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
                                 <div class="dropdown-menu">
-                                	
-                                    <a class="dropdown-item btn-edit-tag btn-edit-playslist" th:attr="data-tag-id=${playlist.id}, data-tag-name=${playlist.name}, data-tag-color=${playlist.color}" href="#" data-toggle="modal" data-target='#modalEditTag'><i class="material-icons mr-2 color-icon">edit</i>Edit</a>
-                                    <a class="dropdown-item btn-delete-playslist" href="#" data-toggle="modal" th:attr="data-target=${'#modalDelete' + playlist.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Delete</a>
+                                    <a class="dropdown-item btn-edit-playlist" th:attr="data-tag-id=${playlist.id}, data-tag-name=${playlist.name}, data-tag-color=${playlist.color}" href="#" data-toggle="modal" data-target='#modalEditTag'><i class="material-icons mr-2 color-icon">edit</i>Edit</a>
+                                    <a class="dropdown-item btn-delete-playlist" href="#" data-toggle="modal" th:attr="data-target=${'#modalDelete' + playlist.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Delete</a>
                                 </div>
                             </li>
                         </ul>

@@ -108,8 +108,11 @@ public class TagController {
 
 	@PostMapping("/newTag")
 	@Transactional
-	public String postTag(Model model, HttpSession session, @RequestParam("tagName") String name,
-			@RequestParam("tagColor") String color, @RequestParam("parentId") Long parentId, @RequestParam("isPlaylist") String isPlaylist) {
+	public String postTag(Model model, HttpSession session, 
+			@RequestParam("tagName") String name,
+			@RequestParam("tagColor") String color, 
+			@RequestParam("parentId") Long parentId, 
+			@RequestParam("isPlaylist") String isPlaylist) {
 		Tag parentTag = null;
 		if (parentId != null) {
 			parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId)
@@ -128,7 +131,9 @@ public class TagController {
 
 	@PostMapping("/modifyTag")
 	@Transactional
-	public String postModifyTag(@RequestParam("colorTag") String color, @RequestParam("idTag") Long id,
+	public String postModifyTag(
+			@RequestParam("colorTag") String color, 
+			@RequestParam("idTag") Long id,
 			@RequestParam("tagName") String name) {
 
 		Tag tag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", id).getSingleResult();

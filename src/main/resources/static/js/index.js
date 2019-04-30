@@ -29,7 +29,7 @@ $(() => {
     	$("#btn-create-tag-form").text("Create Tag");
     });
     
-    $("#btn-new-playslist").click(function() {
+    $("#btn-new-playlist").click(function() {
     	$("#modalNewTagLabel").text("Add new Playlist");
     	$("#labelTagName").text("Introduce the name of the new playlist:");
     	$("#nestTagLabel").parent().hide();
@@ -37,12 +37,25 @@ $(() => {
     	$("#btn-create-tag-form").text("Create Playlist");
     });
     
-    $(".btn-delete-playslist").click(function() {
+    $(".btn-delete-playlist").click(function() {
     	
     });
     
-    $(".btn-edit-playslist").click(function() {
-    	
+    $(".btn-edit-tag").click(function() {
+    	$("#modalEditTagLabel").text("Edit a Tag");
+    	$("#labelTagNameEdit").text("Introduce the name of the new tag:");
+    	$("#edit-tag-isPlaylist").val("true");
+    });
+    
+    $(".btn-edit-playlist").click(function() {
+    	let color = $(this).parent().parent().find("i.material-icons:contains('playlist_play')").attr("data-color");
+    	$("#edit-tag-color").val(color);
+    	$("#edit-tag-name").val($(this).parent().parent().find(".tagName").text());
+    	$("#modalEditTagLabel").text("Edit a Playlist");
+    	$("#edit-tag-color").val("#000000");
+    	$("#labelTagNameEdit").text("Introduce the name of the new playlist:");
+    	$("#edit-tag-isPlaylist").val("true");
+    	$("#edit-tag-id").val($(this).parent().parent().attr("data-id"));
     });
 });
 

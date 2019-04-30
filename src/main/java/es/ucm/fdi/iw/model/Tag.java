@@ -55,7 +55,7 @@ public class Tag {
 	@ManyToOne(targetEntity=User.class)
 	private User user;
 	
-	private boolean isPlaylist;
+	private boolean playlist;
 	
 	public Tag() {
 		
@@ -66,7 +66,7 @@ public class Tag {
 		this.color = color;
 		this.parent = parent;
 		this.user = user;
-		this.isPlaylist = false;
+		this.playlist = false;
 	}
 	
 	
@@ -117,19 +117,21 @@ public class Tag {
 	public void setFiles(List<CFile> files) {
 		this.files = files;
 	}
+	
 	public User getUser() {
 		return user;
 	}
+	
 	public void setUser(User user) {
 		this.user = user;
 	}
+
 	public boolean isPlaylist() {
-		return isPlaylist;
+		return playlist;
 	}
-	public void setPlaylist(boolean isPlaylist) {
-		this.isPlaylist = isPlaylist;
+
+	public void setPlaylist(boolean playlist) {
+		this.playlist = playlist;
 	}
-	
-	
 
 }
