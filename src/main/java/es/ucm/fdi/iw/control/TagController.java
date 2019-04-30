@@ -109,7 +109,7 @@ public class TagController {
 	@PostMapping("/newTag")
 	@Transactional
 	public String postTag(Model model, HttpSession session, @RequestParam("tagName") String name,
-			@RequestParam("tagColor") String color, @RequestParam("parentId") Long parentId) {
+			@RequestParam("tagColor") String color, @RequestParam("parentId") Long parentId, @RequestParam("isPlaylist") String isPlaylist) {
 		Tag parentTag = null;
 		if (parentId != null) {
 			parentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", parentId)
@@ -117,6 +117,9 @@ public class TagController {
 		}
 		Tag tag = new Tag(name.trim(), color, parentTag, (User) session.getAttribute("u"));
 
+		if(isPlaylist != null && !isPlaylist.isEmpty() && isPlaylist.equalsIgnoreCase("true")) {
+			tag.setPlaylist(true);
+		}
 		entityManager.persist(tag);
 		entityManager.flush();
 

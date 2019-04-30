@@ -54,36 +54,36 @@ VALUES ( 1, '', 'admin@admin.es', 'Admin', 'Admin', 'admin', '{bcrypt}$2a$04$2ao
 -- TAGS
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID", "USER_ID")
-VALUES ('#3AF132', 'Video', null, 1);
+("COLOR", "NAME", "PARENT_ID", "USER_ID", "IS_PLAYLIST")
+VALUES ('#3AF132', 'Video', null, 1, false);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID", "USER_ID" )
-VALUES ('#9FBFFF', 'Music', null, 1);
+("COLOR", "NAME", "PARENT_ID", "USER_ID", "IS_PLAYLIST")
+VALUES ('#9FBFFF', 'Music', null, 1, false);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID", "USER_ID" )
-VALUES ('#8CDE45', 'Pictures', null, 1);
+("COLOR", "NAME", "PARENT_ID", "USER_ID", "IS_PLAYLIST")
+VALUES ('#8CDE45', 'Pictures', null, 1, false);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID", "USER_ID" )
-VALUES ('#F60045', 'Home Videos', 1, 1);
+("COLOR", "NAME", "PARENT_ID", "USER_ID", "IS_PLAYLIST")
+VALUES ('#F60045', 'Home Videos', 1, 1, false);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID", "USER_ID")
-VALUES ('#3AF132', 'Video', null, 2);
+("COLOR", "NAME", "PARENT_ID", "USER_ID", "IS_PLAYLIST")
+VALUES ('#3AF132', 'Video', null, 2, false);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID", "USER_ID")
-VALUES ('#F60045', 'Music', null, 2);
+("COLOR", "NAME", "PARENT_ID", "USER_ID", "IS_PLAYLIST")
+VALUES ('#F60045', 'Music', null, 2, false);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID", "USER_ID")
-VALUES ('#8CDE45', 'Pictures', null, 2);
+("COLOR", "NAME", "PARENT_ID", "USER_ID", "IS_PLAYLIST")
+VALUES ('#8CDE45', 'Pictures', null, 2, false);
 
 INSERT INTO TAG
-("COLOR", "NAME", "PARENT_ID", "USER_ID")
-VALUES ('#9FBFFF', 'Movies', null, 2);
+("COLOR", "NAME", "PARENT_ID", "USER_ID", "IS_PLAYLIST")
+VALUES ('#9FBFFF', 'Movies', null, 2, false);
 
 
 -- FRIEND

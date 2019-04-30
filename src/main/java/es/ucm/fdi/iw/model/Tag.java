@@ -2,7 +2,6 @@ package es.ucm.fdi.iw.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -56,14 +55,18 @@ public class Tag {
 	@ManyToOne(targetEntity=User.class)
 	private User user;
 	
+	private boolean isPlaylist;
+	
 	public Tag() {
 		
 	}
+	
 	public Tag(String name, String color, Tag parent, User user) {
 		this.name = name;
 		this.color = color;
 		this.parent = parent;
 		this.user = user;
+		this.isPlaylist = false;
 	}
 	
 	
@@ -119,6 +122,12 @@ public class Tag {
 	}
 	public void setUser(User user) {
 		this.user = user;
+	}
+	public boolean isPlaylist() {
+		return isPlaylist;
+	}
+	public void setPlaylist(boolean isPlaylist) {
+		this.isPlaylist = isPlaylist;
 	}
 	
 	
