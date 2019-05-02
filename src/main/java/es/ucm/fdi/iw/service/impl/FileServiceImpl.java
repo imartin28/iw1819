@@ -22,6 +22,13 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
+	public CFile save(CFile file) {
+        if(file != null)
+        	file = fileRepo.save(file);
+        return file;
+	}
+	
+	@Override
 	public List<CFile> getAll() {
 		return fileRepo.findAll();
 	}

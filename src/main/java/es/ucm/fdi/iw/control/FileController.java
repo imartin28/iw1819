@@ -64,6 +64,7 @@ import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserFile;
 import es.ucm.fdi.iw.service.FileService;
 import es.ucm.fdi.iw.service.UserService;
+import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.JSONUtil;
 import es.ucm.fdi.iw.util.MediaTypeUtils;
 import es.ucm.fdi.iw.util.PostDeleteTagFromFile;
@@ -272,6 +273,23 @@ public class FileController {
 		CFile file = fileService.findById(id);
 		file.setName(name);
 		return "redirect:/user/";
+	}
+	
+	@PostMapping("/modifyFileMetadata")
+	@Transactional
+	public String postModifyFileMetadata(ModelAndView modelAndView, HttpSession session,
+			@RequestParam("fileId") Long id, @ModelAttribute ("metadata") String metadata)  {
+
+		CFile file = fileService.findById(id);
+		User currentUser = (User) session.getAttribute("u");
+
+		if (file != null && currentUser != null) {
+			if (metadata != "")
+				file.setMetadata(metadata);
+			else file.setMetadata("{}");
+			fileService.save(file);
+		}
+		return "redirect:/file/show/" + id;
 	}
 
 	@PostMapping("/deleteFile")
