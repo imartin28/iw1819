@@ -330,19 +330,19 @@ hr {
       margin: 20px;
   }
   
-  #metadata {
+  #currentMetadata {
       display: grid;
       grid-template-columns: auto auto;
       justify-content: center;
       margin: 20px;
   }
   
-  #metadata > * {
+  #currentMetadata > * {
       padding: 5px 10px;
       border-bottom: 1px solid lightgrey;
   }
   
-  #metadata .title {
+  #currentMetadata .title {
       color: rgba(62,181,169,1);
       font-weight: bold;
       letter-spacing: 1px;
@@ -350,11 +350,11 @@ hr {
       text-align: right;
   }
   
-  #metadata .title::after {
+  #currentMetadata .title::after {
       content: ":";
   }
   
-  #metadata .description {
+  #currentMetadata .description {
       font-style: italic;
   }
   
