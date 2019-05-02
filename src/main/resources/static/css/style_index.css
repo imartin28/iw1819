@@ -360,7 +360,7 @@ hr {
   
   #editMetadata {
   	  display: grid;
-      grid-template-columns: auto auto;
+      grid-template-columns: auto auto auto;
       justify-content: center;
       margin: 20px;
   }
@@ -371,6 +371,12 @@ hr {
       letter-spacing: 1px;
       text-transform: uppercase;
       text-align: center;
+  }
+  
+  #editMetadata input[type="checkbox"] {
+  	  display: flex;
+  	  margin: auto 5px;
+  	  transform: scale(1.5);
   }
   
   .metadata-buttons {

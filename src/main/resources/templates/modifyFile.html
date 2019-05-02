@@ -63,11 +63,13 @@
                             </th:block>
                        	</div>
                         <div id="editMetadata">
+                        	<div></div>
                         	<div class="title">Key:</div>
                         	<div class="title">Value:</div>
                         </div>
                         <div class="row metadata-buttons">
-                        	<a class="btn button d-flex align-items-center" id="addMetadata" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">library_add</i>Add</a>
+                        	<a class="btn button d-flex align-items-center" id="addMetadata" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">add_circle</i>Add</a>
+                        	<a class="btn button d-flex align-items-center" id="removeMetadata" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">remove_circle</i>Remove</a>
                         	<form id="modifyMetadataForm" class="form" th:action="@{/file/modifyFileMetadata}" method="POST">
                         	<input type="hidden" th:name="fileId" th:value="${fileId}">
                         	<input type="hidden" id="newMetadata" name="metadata" value="">
