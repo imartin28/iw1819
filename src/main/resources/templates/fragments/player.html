@@ -8,46 +8,50 @@
 <body class="container-fluid">
 
 	<th:block th:fragment="player">
+
+	<div class="sidebar col-0 p-0 float-right player-container">
+
+		<button id="btnTogglePlayer" class="btn d-flex align-items-center border-0 rounded-circle p-0">
+			<i class="material-icons">keyboard_arrow_left</i>
+		</button>
 	
-	<link rel="stylesheet" type="text/css" href="/css/player.css"/>
+    	<!-- th:fragment="player" -->
+		<div class="py-3 d-none">
 
-    <!-- th:fragment="player" -->
-	<div class="py-3">
-
-        <div class="player row d-flex flex-column mx-auto">
-            <div class="embed-responsive">
-                <div class="d-flex flex-column">
-                
-                    <div class="player-title d-flex flex-row justify-content-center align-items-center py-1">
-                    
-                   		<a class="d-flex files-link" th:href="@{/file/show/__${fileId}__}" th:switch="${mimetype}">
-                           	<i class="material-icons title-section my-auto ml-3" th:case="'image'">image</i>
-                            <i class="material-icons title-section my-auto ml-3" th:case="'audio'">music_video</i>
-                            <i class="material-icons title-section my-auto ml-3" th:case="'video'">videocam</i>
-                            <span class="player-title-name text-center px-2" th:text="${filename}">File</span>
-                        </a>
-                        
-                    </div>
-                    
-                     <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
-                        
-                       	<img th:src="@{/file/contents/{id}(id=${fileId})}" max-width="50%" max-height="50%" th:case="'image'">
-                       	
-                        <audio controls th:case="'audio'">
-                        	<source th:src="@{/file/contents/{id}(id=${fileId})}" type="audio/mpeg">
-                        </audio>
-                           
-                        <video width="50%" height="50%" id="videoPlay" controls th:case="'video'">
-                          	<source th:src="@{/file/contents/{id}(id=${fileId})}" type="video/mp4">
-                        </video>
-                           
-                        <div th:case="*">Mediaplayer</div>
-                      	</div>
-                        
-                    </div>
-                    
-                </div>     
-            </div>
+	        <div class="player row d-flex flex-column mx-auto">
+	            <div class="embed-responsive">
+	                <div class="d-flex flex-column">
+	                
+	                    <div class="player-title d-flex flex-row justify-content-center align-items-center py-1">
+	                    
+	                   		<a class="d-flex files-link" th:href="@{/file/show/__${fileId}__}" th:switch="${mimetype}">
+	                           	<i class="material-icons title-section my-auto ml-3" th:case="'image'">image</i>
+	                            <i class="material-icons title-section my-auto ml-3" th:case="'audio'">music_video</i>
+	                            <i class="material-icons title-section my-auto ml-3" th:case="'video'">videocam</i>
+	                            <span class="player-title-name text-center px-2" th:text="${filename}">File</span>
+	                        </a>
+	                        
+	                    </div>
+	                    
+	                     <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
+	                        
+	                       	<img th:src="@{/file/contents/{id}(id=${fileId})}" max-width="50%" max-height="50%" th:case="'image'">
+	                       	
+	                        <audio controls th:case="'audio'">
+	                        	<source th:src="@{/file/contents/{id}(id=${fileId})}" type="audio/mpeg">
+	                        </audio>
+	                           
+	                        <video width="50%" height="50%" id="videoPlay" controls th:case="'video'">
+	                          	<source th:src="@{/file/contents/{id}(id=${fileId})}" type="video/mp4">
+	                        </video>
+	                           
+	                        <div th:case="*">Mediaplayer</div>
+	                      	</div>
+	                        
+	                    </div>
+	                    
+	                </div>     
+	        </div>
 
             <div class="d-flex flex-row justify-content-between my-1">
                 <a id="btnShare" class="btn" th:href="@{/file/share/{id}(id=${fileId})}">
@@ -78,36 +82,38 @@
                 <div id="metadata"></div>
             </div>
 
+			<div class="playlist-container mt-1 mx-2 d-flex flex-column">
+	
+	            <div class="row mt-2">
+	                <div id="playlist-title" class="playlist-title d-flex flex-row mx-2 pl-3">
+	                    <span class="mb-1 mr-5">Nombre de la playlist</span>
+	                </div>
+	            </div>
+	
+	            <div class="my-2">
+	                <!-- th:each -->
+	                <div class="d-flex flex-row my-1">
+	                    <img class="thumbnail" src="https://via.placeholder.com/100/09f/fff.png">
+	                    <div class="multim-info w-100 d-flex flex-row justify-content-between align-items-center">
+	                        <div class="d-flex flex-column justify-content-center px-2 py-1">
+	                            <span class="info-title px-3">Lovers on the sun</span>
+	                            <span class="pl-3">David Guetta</span>
+	                        </div>
+	                        <div>
+	                            <button class="btn mx-2"><i class="fas fa-ellipsis-h fa-lg"></i></button>
+	                        </div>
+	                    </div>
+	                </div>
+	
+	            </div>
+	            
+	        </div>
+		
         </div>
 
-        <div class="playlist-container mt-1 mx-2 d-flex flex-column">
-
-            <div class="row mt-2">
-                <div id="playlist-title" class="playlist-title d-flex flex-row mx-2 pl-3">
-                    <span class="mb-1 mr-5">Nombre de la playlist</span>
-                </div>
-            </div>
-
-            <div class="my-2">
-                <!-- th:each -->
-                <div class="d-flex flex-row my-1">
-                    <img class="thumbnail" src="https://via.placeholder.com/100/09f/fff.png">
-                    <div class="multim-info w-100 d-flex flex-row justify-content-between align-items-center">
-                        <div class="d-flex flex-column justify-content-center px-2 py-1">
-                            <span class="info-title px-3">Lovers on the sun</span>
-                            <span class="pl-3">David Guetta</span>
-                        </div>
-                        <div>
-                            <button class="btn mx-2"><i class="fas fa-ellipsis-h fa-lg"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            
-
-        </div>
-
+       
+	
+	</div>
     
     </th:block>
 

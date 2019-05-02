@@ -24,6 +24,7 @@ $(() => {
     $("#btn-new-tag").click(function() {
     	$("#modalNewTagLabel").text("Add new Tag");
     	$("#labelTagName").text("Introduce the name of the new tag:");
+    	$("#new-tag-name").val("");
     	$("#nestTagLabel").parent().show();
     	$("#new-tag-isPlaylist").val("false");
     	$("#btn-create-tag-form").text("Create Tag");
@@ -32,6 +33,7 @@ $(() => {
     $("#btn-new-playlist").click(function() {
     	$("#modalNewTagLabel").text("Add new Playlist");
     	$("#labelTagName").text("Introduce the name of the new playlist:");
+    	$("#new-tag-name").val("");
     	$("#nestTagLabel").parent().hide();
     	$("#new-tag-isPlaylist").val("true");
     	$("#btn-create-tag-form").text("Create Playlist");

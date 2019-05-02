@@ -277,6 +277,17 @@
     background: linear-gradient(42deg, rgba(42,46,54,1) 0%, rgba(97,107,125,1) 100%);
 }
 
+#btnTogglePlayer {
+	background: inherit;
+	position: absolute;
+	top: 50%;
+	margin-left: -20px;
+}
+
+#btnTogglePlayer : hover {
+	cursor: pointer;
+}
+
 .player {
     border-bottom: 2px solid #4b5362;
 }

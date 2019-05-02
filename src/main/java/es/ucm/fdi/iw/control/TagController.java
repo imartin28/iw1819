@@ -42,21 +42,28 @@ public class TagController {
 	
 
 	@GetMapping("/validateTagName")
-	public @ResponseBody String validateTagName(@RequestParam String name, @RequestParam Long tagId,
-			HttpSession session) {
+	public @ResponseBody String validateTagName(HttpSession session, 
+			@RequestParam String name, 
+			@RequestParam Long tagId, 
+			@RequestParam String isPlaylist) {
 		List<Tag> tags = entityManager.createNamedQuery("findByName", Tag.class).setParameter("name", name)
 				.getResultList();
 		Long userId = ((User) session.getAttribute("u")).getId();
 
-		if (containsTagWithSameNameAndSameUserOrDifferentTagId(tags, name, tagId, userId)) {
+		Boolean isPlaylistBooleanValue = (isPlaylist != null ? Boolean.valueOf(isPlaylist) : false);
+		if (containsTagWithSameNameAndSameUserOrDifferentTagId(tags, name, tagId, userId, isPlaylistBooleanValue)) {
 			return "A tag with the name " + name + " already exists.";
 		} else {
 			return null;
 		}
 	}
 
-	private boolean containsTagWithSameNameAndSameUserOrDifferentTagId(List<Tag> tags, String name, Long tagId,
-			Long userId) {
+	private boolean containsTagWithSameNameAndSameUserOrDifferentTagId(
+			List<Tag> tags, 
+			String name, 
+			Long tagId,
+			Long userId,
+			Boolean isPlaylist) {
 		boolean found = false;
 		Iterator<Tag> it = tags.iterator();
 
@@ -64,15 +71,14 @@ public class TagController {
 			Tag tag = it.next();
 
 			if (tag.getName().equals(name) && tag.getUser().getId() == userId
-					&& (tagId == null || tag.getId() != tagId)) {
+					&& (tagId == null || tag.getId() != tagId)
+					&& isPlaylist != null && isPlaylist == tag.isPlaylist()) {
 				found = true;
 			}
 		}
 
 		return found;
 	}
-	
-
 	
 	@RequestMapping(value = "/addTagsToFile", method = RequestMethod.POST,  consumes=MediaType.APPLICATION_JSON_VALUE)
 	@Transactional

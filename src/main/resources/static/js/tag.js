@@ -8,6 +8,7 @@ $(() => {
     $("#new-tag-form").submit(handleValidateTagName);
     $('.btn-edit-tag').on('click', handleEditModal);
     $("#add-tags-to-file-button").on("click", addTagsToFileButtonHandler);
+    $("#add-file-to-playlists-button").on("click", addTagsToFileButtonHandler);
     $(".remove-tag-from-file-button").on("click", removeTagFromFileButtonHandler);
 });
 
@@ -92,14 +93,18 @@ function showAllTagsLi() {
 function handleValidateTagName(event) {
 	let target = $(event.target);
 	let id = "#" + target.attr('id');
-	let ok = parser.parse(id, parser.parseName && parser.parseTagName, validateTagName(event));
+	let modalContent = target.parent().parent().parent().parent();
+	let isPlaylist = modalContent.find("input[name='isPlaylist']").val();
 	
-	target.parent().parent().find("#btn-create-tag-form, #btn-edit-tag-form").attr('disabled', !ok);
+	let ok = parser.parse(id, parser.parseName && parser.parseTagName, validateTagName(event, isPlaylist));
+	
+	modalContent.find("#btn-create-tag-form, #btn-edit-tag-form").attr('disabled', !ok);
+	
 	return ok;
 }
 
 
-function validateTagName(event) {
+function validateTagName(event, isPlaylist) {
 	let target = $(event.target);
 	let id = "#" + target.attr('id');
 	let tagName = $(id).val();
@@ -110,8 +115,6 @@ function validateTagName(event) {
 		tagId = $("#edit-tag-id").val();
 	}
 	
-	
-	
 	$.ajax({
 		type:"GET",
 		url:"/tag/validateTagName",
@@ -120,7 +123,7 @@ function validateTagName(event) {
 			"Content-Type": "application/json",				
 			"X-CSRF-TOKEN": m3.csrf.value
 		},
-		data : {name : tagName, tagId : tagId},
+		data : {name : tagName, tagId : tagId, isPlaylist: isPlaylist},
 		
 		success: function (data, textStatus, jqXHR) {
 			console.log(data + " exito");
@@ -149,7 +152,7 @@ function handleEditModal() {
 
 
 function addTagsToFileButtonHandler() {
-	let tagsChecked = $("input[name='id_tag']:checked");
+	let tagsChecked = $(this).parent().parent().find("input[name='id_tag']:checked");
 	let tagsIds = [];
 	let fileId = $(this).parent().parent().find("input[type='hidden']").val();
 
@@ -159,7 +162,6 @@ function addTagsToFileButtonHandler() {
 	});
 	
 	addTagsToFile(tagsIds, fileId);
-	
 }
 
 
