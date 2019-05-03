@@ -13,6 +13,16 @@ $(function() {
 		$(".log-in").css(cssBoldReset);
 	});
 	
+	$(".login-tab").on("click", () => {
+		$("#login-tab-content").addClass("active");
+		$("#signup-tab-content").removeClass("active");
+	});
+	
+	$(".sign-up").on("click", () => {
+		$("#signup-tab-content").addClass("active");
+		$("#login-tab-content").removeClass("active");
+	});
+	
 	//
 	// $('#element').donetyping(callback[, timeout=1000])
 	// Fires callback when a user has finished typing. This is determined by the time elapsed
