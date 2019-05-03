@@ -10,12 +10,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-import es.ucm.fdi.iw.integration.DAOFriend;
 import es.ucm.fdi.iw.integration.impl.DAOFriendImpl;
 
 @Entity
@@ -31,9 +29,8 @@ import es.ucm.fdi.iw.integration.impl.DAOFriendImpl;
 			+ "WHERE (u.email = :userEmail AND u.password = :userPassword AND u.active = 1)"),
 	@NamedQuery(name="User.findUser",
 	query="SELECT u FROM User u "
-			+ "WHERE (u.email = ?1 OR u.nickname = ?1 OR u.name = ?1 OR u.lastName = ?1) OR "+
-			"(LOWER(u.email) = ?1 OR LOWER(u.nickname) = ?1 OR LOWER(u.name) = ?1 OR LOWER(u.lastName) = ?1) OR "+
-			"(u.email LIKE ?2 OR u.nickname LIKE ?2 OR u.name LIKE ?2 OR u.lastName LIKE ?2) AND "+
+			+ "WHERE ((LOWER(u.email) LIKE (:pattern)) OR (LOWER(u.nickname) LIKE (:pattern)) OR " +
+			"(LOWER(u.name) LIKE (:pattern)) OR (LOWER(u.lastName) LIKE (:pattern))) AND " +
 			"u.active = 1"),
 	@NamedQuery(name="readFriendsOfUser", query="SELECT user "
 			+ " FROM User user "

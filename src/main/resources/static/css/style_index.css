@@ -460,7 +460,9 @@ hr {
     border-radius: 80px;
     width: 75px;
     height: 75px;
-    box-shadow: 0px 2px 30px 0px rgb(66, 64, 64), 0px 0px 0px 1px rgba(97,107,125,1);
+    background: rgba(62,181,169,1);
+    border: 3px solid rgba(62,181,169,1);
+    box-shadow: 0 0 10px grey;
 }
 
 .profile-name {
@@ -571,7 +573,8 @@ img.social {
 }
 
 .list-group-item {
-    height: 40px;
+	border: none;
+    height: 80px;
 }
 
 .no-bck{
