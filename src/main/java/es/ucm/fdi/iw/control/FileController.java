@@ -158,16 +158,16 @@ public class FileController {
 			fileJSONObject.put("id", file.getId());
 			fileJSONObject.put("name", file.getName());
 			fileJSONObject.put("url", "/file/contents/"+file.getId());
-
-			String mimetype = (file.getMimetype() != null && !file.getMimetype().equalsIgnoreCase("")
-					? file.getMimetype().split("/")[0]
-					: null);
-			if (mimetype != null && !mimetype.equalsIgnoreCase("")) {
-				fileJSONObject.put("mimetype", mimetype);
+			fileJSONObject.put("mimetype", file.getMimetype());
+			
+			List<JSONObject> tagsJson = new ArrayList<JSONObject>();
+			if(file.getTags() != null && !file.getTags().isEmpty()) {
+				for(Tag t : file.getTags()) {
+					if(t != null)
+						tagsJson.add(t.toDisplayJsonObject());
+				}
 			}
-
-			//TODO: Objtener la lista de tags como jsonboject
-			fileJSONObject.put("tags", file.getTags());
+			fileJSONObject.put("tags", tagsJson);
 			
 			fileJSONObject.put("metadata", file.getMetadata());
 			

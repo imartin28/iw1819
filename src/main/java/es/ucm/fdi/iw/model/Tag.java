@@ -14,6 +14,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 @Entity
 @NamedQueries({
 @NamedQuery(name="readAllTags", query="SELECT t "
@@ -137,4 +140,11 @@ public class Tag {
 		this.playlist = playlist;
 	}
 
+	public JSONObject toDisplayJsonObject() throws JSONException {
+		JSONObject tagJson = new JSONObject();
+		tagJson.put("id", this.id);
+		tagJson.put("name", name);
+		tagJson.put("color", this.color);
+		return tagJson;
+	}
 }
