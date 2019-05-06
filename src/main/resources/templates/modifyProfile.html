@@ -68,7 +68,8 @@
 	            </div>
 			</form>
 			
-            <div class="d-flex flex-column align-items-center"> 
+            <div class="d-flex flex-column align-items-center">
+            	<button class="btn button content-button mt-3" data-toggle="modal" data-target="#avatarModal"><i class="material-icons mr-3">image_search</i>Modify avatar</button>
                 <button class="btn button content-button mt-3" data-toggle="modal" data-target="#exampleModal"><i class="material-icons mr-3">settings_backup_restore</i>Modify password</button>
                 
                 <form id="deleteForm" th:action="@{/user/delete}" method="POST">
@@ -77,6 +78,35 @@
 				</form>
                 
                 <button type="submit" form="modifyProfileForm" class="btn button content-button mt-3"><i class="material-icons mr-3">save</i> Save changes</button>
+
+				<!-- Modal AVATAR-->
+                <div class="modal fade" id="avatarModal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="avatarModalLabel">Modify avatar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body px-5">
+                            <form id="modifyAvatarForm" class="form" th:action="@{/user/modifyAvatar}" th:object="${userTransfer}" method="POST" th:if="${user != null}">
+                            	<input type="hidden" th:id="id" th:name="id" th:value="${user.id}">
+                                <div class="form-row">
+                                    <div class="form-group col-12">
+                                        <input type="file" class="form-control" th:id="newAvatar" accept="image/*">
+                                        <div class="invalid-feedback" th:text="${newAvatarError}"></div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="reset" class="button content-button btn" data-dismiss="modal">Cancel</button>
+                        <button type="submit" form="modifyAvatarForm" class="button content-button btn">Save changes</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
 
                 <!-- Modal PASSWORD-->
                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">

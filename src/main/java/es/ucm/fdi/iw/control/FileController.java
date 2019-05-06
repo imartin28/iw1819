@@ -158,7 +158,7 @@ public class FileController {
 				err = "File has invalid MIME type";
 			}
 
-			modelAndView.addObject("tags", file.tagNameList());
+			modelAndView.addObject("tags", file.getTags());
 			
 			modelAndView.addObject("metadata", file.getMetadata());
 		}
@@ -415,7 +415,7 @@ public class FileController {
 				err = "File has invalid MIME type";
 			}
 
-			modelAndView.addObject("tags", file.tagNameList());
+			modelAndView.addObject("tags", file.getTags());
 
 			modelAndView.addObject("metadata", file.getMetadata());
 		}

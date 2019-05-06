@@ -38,10 +38,7 @@
                                 <i class="material-icons title-section my-auto ml-3" th:case="'video'">videocam</i>
                                 <span class="title-section" th:text="${filename}">File</span>
                             </a>
-                            <div class="row">
-                                <a th:href="@{/file/share/{id}(id=${fileId})}" class="btn button d-flex align-items-center" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">share</i>Share</a>
-                                <a th:href="@{/file/edit/{id}(id=${fileId})}" class="btn button d-flex align-items-center" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">edit</i>Edit</a>
-                            </div>
+                            <div class="row"></div>
                        	</div>
                         <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
                         
@@ -58,9 +55,9 @@
                             <div th:case="*">Mediaplayer</div>
                        	</div>
                        	<div id="tags">
-                            <th:block th:each="tag : ${tags}">
-                            <div class="title" th:text="${tag}">Tag</div>
-                            </th:block>
+                            <div class="tags-style" th:each="tag : ${tags}" th:attr="style=${'background-color:' + tag.color}">
+								<span th:text="${tag.name}"></span>	
+							</div>
                        	</div>
                         <div id="editMetadata">
                         	<div></div>
