@@ -24,6 +24,9 @@ import javax.validation.constraints.NotNull;
 @NamedQuery(name="findById", query="SELECT t "
 		+ " FROM Tag t"
 		+ " WHERE id = :id"),
+@NamedQuery(name="findByIdAndUserId", query="SELECT t "
+		+ " FROM Tag t"
+		+ " WHERE id = :id AND user_id = :userId"),
 @NamedQuery(name="findByName", query="SELECT t "
 		+ " FROM Tag t"
 		+ " WHERE name = :name"),

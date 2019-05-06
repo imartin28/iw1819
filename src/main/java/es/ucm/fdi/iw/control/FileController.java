@@ -129,9 +129,111 @@ public class FileController {
 			}
 		};
 	}
+	
+	@GetMapping("/file/{id}")
+	@ResponseBody
+	public String getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
+			throws IOException {
+
+		String response = "File not found";
+
+		CFile file = fileService.findById(fileId);
+		User currentUser = (User) session.getAttribute("u");
+
+		if (file != null && currentUser != null) {
+			JSONObject fileJSONObject = cfileToJsonObject(file);
+			if(fileJSONObject != null)
+				response = fileJSONObject.toString();
+		}
+
+		return response;
+	}
+	
+	private JSONObject cfileToJsonObject(CFile file) {
+		if(file == null)
+			return null;
+			
+		JSONObject fileJSONObject = new JSONObject();
+		try {
+			fileJSONObject.put("id", file.getId());
+			fileJSONObject.put("name", file.getName());
+			fileJSONObject.put("url", "/file/contents/"+file.getId());
+
+			String mimetype = (file.getMimetype() != null && !file.getMimetype().equalsIgnoreCase("")
+					? file.getMimetype().split("/")[0]
+					: null);
+			if (mimetype != null && !mimetype.equalsIgnoreCase("")) {
+				fileJSONObject.put("mimetype", mimetype);
+			}
+
+			//TODO: Objtener la lista de tags como jsonboject
+			fileJSONObject.put("tags", file.getTags());
+			
+			fileJSONObject.put("metadata", file.getMetadata());
+			
+		} catch (JSONException e) {
+			log.error(e.getMessage());
+		}
+		
+		return fileJSONObject;
+	}
+	
+	@GetMapping("/tag/{id}")
+	@ResponseBody
+	public String getTag(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
+			throws IOException {
+
+		String response = "File not found";
+
+		User currentUser = (User) session.getAttribute("u");
+		Long userId = ((User) session.getAttribute("u")).getId();
+		
+		if(currentUser != null && userId != null) {
+			List<Tag> tags = entityManager.createNamedQuery("findByIdAndUserId", Tag.class)
+					.setParameter("id", fileId)
+					.setParameter("userId", userId)
+					.getResultList();
+			Tag tag = (tags != null && !tags.isEmpty() ? tags.get(0) : null);
+	
+			if (tag != null && currentUser != null) {
+				JSONObject tagJSONObject = tagToJsonObject(tag);
+				if(tagJSONObject != null)
+					response = tagJSONObject.toString();
+			}
+		}
+
+		return response;
+	}
+	
+	private JSONObject tagToJsonObject(Tag tag) {
+		if(tag == null)
+			return null;
+			
+		JSONObject tagJSONObject = new JSONObject();
+		try {
+			tagJSONObject.put("id", tag.getId());
+			tagJSONObject.put("name", tag.getName());
+			tagJSONObject.put("color", tag.getColor());
+
+			List<JSONObject> files = new ArrayList<JSONObject>();
+			if(tag.getFiles() != null && !tag.getFiles().isEmpty()) {
+				for(CFile f : tag.getFiles()) {
+					JSONObject fileJson = cfileToJsonObject(f);
+					if(fileJson != null)
+						files.add(fileJson);
+				}
+			}
+			tagJSONObject.put("files",files);
+			
+		} catch (JSONException e) {
+			log.error(e.getMessage());
+		}
+		
+		return tagJSONObject;
+	}
 
 	@GetMapping("/show/{id}")
-	public ModelAndView getFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
+	public ModelAndView getFileView(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
 			throws IOException {
 
 		String err = "File not found";
