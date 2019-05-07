@@ -31,25 +31,25 @@
 -- USERS
 
 INSERT INTO USER
-("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE", "ROLES")
-VALUES ( 1, '', 'flopezcarr@ucm.es', 'Lopez', 'Fernando', 'BadmintonNoob', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', TO_DATE('1996-09-06', 'YYYY-MM-DD'), 'user');
+("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE", "ROLES", "AVATAR")
+VALUES ( 1, '', 'flopezcarr@ucm.es', 'Lopez', 'Fernando', 'BadmintonNoob', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', TO_DATE('1996-09-06', 'YYYY-MM-DD'), 'user', '/img/avatar-1.png');
 
 INSERT INTO USER
-("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE", "ROLES")
-VALUES ( 1, '', 'guicor@ucm.es', 'Cortina', 'Guillermo', 'ChessNoob', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', TO_DATE('1996-09-06', 'YYYY-MM-DD'), 'user');
+("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE", "ROLES", "AVATAR")
+VALUES ( 1, '', 'guicor@ucm.es', 'Cortina', 'Guillermo', 'ChessNoob', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', TO_DATE('1996-09-06', 'YYYY-MM-DD'), 'user', '/img/avatar-3.png');
 
 INSERT INTO USER
-("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE", "ROLES")
-VALUES ( 1, '', 'semart12@ucm.es', 'Martin', 'Sergio', 'ChessMaister', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', TO_DATE('1996-09-06', 'YYYY-MM-DD'), 'user');
+("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE", "ROLES", "AVATAR")
+VALUES ( 1, '', 'semart12@ucm.es', 'Martin', 'Sergio', 'ChessMaister', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', TO_DATE('1996-09-06', 'YYYY-MM-DD'), 'user', '/img/avatar-1.png');
 
 INSERT INTO USER
-("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE", "ROLES")
-VALUES ( 1, '', 'imart02@ucm.es', 'Martin', 'Irene', 'Darko', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', TO_DATE('1996-09-06', 'YYYY-MM-DD'), 'user');
+("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "BIRTHDATE", "ROLES", "AVATAR")
+VALUES ( 1, '', 'imart02@ucm.es', 'Martin', 'Irene', 'Darko', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', TO_DATE('1996-09-06', 'YYYY-MM-DD'), 'user', '/img/avatar-2.png');
 
 
 INSERT INTO USER
-("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "ROLES")
-VALUES ( 1, '', 'admin@admin.es', 'Admin', 'Admin', 'admin', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', 'admin');
+("ACTIVE", "DESCRIPTION", "EMAIL", "LAST_NAME", "NAME", "NICKNAME", "PASSWORD", "ROLES", "AVATAR")
+VALUES ( 1, '', 'admin@admin.es', 'Admin', 'Admin', 'admin', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', 'admin', '/img/admin.png');
 
 
 -- GROUPS

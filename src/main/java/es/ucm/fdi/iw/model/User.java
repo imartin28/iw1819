@@ -67,6 +67,8 @@ public class User {
 	
 	private String roles;
 	
+	private String avatar;
+	
 	@OneToMany(targetEntity=Notification.class, mappedBy="user")
 	private List<Notification> notifications;
 	
@@ -224,6 +226,14 @@ public class User {
 	
 	public void addRole(String roleName) {
 		this.roles += ','+roleName;
+	}
+	
+	public String getAvatar() {
+		return avatar;
+	}
+	
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 	
 	public List<Friend> getFriends() {

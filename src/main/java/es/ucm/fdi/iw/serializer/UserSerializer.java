@@ -23,7 +23,8 @@ public class UserSerializer {
 			usertr.getName(), 
 			usertr.getLastName(),
 			usertr.getBirthdate(), 
-			usertr.getDescription()
+			usertr.getDescription(),
+			usertr.getAvatar()
 		);
 			*/
 		user = new User();
@@ -33,6 +34,7 @@ public class UserSerializer {
 		user.setLastName(usertr.getLastName());
 		user.setBirthdate(usertr.getBirthdate());
 		user.setDescription(usertr.getDescription());
+		user.setAvatar(usertr.getAvatar());
 		user.setPassword(usertr.getPassword());
 		user.setRoles(usertr.getType());
 		
@@ -55,7 +57,8 @@ public class UserSerializer {
 			userobj.getName(),
 			userobj.getLastName(),
 			userobj.getBirthdate(),
-			userobj.getDescription()
+			userobj.getDescription(),
+			userobj.getAvatar()
 		);
 		usertr.setPassword(userobj.getPassword());
 		usertr.setType(userobj.getRoles());
