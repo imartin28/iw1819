@@ -214,6 +214,8 @@ function removeTagFromFileButtonHandler() {
 }
 
 
+/*  Funciones para implementar el drag and drop de un tag a un fichero */
+
 function dragStart(event) {
 	event.dataTransfer.setData("tagId", event.target.getAttribute("data-tag-id"));
 }
@@ -230,5 +232,21 @@ function drop(event) {
   
   addTagsToFile([tagId], fileId);
 }
+
+
+/*  Funciones para implementar el drag and drop de un fichero a una playlist */
+
+function dragStartFileToPlaylist(event) {
+	event.dataTransfer.setData("fileId", event.target.getAttribute("data-file-id"));
+}
+
+function dropFileToPlaylist(event) {
+	event.preventDefault();
+	let fileId = event.dataTransfer.getData("fileId");
+	let playlistId = event.target.getAttribute("data-tag-id");
+	
+	addTagsToFile([playlistId], fileId);
+}
+
 
 

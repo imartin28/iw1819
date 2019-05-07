@@ -236,7 +236,7 @@
                            
                            	<div class="panel-grid-files " >
                            	
-                           		<div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2 droptarget" ondrop="drop(event)" ondragover="allowDrop(event)" th:attr="data-file-id=${file.id}"> 
+                           		<div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2 droptarget dragtarget" ondrop="drop(event)" ondragover="allowDrop(event)" ondragstart="dragStartFileToPlaylist(event)" draggable="true" th:attr="data-file-id=${file.id}" > 
                             	
                                		<div class=" file-icon-checkbox p-1 ml-4 ">
                                 	
@@ -255,7 +255,7 @@
 	                        			</script>
 	                        			-->
 	                        			<div class="file-name" >
-	                                       <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-5" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}"></a>  
+	                                       <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-5 dragtarget" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}, data-file-id=${file.id}" ondragstart="dragStartFileToPlaylist(event)" draggable="true"></a>  
 	                                    </div> 
 							     	</div>
 							       
@@ -516,13 +516,14 @@
                           	<span>Add New Playlist</span>
 						</button>
                         <ul id="tagList" class="list-group list-group-flush w-100">
-                            <li th:each="playlist : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags"
-                            	th:if="${playlist.playlist != null && playlist.playlist}" th:attr="data-id=${playlist.id}">
+                            <li th:each="playlist : ${tags}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags droptarget"
+                            	th:if="${playlist.playlist != null && playlist.playlist}">
 								
                             	<div class="d-flex align-items-center">
                                     <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
                                     <i th:attr="style=${'color:' + playlist.color}, data-color=${playlist.color}" class="material-icons mr-2">playlist_play</i>
-                                    <a class="remove-link-style tagName dragtarget" ondragstart="dragStart(event)" draggable="true" th:href="@{${'/user/showContent/' + playlist.id}}" th:text="${playlist.name}" th:attr="data-tag-id=${playlist.id}"></a>
+                                    <a class="remove-link-style tagName droptarget" th:href="@{${'/user/showContent/' + playlist.id}}" th:text="${playlist.name}" th:attr="data-tag-id=${playlist.id}" 
+                                    	ondrop="dropFileToPlaylist(event)" ondragover="allowDrop(event)"></a>
                                 </div>
                                 <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
                                 <div class="dropdown-menu">
