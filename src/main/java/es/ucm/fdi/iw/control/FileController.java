@@ -3,15 +3,10 @@ package es.ucm.fdi.iw.control;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,16 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -64,12 +53,10 @@ import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserFile;
 import es.ucm.fdi.iw.service.FileService;
 import es.ucm.fdi.iw.service.UserService;
-import es.ucm.fdi.iw.transfer.UserTransfer;
+
 import es.ucm.fdi.iw.util.JSONUtil;
 import es.ucm.fdi.iw.util.MediaTypeUtils;
-import es.ucm.fdi.iw.util.PostDeleteTagFromFile;
 import es.ucm.fdi.iw.util.StringUtil;
-import es.ucm.fdi.iw.util.PostTagFile;
 
 @Controller()
 @RequestMapping("file")
@@ -277,8 +264,11 @@ public class FileController {
 	@PostMapping("/upload")
 	@Transactional
 	public String postFile(@RequestParam String sha256, @RequestParam MultipartFile file, Model model,
-			HttpSession session, HttpServletRequest request) {
+			HttpSession session, HttpServletRequest request, @RequestParam Long currentTagId) {
 
+		
+		
+		
 		User user = (User) session.getAttribute("u");
 		model.addAttribute("user", user);
 
@@ -298,6 +288,14 @@ public class FileController {
 		List<CFile> filesBBDD = fileService.findAllBysha256(sha256);
 
 		CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
+		
+		if (currentTagId != null) {
+			Tag currentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", currentTagId)
+					.getSingleResult();
+			
+			currentTag.getFiles().add(fileToPersist);
+		}
+		
 		fileToPersist.setPath(
 				folder.getAbsolutePath() + "/" + fileToPersist.getSha256() + "." + fileToPersist.getExtension());
 		entityManager.persist(fileToPersist);

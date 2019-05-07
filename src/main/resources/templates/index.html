@@ -320,6 +320,9 @@
 	                        		<button type="submit" id="button-upload-file" class="btn button d-flex align-items-center mt-3 mx-auto"><i class="material-icons mr-2">unarchive</i>Upload File</button>
 	                        		<input type="hidden" th:value="@{session.u.id}" name="userId" id="userId">
 	                        		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	                        		<input type="hidden" th:if="${tagsHierarchy != null && !#lists.isEmpty(tagsHierarchy)}" name="currentTagId" th:value="${tagsHierarchy[#lists.size(tagsHierarchy) - 1].id}" />
+	                        		<input type="hidden" th:if="${(tagsHierarchy == null || #lists.isEmpty(tagsHierarchy)) && parentTag != null}" name="currentTagId" th:value="${parentTag.id}" />
+	                        		<input type="hidden" th:if="${parentTag == null && tagsHierarchy == null}" th:name="currentTagId" th:value="null" />
 	                        	</form>
                 			</div>
                        	</div>

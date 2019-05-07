@@ -21,34 +21,14 @@
 	<nav th:replace="fragments/nav :: nav"></nav>
                 
     <div class="container col-10 mt-5">
-	    <div class="left-panel-index col-3">
-	        <img class="avatar center-content" src="/img/snow.png">
-	        <p class="name text-center">John Snow</p>
-	        <p class="nick text-center">@snow</p>
-	        <p class="bio text-center">· I know nothing, my friends killed me once, my parents are dead... but I have a white wolf! =) ·</p>
-	        <div class="border-top">
-	            <a href=""><i class="material-icons mr-3">explore</i>Winterfell, GOT</a><br>
-	            <a href=""><i class="material-icons mr-3">language</i>winteriscoming.com</a><br>
-	            <div class="center-content">
-	                <img class="social" src="/img/facebook.png">
-	                <img class="social" src="/img/twitter.png">
-	            </div>
-	        </div>
-	        
-	        <div class="border-top"> 
-	            <button type="button" class="btn button content-button mt-3"><i class="material-icons mr-3">photo_library</i> Images</button>
-	            <button type="button" class="btn button content-button mt-3"><i class="material-icons mr-3">videocam</i> Videos</button>
-	            <button type="button" class="btn button content-button mt-3"><i class="material-icons mr-3">library_music</i> Music</button>
-	        </div>
-	    </div>
-           
+	    
         <div class="right-panel col-9">
             <div class="ml-5">
                 <div class="panel-chat ml-5">
                     <div class="name-group-chat">
-                        <p class="title-section">FAMILIA</p>
+                        <p class="title-section" th:text="${group.name}">FAMILIA</p>
                     </div>
-                    <div class="panel-msg-chat">
+                    <div class="panel-msg-chat" th:each="${group.messages}">
 	                    <div class="message message-right">
 	                        <span>Holi</span>
 	                    </div>
