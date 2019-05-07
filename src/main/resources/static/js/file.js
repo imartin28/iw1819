@@ -155,8 +155,11 @@ function uploadFileButtonHandler(event) {
 
 function uploadFile(sha256, file) {
 	let formdata = new FormData();
+	let currentTagId = $("input[name='currentTagId']").val();
+	
 	formdata.append("file", file);
 	formdata.append("sha256", sha256);
+	formdata.append("currentTagId", currentTagId);
 	console.log("sha256 : " + formdata.get("sha256"));
 	console.log(formdata.get("file"));
 	

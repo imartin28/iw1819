@@ -136,8 +136,10 @@ public class RootController {
 					//Boolean debug = (Boolean)context.getAttribute("debug");
 					if(userType != null) {
 						hasPermission = (userType == UserType.Administrator && userLogged != null && userLogged.hasRole(UserType.Administrator.getKeyName()));
+						user.setAvatar("/img/admin.png");
 					}
 					else {
+						user.setAvatar("/img/avatar-1.png");
 						user.addRole("user");
 						hasPermission = true;
 					}
