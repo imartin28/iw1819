@@ -354,8 +354,10 @@ public class UserController {
 		String err = null;
 		
 		if (user != null && user.isActive()) {
-			// TODO
-			//userService.save(user);
+			if (avatar != "") {
+				user.setAvatar(avatar);
+				userService.save(user);
+			}
 		}
 		else
 			err = "User not found";

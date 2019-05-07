@@ -519,6 +519,12 @@ hr {
     height: auto;
 }
 
+#customAvatar span {
+	width: 25px;
+	height: 25px;
+	background: lightgrey
+}
+
 input[type=radio] { 
     position: absolute;
     opacity: 0;
