@@ -7,7 +7,7 @@
 </head>
 <body class="container-fluid">
 
-	<th:block th:fragment="player">
+	<th:block th:fragment="player" th:if="${session != null && session.u != null && !session.u.hasRole('admin')}">
 	
 	<script type="text/javascript" src="/js/player.js"></script>
 
