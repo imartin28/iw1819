@@ -82,6 +82,12 @@ $(function() {
 		return allCorrect;
     });
     
+    /* ModifyAvatar form */
+    $('#avatarPicker').find('input').each(function(i) {
+    	if ($(this).val() == avatar)
+    		$(this).prop("checked", true);
+    });
+    
     
     /* ModifyPassword form */
 	var correctPasswordForm = [];

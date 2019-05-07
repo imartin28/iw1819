@@ -346,6 +346,36 @@ public class UserController {
 		return modelAndView;
 	}
 	
+	@PostMapping("/modifyAvatar")
+	public ModelAndView modifyAvatar(ModelAndView modelAndView, HttpSession session,
+			@RequestParam("id") Long id, @RequestParam("avatar") String avatar) {
+		
+		User user = userService.findById(id);
+		String err = null;
+		
+		if (user != null && user.isActive()) {
+			// TODO
+			//userService.save(user);
+		}
+		else
+			err = "User not found";
+		
+		if(err != null) {
+			modelAndView.setViewName("modifyProfile");
+			modelAndView.addObject("user", user);
+			modelAndView.addObject("userTransfer", user);
+			modelAndView.addObject("userId", id);
+			this.notifyModal(modelAndView, "Error", err);
+		}
+		else {
+			modelAndView.setViewName("redirect:/user/profile");
+			modelAndView.addObject("userId", id);
+			this.notifyModal(modelAndView, "Avatar changed", "You have successfully update your avatar");
+		}
+		
+		return modelAndView;
+	}
+	
 	@PostMapping("/modifyPassword")
 	public ModelAndView modifyPassword(ModelAndView modelAndView, HttpSession session, @ModelAttribute ("userTransfer") UserTransfer userTransfer) {
 		User user = null;

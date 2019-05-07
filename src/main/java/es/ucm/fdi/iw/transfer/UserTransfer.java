@@ -28,13 +28,15 @@ public class UserTransfer {
 	
 	private String description;
 	
+	private String avatar;
+	
 	private String type;
 	
 	public UserTransfer() {
 		
 	}
 
-	public UserTransfer(String email, String nickname, String name, String lastName, Date birthdate, String description) {
+	public UserTransfer(String email, String nickname, String name, String lastName, Date birthdate, String description, String avatar) {
 		this.email = email;
 		this.nickname = nickname;
 		this.name = name;
@@ -43,6 +45,7 @@ public class UserTransfer {
 		if(this.birthdate != null)
 			this.birthdateStr = DateUtil.horaMostrarString(this.birthdate);
 		this.description = description;
+		this.avatar = avatar;
 	}
 
 	public long getId() {
@@ -131,6 +134,14 @@ public class UserTransfer {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getAvatar() {
+		return avatar;
+	}
+	
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public String getType() {
