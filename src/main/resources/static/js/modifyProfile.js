@@ -83,10 +83,19 @@ $(function() {
     });
     
     /* ModifyAvatar form */
+    let avatarFound = false;
     $('#avatarPicker').find('input').each(function(i) {
-    	if ($(this).val() == avatar)
+    	if ($(this).val() == avatar) {
     		$(this).prop("checked", true);
+    		avatarFound = true;
+    	}
     });
+    if (!avatarFound) {
+    	$('#customAvatar').find('input').each(function(i) {
+    		$(this).prop("checked", true);
+    		avatarFound = true;
+    	});
+    }
     
     
     /* ModifyPassword form */

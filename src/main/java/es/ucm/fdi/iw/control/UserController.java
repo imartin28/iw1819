@@ -1,12 +1,17 @@
 package es.ucm.fdi.iw.control;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +25,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.model.UserFile;
 import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
@@ -51,6 +59,9 @@ public class UserController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private LocalData localData;
 		
 	/**
 	 * Function to notify the current user a message from server
@@ -347,35 +358,99 @@ public class UserController {
 	}
 	
 	@PostMapping("/modifyAvatar")
+	@Transactional
 	public ModelAndView modifyAvatar(ModelAndView modelAndView, HttpSession session,
-			@RequestParam("id") Long id, @RequestParam("avatar") String avatar) {
+			@RequestParam("id") Long id, @RequestParam("avatar") String avatar,
+			@RequestParam MultipartFile file) {
 		
 		User user = userService.findById(id);
+		User userLogged = (User) session.getAttribute("u");
 		String err = null;
 		
 		if (user != null && user.isActive()) {
-			if (avatar != "") {
+			if (!avatar.equals("")) {
 				user.setAvatar(avatar);
 				userService.save(user);
+				userLogged.setAvatar(avatar);
+				session.setAttribute("u", userLogged);
+			}
+			else {
+				log.info("Uploading file for user {}", user.getId());
+				String sha256 = "custom-avatar-" + id;
+				File folder = localData.getFolder("avatars");
+				
+				if (file.getContentType().contains("image/")) {
+					CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
+					String path = folder.getAbsolutePath() + "/" + fileToPersist.getSha256() + "." + fileToPersist.getExtension();
+					
+					fileToPersist.setPath(path);
+					entityManager.persist(fileToPersist);
+					
+					UserFile userFile = new UserFile(user, fileToPersist, "rw");
+					entityManager.persist(userFile);
+					
+					uploadAvatar(sha256, file, fileToPersist, user);
+					
+					user.setAvatar(path);
+					userService.save(user);
+					userLogged.setAvatar(path);
+					session.setAttribute("u", userLogged);
+				}
+				else
+					err = "Selected file is not an image";
 			}
 		}
 		else
 			err = "User not found";
 		
-		if(err != null) {
-			modelAndView.setViewName("modifyProfile");
-			modelAndView.addObject("user", user);
-			modelAndView.addObject("userTransfer", user);
-			modelAndView.addObject("userId", id);
+		modelAndView.setViewName("profile");
+		modelAndView.addObject("userId", id);
+		modelAndView.addObject("user", user);
+		modelAndView.addObject("userTransfer", user);
+		
+		if(err != null)
 			this.notifyModal(modelAndView, "Error", err);
-		}
-		else {
-			modelAndView.setViewName("redirect:/user/profile");
-			modelAndView.addObject("userId", id);
+		else
 			this.notifyModal(modelAndView, "Avatar changed", "You have successfully update your avatar");
-		}
 		
 		return modelAndView;
+	}
+	
+	private void uploadAvatar(String sha256, MultipartFile file, CFile fileToPersist, User user) {
+		try {
+			
+			File f = new File(fileToPersist.getPath());
+
+			try {
+				if (f.createNewFile()) {
+					System.out.println("File is created!");
+				} else {
+					System.out.println("File already exists.");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			if (file.isEmpty()) {
+				log.info("failed to upload file : empty file?");
+			} else {
+				try {
+					// Guardar fichero en el disco
+					InputStream fileStream = file.getInputStream();
+					FileUtils.copyInputStreamToFile(fileStream, f);
+
+					// Guardar datos del fichero en la base de datos
+
+					log.info("Succesfully uploaded file for user {} into {}", user.getId(), f.getAbsolutePath());
+				} catch (Exception e) {
+					System.out.println("Error uploading file of user " + user.getId() + " " + e);
+				}
+			}
+
+		} catch (Exception e) {
+			log.warn("ERROR DESCONOCIDO", e);
+		}
+
 	}
 	
 	@PostMapping("/modifyPassword")

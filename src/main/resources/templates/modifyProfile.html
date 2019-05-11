@@ -72,7 +72,6 @@
 			</form>
 			
             <div class="d-flex flex-column align-items-center">
-            	<button class="btn button content-button mt-3" data-toggle="modal" data-target="#avatarModal"><i class="material-icons mr-3">image_search</i>Modify avatar</button>
                 <button class="btn button content-button mt-3" data-toggle="modal" data-target="#exampleModal"><i class="material-icons mr-3">settings_backup_restore</i>Modify password</button>
                 
                 <form id="deleteForm" th:action="@{/user/delete}" method="POST">
@@ -81,47 +80,6 @@
 				</form>
                 
                 <button type="submit" form="modifyProfileForm" class="btn button content-button mt-3"><i class="material-icons mr-3">save</i> Save changes</button>
-
-				<!-- Modal AVATAR-->
-                <div class="modal fade" id="avatarModal" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="avatarModalLabel">Modify avatar</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                        <div class="modal-body px-5">
-                            <form id="modifyAvatarForm" class="form" th:action="@{/user/modifyAvatar}" method="POST">
-                            	<div id="avatarPicker">
-	                            	<label><input type="radio" name="avatar" value="/img/avatar-1.png">
-	                            		<img src="/img/avatar-1.png"></label>
-	                            	<label><input type="radio" name="avatar" value="/img/avatar-2.png">
-	                            		<img src="/img/avatar-2.png"></label>
-	                            	<label><input type="radio" name="avatar" value="/img/avatar-3.png">
-	                            		<img src="/img/avatar-3.png"></label>
-	                            	<label><input type="radio" name="avatar" value="/img/avatar-4.png">
-	                            		<img src="/img/avatar-4.png"></label>
-	                            	<label><input type="radio" name="avatar" value="/img/avatar-5.png">
-	                            		<img src="/img/avatar-5.png"></label>
-	                            	<div></div>
-	                            	<div id="customAvatar">
-	                            		<input type="radio" name="avatar" value="">
-	                            		<span></span>
-	                            		<input type="file" accept="image/*">
-	                            	</div>
-                            	</div>
-                            	<input type="hidden" th:name="id" th:value="${user.id}">
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                        <button type="reset" class="button content-button btn" data-dismiss="modal">Cancel</button>
-                        <button type="submit" form="modifyAvatarForm" class="button content-button btn">Save changes</button>
-                        </div>
-                    </div>
-                    </div>
-                </div>
 
                 <!-- Modal PASSWORD-->
                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">

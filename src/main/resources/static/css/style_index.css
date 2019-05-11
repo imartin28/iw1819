@@ -512,17 +512,16 @@ hr {
 	grid-column: span 3;
 }
 
-#customAvatar input[type=radio] { 
-    position: static;
-    opacity: 1;
-    width: auto;
-    height: auto;
-}
-
 #customAvatar span {
-	width: 25px;
-	height: 25px;
-	background: lightgrey
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 5px;
+	user-select: none;
+	font-size: 125%;
+	font-weight: bold;
 }
 
 input[type=radio] { 
@@ -532,8 +531,27 @@ input[type=radio] {
     height: 0;
 }
 
-input[type=radio] + img {
+input[type=radio] + span {
+	color: white;
+	background: lightgrey;
+	border: 2px solid grey;
+}
+
+input[type=radio]:hover + span {
+	cursor: pointer;
+	color: lightgrey;
+	background: grey;
+}
+
+input[type=radio]:checked + span {
+	color: white;
+	background: rgba(111,226,204,1);
+	border: 2px solid rgba(62,181,169,1);
+}
+
+input[type=radio]:hover + img {
     cursor: pointer;
+    background: lightgrey;
 }
 
 input[type=radio]:checked + img {
