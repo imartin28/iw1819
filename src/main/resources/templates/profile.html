@@ -32,7 +32,8 @@
         
         	<input type="hidden" th:value="${user.id}">
 
-            <img class="avatar center-content" th:src="${user.avatar}">
+            <img class="avatar center-content" th:src="${user.avatar}" th:if="${customAvatar == null}">
+            <img class="avatar center-content" th:src="@{/user/avatar/{id}(id=${user.id})}" th:if="${customAvatar != null}">
             
             <div class="d-flex flex-column align-items-center mr-3">
             	<p class="profile-name name"

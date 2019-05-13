@@ -1,8 +1,11 @@
 package es.ucm.fdi.iw.control;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
@@ -88,6 +93,10 @@ public class UserController {
 		List<CFile> files_currentUser = entityManager.createNamedQuery("FilesUser", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
 		List<Tag> tags = entityManager.createNamedQuery("readTagsByUser", Tag.class).setParameter("userId", id_currentUser).getResultList();
 		
+		if (((User) session.getAttribute("u")).getAvatar().contains("custom"))
+			session.setAttribute("customAvatar", 1);
+		else session.setAttribute("customAvatar", null);
+		
 		System.out.println(files_currentUser);
 		//String json = new Gson().toJson(files_currentUser);
 		
@@ -135,6 +144,8 @@ public class UserController {
 			if(user != null && user.isActive()) {
 				err = null;
 				modelAndView.addObject("user", user);
+				if (user.getAvatar().contains("custom"))
+					modelAndView.addObject("customAvatar", 1);
 				
 				session.setAttribute("friendIds", friendService.getFriendIdsFromUser(userId));
 			}
@@ -146,6 +157,24 @@ public class UserController {
 		
 		modelAndView.setViewName("profile");
 		return modelAndView;
+	}
+	
+	@GetMapping("/avatar/{id}")
+	public StreamingResponseBody getFile(@PathVariable long id, Model model, HttpSession session) throws IOException {
+		User user = userService.findById(id);
+		String sha256 = user.getAvatar();
+		
+		File f = localData.getFile("files", sha256);
+		InputStream in;
+			
+		in = new BufferedInputStream(new FileInputStream(f));
+
+		return new StreamingResponseBody() {
+			@Override
+			public void writeTo(OutputStream os) throws IOException {
+				FileCopyUtils.copy(in, os);
+			}
+		};
 	}
 	
 	@PostMapping("/delete")
@@ -371,31 +400,33 @@ public class UserController {
 		User userLogged = (User) session.getAttribute("u");
 		String err = null;
 		
+		String sha256 = "custom-avatar-" + id;
+		List<CFile> current =  fileService.findAllBysha256(sha256);
+		
+		if (!current.isEmpty()) {
+			for(Tag tag : current.get(0).getTags())
+				tag.getFiles().remove(current.get(0));
+			
+			entityManager.remove(current.get(0));
+		}
+		
 		if (user != null && user.isActive()) {
 			if (!avatar.equals("")) {
 				user.setAvatar(avatar);
 				userService.save(user);
 				userLogged.setAvatar(avatar);
 				session.setAttribute("u", userLogged);
+				session.setAttribute("customAvatar", null);
 			}
 			else {
 				log.info("Uploading file for user {}", user.getId());
-				String sha256 = "custom-avatar-" + id;
 				File folder = localData.getFolder("files");
-				List<CFile> current =  fileService.findAllBysha256(sha256);
 				
 				if (file.getContentType().contains("image/")) {
 					CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
-					String path = folder.getAbsolutePath() + "/" + fileToPersist.getSha256() + "." + fileToPersist.getExtension();
+					String path = fileToPersist.getSha256() + "." + fileToPersist.getExtension();
 					
-					if (!current.isEmpty()) {
-						for(Tag tag : current.get(0).getTags())
-							tag.getFiles().remove(current.get(0));
-						
-						entityManager.remove(current.get(0));
-					}
-					
-					fileToPersist.setPath(path);
+					fileToPersist.setPath(folder.getAbsolutePath() + "/" + path);
 					entityManager.persist(fileToPersist);
 					
 					UserFile userFile = new UserFile(user, fileToPersist, "rw");
@@ -407,6 +438,7 @@ public class UserController {
 					userService.save(user);
 					userLogged.setAvatar(path);
 					session.setAttribute("u", userLogged);
+					session.setAttribute("customAvatar", 1);
 				}
 				else
 					err = "Selected file is not an image";
