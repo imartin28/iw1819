@@ -11,8 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.CFile;
+import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.service.FileService;
@@ -99,9 +98,8 @@ public class AdminController {
 						else
 							errUserId += "User with id: "+userId+", not found";
 					}
-					else {
+					else
 						errUserId += "Error with user id";
-					}
 					
 					err += errUserId + '\n';
 				}
@@ -120,7 +118,7 @@ public class AdminController {
 			err = "";
 		}
 		
-		return "{ \"err\": \""+err+"\" }";
+		return "{ \"err\": \"" + err + "\" }";
 	}
 	
 	@GetMapping("/files")
@@ -130,6 +128,56 @@ public class AdminController {
 		modelAndView.addObject("files", files);
 		modelAndView.setViewName("files");
 		return modelAndView;
+	}
+	
+	@PostMapping("/files")
+	public @ResponseBody String filesPost(ModelAndView modelAndView, HttpServletResponse response,
+			@RequestBody String fileIds) {
+		String err = "";
+		
+		JSONObject fileIdsJSON = null;
+		try {
+			fileIdsJSON = new JSONObject(fileIds);
+			
+			Iterator<String> keys = fileIdsJSON.keys();
+			
+			while(keys.hasNext()) {
+				String errFileId = "";
+				
+				String key = keys.next();
+				Long fileId = Long.parseLong(key.replace("file", ""));
+				
+				if (fileId != null) {
+					CFile file = fileService.findById(fileId);
+					
+					if (file != null) {
+						for(Tag tag : file.getTags())
+							tag.getFiles().remove(file);
+						
+						fileService.deleteFile(file);
+					}
+					else
+						err += "File with id: " + file.getId() + ", not found";
+				}
+				else
+					errFileId += "Error with file id";
+				
+				err += errFileId + '\n';
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			err = "Error while parsing ids";
+		}
+		
+		err = err.trim();
+		if (err != null && !err.equalsIgnoreCase("")) {
+			this.notifyModal(modelAndView, "Error", err);
+		}
+		else
+			err = "";
+		
+		return "{ \"err\": \"" + err + "\" }";
 	}
 	
 	@GetMapping("/addAdmin")
