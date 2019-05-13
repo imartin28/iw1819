@@ -36,6 +36,7 @@ import es.ucm.fdi.iw.model.UserFile;
 import es.ucm.fdi.iw.model.UserType;
 import es.ucm.fdi.iw.parser.UserParser;
 import es.ucm.fdi.iw.serializer.UserSerializer;
+import es.ucm.fdi.iw.service.FileService;
 import es.ucm.fdi.iw.service.FriendService;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.transfer.UserTransfer;
@@ -47,6 +48,9 @@ import es.ucm.fdi.iw.util.StringUtil;
 public class UserController {
 	
 	private static final Logger log = LogManager.getLogger(UserController.class);
+	
+	@Autowired
+	private FileService fileService;
 	
 	@Autowired
 	private UserService userService;
@@ -377,11 +381,19 @@ public class UserController {
 			else {
 				log.info("Uploading file for user {}", user.getId());
 				String sha256 = "custom-avatar-" + id;
-				File folder = localData.getFolder("avatars");
+				File folder = localData.getFolder("files");
+				List<CFile> current =  fileService.findAllBysha256(sha256);
 				
 				if (file.getContentType().contains("image/")) {
 					CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
 					String path = folder.getAbsolutePath() + "/" + fileToPersist.getSha256() + "." + fileToPersist.getExtension();
+					
+					if (!current.isEmpty()) {
+						for(Tag tag : current.get(0).getTags())
+							tag.getFiles().remove(current.get(0));
+						
+						entityManager.remove(current.get(0));
+					}
 					
 					fileToPersist.setPath(path);
 					entityManager.persist(fileToPersist);
