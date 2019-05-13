@@ -29,7 +29,8 @@
 		<nav th:replace="fragments/nav :: nav"></nav>
 	
 	    <div class="left-panel-index col-5 mx-auto mt-3 h-auto">
-	        <img class="avatar center-content" th:src="${user.avatar}">
+	    	<img class="avatar center-content" th:src="${user.avatar}" th:if="${user.avatar.contains('custom') == false}">
+	        <img class="avatar center-content" th:src="@{/user/avatar/{id}(id=${user.id})}" th:if="${user.avatar.contains('custom') == true}">
 	
 	        <form id="modifyProfileForm" class="form" th:action="@{/user/modifyProfile}" th:object="${userTransfer}" method="POST" th:if="${user != null}">
 	            <div class="form-row justify-content-center">

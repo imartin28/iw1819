@@ -32,8 +32,8 @@
         
         	<input type="hidden" th:value="${user.id}">
 
-            <img class="avatar center-content" th:src="${user.avatar}" th:if="${customAvatar == null}">
-            <img class="avatar center-content" th:src="@{/user/avatar/{id}(id=${user.id})}" th:if="${customAvatar != null}">
+            <img class="avatar center-content" th:src="${user.avatar}" th:if="${user.avatar.contains('custom') == false}">
+            <img class="avatar center-content" th:src="@{/user/avatar/{id}(id=${user.id})}" th:if="${user.avatar.contains('custom') == true}">
             
             <div class="d-flex flex-column align-items-center mr-3">
             	<p class="profile-name name"
@@ -58,7 +58,7 @@
            	<th:block th:replace="fragments/friendRequest :: friendRequest"></th:block>
            	
             </th:block>
-            <button class="btn button content-button mt-3" data-toggle="modal" data-target="#avatarModal"><i class="material-icons mr-3">image_search</i>Change avatar</button>
+            <button class="btn button content-button mt-3" th:if="${session.u != null && session.u.id == user.id}" data-toggle="modal" data-target="#avatarModal"><i class="material-icons mr-3">image_search</i>Change avatar</button>
             
             <a th:if="${session.u != null && session.u.id == user.id}" 
             	th:href="@{/user/modifyProfile?userId=__${user.id}__}" class="btn button content-button mt-3">

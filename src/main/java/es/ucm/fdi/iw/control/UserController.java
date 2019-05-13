@@ -93,10 +93,6 @@ public class UserController {
 		List<CFile> files_currentUser = entityManager.createNamedQuery("FilesUser", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
 		List<Tag> tags = entityManager.createNamedQuery("readTagsByUser", Tag.class).setParameter("userId", id_currentUser).getResultList();
 		
-		if (((User) session.getAttribute("u")).getAvatar().contains("custom"))
-			session.setAttribute("customAvatar", 1);
-		else session.setAttribute("customAvatar", null);
-		
 		System.out.println(files_currentUser);
 		//String json = new Gson().toJson(files_currentUser);
 		
@@ -144,8 +140,6 @@ public class UserController {
 			if(user != null && user.isActive()) {
 				err = null;
 				modelAndView.addObject("user", user);
-				if (user.getAvatar().contains("custom"))
-					modelAndView.addObject("customAvatar", 1);
 				
 				session.setAttribute("friendIds", friendService.getFriendIdsFromUser(userId));
 			}
@@ -416,7 +410,6 @@ public class UserController {
 				userService.save(user);
 				userLogged.setAvatar(avatar);
 				session.setAttribute("u", userLogged);
-				session.setAttribute("customAvatar", null);
 			}
 			else {
 				log.info("Uploading file for user {}", user.getId());
@@ -438,7 +431,6 @@ public class UserController {
 					userService.save(user);
 					userLogged.setAvatar(path);
 					session.setAttribute("u", userLogged);
-					session.setAttribute("customAvatar", 1);
 				}
 				else
 					err = "Selected file is not an image";
@@ -577,8 +569,6 @@ public class UserController {
 		return "index";
 		
 	}
-	
-	
 	
 	@GetMapping("/history")
 	public String history(Model model) {

@@ -32,7 +32,8 @@
 	                	
 	                	<input type="hidden" th:value="${user.id}">
 	                	
-	                    <img class="profile-image" src="/img/fer.jpg">
+	                    <img class="profile-image" th:src="@{/user/avatar/{id}(id=${user.id})}" th:if="${user.avatar.contains('custom') == true}">
+	                    <img class="profile-image" th:src="${user.avatar}" th:if="${user.avatar.contains('custom') == false}">
 	                    
 	                    <div class="d-flex flex-column align-items-center mr-3">
 	                    	<a class="link profile-name name" th:href="@{/user/profile?userId=__${user.id}__}" th:text="${user.name + ' ' + user.lastName}"></a>
