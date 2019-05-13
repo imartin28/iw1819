@@ -29,7 +29,7 @@
 	    	</th:block>
 	    	<th:block th:if="${session.u != null && session.u.hasRole('admin')}">
 				<a th:href="@{/admin/users}" class="nav-item nav-link fa-icon"><i class="fas fa-users-cog"></i></a>
-				<a href="#" class="nav-item nav-link fa-icon"><i class="fas fa-copy"></i></a>
+				<a th:href="@{/admin/files}" class="nav-item nav-link fa-icon"><i class="fas fa-copy"></i></a>
 				<a th:href="@{/admin/addAdmin}" class="nav-item nav-link fa-icon"><i class="fas fa-user-plus"></i></a>
 				<a th:href="@{/user/profile?userId=__${session.u.id}__}"><img class="border-3 rounded-circle ml-3 img-nav" th:src="${session.u.avatar}" width="50px" height="50px"></a>
 	    	</th:block>

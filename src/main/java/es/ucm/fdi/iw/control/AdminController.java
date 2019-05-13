@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserType;
+import es.ucm.fdi.iw.service.FileService;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.StringUtil;
@@ -34,7 +36,10 @@ public class AdminController {
 	private static final Logger log = LogManager.getLogger(AdminController.class);
 	
 	@Autowired
-	UserService userService;
+	private FileService fileService;
+	
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * Function to notify the current user a message from server
@@ -116,6 +121,15 @@ public class AdminController {
 		}
 		
 		return "{ \"err\": \""+err+"\" }";
+	}
+	
+	@GetMapping("/files")
+	public ModelAndView filesGet(ModelAndView modelAndView) {
+		List<CFile> files = fileService.getAll();
+
+		modelAndView.addObject("files", files);
+		modelAndView.setViewName("files");
+		return modelAndView;
 	}
 	
 	@GetMapping("/addAdmin")

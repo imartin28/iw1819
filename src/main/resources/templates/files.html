@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<th:block th:replace="fragments/head :: head"></th:block>
+	
+	<!-- Put additional css and js sources -->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">    
+    <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
+    
+    <!-- datatables-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+    
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/sl-1.2.6/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"></script>
+    
+    <script type="text/javascript" src="/js/admin.js"></script>
+    
+    <title>M3- Admin</title>
+</head>
+<body>
+
+	<nav th:replace="fragments/nav :: nav"></nav>
+        
+    <div class="container col-10 mt-5">
+    
+    	<div id="userTable-container">
+	        <table id="userTable" class="table table-striped table-bordered">
+	            <thead>
+	                <tr>
+	                    <th>Name</th>
+	                    <th>Mimetype</th>
+	                    <th>Metadata</th>
+	                </tr>
+	            </thead>
+	            <tbody th:if="${files != null}">     
+	                <tr th:id="${file.id}" th:each=" file : ${files}">
+	                	<td><a th:href="@{/file/show/__${file.id}__}" th:text="${file.name}"></a></td>
+	                    <td th:text="${file.mimetype}"></td>
+	                    <td th:text="${file.metadata}"></td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
+		
+		<div id="action-button-container" class="row pt-2 mx-1">
+		    <div class="d-flex flex-column w-100">
+		        <span class="border-bottom">Operation over selected items</span>
+		        <div class="d-flex flex-row justify-content-around pt-3 w-100">
+		            <button id="remove-selected" class="btn button delete d-flex flex-row align-items-center"><i class="material-icons mr-2">delete</i>Delete</button>
+		        </div>
+		    </div>
+		</div>
+		
+	</div>
+	
+</body>
+</html>

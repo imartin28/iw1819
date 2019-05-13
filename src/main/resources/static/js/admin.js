@@ -45,4 +45,8 @@ $(function() {
     	handleModifyUserState(false);
     });
     
+    $("#remove-selected").click(function() {
+    	// TODO
+    });
+    
 });
