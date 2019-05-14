@@ -55,6 +55,20 @@ public class GroupController {
 		return "redirect:/groups/";
 	}
 	
+	@PostMapping("/modifyGroup")
+	@Transactional
+	public String modifyGroup(@RequestParam("groupName") String name, @RequestParam("groupId") Long id) {
+		
+		
+		CGroup group = entityManager.createNamedQuery("findGroupById", CGroup.class).setParameter("id", id).getSingleResult();
+		
+		group.setName(name);
+		
+		return "redirect:/groups/";
+	}
+	
+	
+	
 	@PostMapping("/deleteGroups")
 	@Transactional
 	@ResponseBody

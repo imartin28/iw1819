@@ -26,7 +26,10 @@ import javax.persistence.OneToMany;
 		+ " WHERE cgu.group.id = g.id AND cgu.user.id = :userId)"),
 @NamedQuery(name="findAllGroupsById", query="SELECT group "
 		+ " FROM CGroup group"
-		+ " WHERE group.id IN :ids ")
+		+ " WHERE group.id IN :ids "),
+@NamedQuery(name="findGroupById", query="SELECT group"
+		+ " FROM CGroup group"
+		+ " WHERE group.id = :id ")
 
 })
 public class CGroup {

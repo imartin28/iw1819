@@ -1,6 +1,7 @@
 $(() => {
 	$("#select-all-groups").on("change", selectAllGroupsCheckBoxHandler);
 	$("#delete-groups").on("click", deleteGroupsButtonHandler);
+	 $('.btn-edit-group').on('click', editGroupModalHandler);
 });
 
 
@@ -20,6 +21,18 @@ function selectAllGroupsCheckBoxHandler() {
 			}
 		}
 	}
+}
+
+
+function editGroupModalHandler(){
+
+	let groupId = $(this).attr('data-group-id');
+	let groupName = $(this).attr('data-group-name');
+	
+	
+	$("#modalEditGroup").find("#edit-group-id").val(groupId);
+	$("#modalEditGroup").find("#edit-group-name").val(groupName);
+	
 }
 
 function deleteGroupsButtonHandler() {
