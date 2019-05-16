@@ -39,8 +39,8 @@
                                 <span class="title-section" th:text="${filename}">File</span>
                             </a>
                             <div class="row">
-                                <a th:href="@{/file/share/{id}(id=${fileId})}" th:if="${session.u.roles.equals('admin') == false}" class="btn button d-flex align-items-center" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">share</i>Share</a>
-                                <a th:href="@{/file/edit/{id}(id=${fileId})}" class="btn button d-flex align-items-center" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">edit</i>Edit Metadata</a>
+                            	<button class="btn button content-button mt-3" th:if="${session.u.roles.equals('admin') == false}" data-toggle="modal" data-target="#shareModal" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">share</i>Share</button>
+                                <a th:href="@{/file/edit/{id}(id=${fileId})}" class="btn button content-button mt-3" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">edit</i>Edit Metadata</a>
                             </div>
                        	</div>
                         <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">
@@ -67,6 +67,51 @@
                 </div>
             </div>
             
+                        <!-- Modal SHARE-->
+			<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="shareModalLabel">Share file</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body px-5">
+							<form id="shareFileForm" class="form" th:action="@{/file/share/{id}(id=${fileId})}" method="POST">
+								<ul class="list-group list-group-flush" th:if="${friends != null && friends.size() > 0}">
+									<li class=" d-flex flex-row" th:each=" friend : ${friends}"
+										th:if="${friend != null && friend.accepted != null && friend.accepted}"
+										th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
+										<label class="friendPicker">
+											<input type="radio" name="receiver" value="${user.id}"><span class="check">✔</span>
+											<span class="friendPicker">
+												<img class="profile-image" th:src="${user.avatar}" th:if="${user.avatar.contains('custom') == false}">
+												<img class="profile-image" th:src="@{/user/avatar/{id}(id=${user.id})}" th:if="${user.avatar.contains('custom') == true}">
+												<span class="d-flex flex-column align-items-center mr-3">
+													<span class="link profile-name name" th:text="${user.name + ' ' + user.lastName}"></span>
+													<span class="nick text-center" th:text="${'@'+user.nickname}"></span>
+												</span>
+											</span>
+										</label>
+									</li>
+								</ul>
+
+								<div
+									class="d-flex flex-column justify-content-center align-items-center pt-4 pb-3 px-4"
+									th:if="${friends == null || friends.size() == 0}">
+									<span>You haven't got any friends yet</span> <span><i
+										class="far fa-frown"></i></span>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="reset" class="button content-button btn" data-dismiss="modal">Cancel</button>
+							<button type="submit" form="shareFileForm" class="button content-button btn">Share</button>
+						</div>
+					</div>
+				</div>
+			</div>
         </div>
     </div>
     

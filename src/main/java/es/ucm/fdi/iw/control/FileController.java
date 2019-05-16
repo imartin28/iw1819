@@ -48,6 +48,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.FileType;
+import es.ucm.fdi.iw.model.Friend;
 import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserFile;
@@ -250,6 +251,10 @@ public class FileController {
 			modelAndView.addObject("tags", file.getTags());
 			
 			modelAndView.addObject("metadata", file.getMetadata());
+			
+			List<Friend> friendships = entityManager.createNamedQuery("readFriendshipsOfUser", Friend.class)
+					.setParameter("userId", currentUser.getId()).getResultList();
+			modelAndView.addObject("friends", friendships);
 		}
 
 		String viewName = "redirect:/user/";
@@ -258,6 +263,13 @@ public class FileController {
 
 		modelAndView.setViewName(viewName);
 
+		return modelAndView;
+	}
+	
+	@PostMapping("/share/{id}")
+	@Transactional
+	public ModelAndView shareFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) {
+		modelAndView.setViewName("redirect:/show/" + fileId);
 		return modelAndView;
 	}
 
