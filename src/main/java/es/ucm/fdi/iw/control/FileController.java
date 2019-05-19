@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -282,13 +281,16 @@ public class FileController {
 			friend = userService.findById(Long.parseLong(friendId));
 		
 		if (friend != null && friend.isActive()) {
-			UserFile userFile = new UserFile(friend, file, "r");
-			try {
+			List<UserFile> file_friend = entityManager.createNamedQuery("findByIds", UserFile.class)
+					.setParameter("id_user", Long.parseLong(friendId))
+					.setParameter("id_file", fileId).getResultList();
+			
+			if (file_friend.isEmpty()) {
+				UserFile userFile = new UserFile(friend, file, "r");
 				entityManager.persist(userFile);
 			}
-			catch(EntityExistsException e) {
+			else
 				err = "You have already shared your file with that friend";
-			}
 		}
 		else
 			err = "Friend not found";

@@ -9,6 +9,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQueries({
+@NamedQuery(name="findByIds", query="SELECT uf "
+		+ " FROM UserFile uf"
+		+ " WHERE (uf.user.id = :id_user AND uf.file.id = :id_file) ")
+})
 public class UserFile {
 	
 	@Id
