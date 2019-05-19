@@ -84,7 +84,7 @@
 										th:if="${friend != null && friend.accepted != null && friend.accepted}"
 										th:with="user=${friend.firstUser.id == session.u.id ? friend.secondUser : friend.firstUser}">
 										<label class="friendPicker">
-											<input type="radio" name="receiver" value="${user.id}"><span class="check">✔</span>
+											<input type="radio" name="receiver" th:value="${user.id}"><span class="check">✔</span>
 											<span class="friendPicker">
 												<img class="profile-image" th:src="${user.avatar}" th:if="${user.avatar.contains('custom') == false}">
 												<img class="profile-image" th:src="@{/user/avatar/{id}(id=${user.id})}" th:if="${user.avatar.contains('custom') == true}">

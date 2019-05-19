@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -101,7 +102,8 @@ public class FileController {
 	}
 
 	@GetMapping("/contents/{id}")
-	public StreamingResponseBody getFile(@PathVariable long id, Model model, HttpSession session) throws IOException {
+	public StreamingResponseBody getFile(@PathVariable long id, Model model, HttpSession session)
+			throws IOException {
 		CFile file = fileService.findById(id);
 		Long userId = ((User) session.getAttribute("u")).getId();
 		// ojo con acceso: no basta con saber el id del fichero
@@ -221,8 +223,8 @@ public class FileController {
 	}
 
 	@GetMapping("/show/{id}")
-	public ModelAndView getFileView(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId)
-			throws IOException {
+	public ModelAndView getFileView(ModelAndView modelAndView, HttpSession session,
+			@PathVariable("id") Long fileId) throws IOException {
 
 		String err = "File not found";
 
@@ -268,8 +270,45 @@ public class FileController {
 	
 	@PostMapping("/share/{id}")
 	@Transactional
-	public ModelAndView shareFile(ModelAndView modelAndView, HttpSession session, @PathVariable("id") Long fileId) {
-		modelAndView.setViewName("redirect:/show/" + fileId);
+	public ModelAndView shareFile(ModelAndView modelAndView, HttpSession session,
+			@PathVariable("id") Long fileId, @RequestParam(name="receiver", required=false) String friendId) {
+		String err = null;
+		
+		User user = (User) session.getAttribute("u");
+		CFile file = fileService.findById(fileId);
+		User friend = null;
+		
+		if (friendId != null)
+			friend = userService.findById(Long.parseLong(friendId));
+		
+		if (friend != null && friend.isActive()) {
+			UserFile userFile = new UserFile(friend, file, "r");
+			try {
+				entityManager.persist(userFile);
+			}
+			catch(EntityExistsException e) {
+				err = "You have already shared your file with that friend";
+			}
+		}
+		else
+			err = "Friend not found";
+		
+		modelAndView.setViewName("file");
+		modelAndView.addObject("fileId", fileId);
+		modelAndView.addObject("filename", file.getName());
+		modelAndView.addObject("mimetype", file.getMimetype().split("/")[0]);
+		modelAndView.addObject("tags", file.getTags());
+		modelAndView.addObject("metadata", file.getMetadata());
+		
+		List<Friend> friendships = entityManager.createNamedQuery("readFriendshipsOfUser", Friend.class)
+				.setParameter("userId", user.getId()).getResultList();
+		modelAndView.addObject("friends", friendships);
+		
+		if (err != null)
+			this.notifyModal(modelAndView, "Error", err);
+		else
+			this.notifyModal(modelAndView, "File shared", "You have successfully share your file");
+		
 		return modelAndView;
 	}
 
@@ -277,9 +316,6 @@ public class FileController {
 	@Transactional
 	public String postFile(@RequestParam String sha256, @RequestParam MultipartFile file, Model model,
 			HttpSession session, HttpServletRequest request, @RequestParam Long currentTagId) {
-
-		
-		
 		
 		User user = (User) session.getAttribute("u");
 		model.addAttribute("user", user);
