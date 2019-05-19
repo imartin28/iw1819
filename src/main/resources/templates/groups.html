@@ -79,9 +79,14 @@
                            
 		        <ul th:each="group : ${groups}" class="list-group list-group-flush">
 		            <li class="list-group-item">
-		            	<div class="btn-group dropright">
-		            	<input type ="checkbox" th:value="${group.id}" name="group-check" class="ml-1 mr-3 file-checkbox">   
-		                	<i class="material-icons mr-3">group</i><a class="link" href="" th:text="${group.name}"></a>
+		            	<div class="btn-group dropright">	            	   
+		            		 
+         				<input type ="checkbox" th:value="${group.id}" name="group-check" class="ml-1 mr-3 file-checkbox">
+                   			<i class="material-icons mr-3">group</i><a class="d-flex align-items-center"  th:href="@{${group.name}}">
+                   				<span class="link link-group" href="" th:text="${group.name}" name="groupName" ></span>                        		
+                       		</a>
+                         
+		                	
 		                	<button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">more_vert</i></button>
 		                 	<div class="dropdown-menu">		                 	
 		                 		<a class="dropdown-item btn-edit-group" th:attr="data-group-id=${group.id}, data-group-name=${group.name}" href="#" data-toggle="modal" data-target='#modalEditGroup'><i class="material-icons mr-2">edit</i>Edit group</a>

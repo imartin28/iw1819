@@ -39,6 +39,13 @@ public class GroupController {
 		return "groups";
 	}
 	
+	@GetMapping("/{group.name}")
+	public String group(Model model, HttpSession session) {
+		
+		return "group";
+	}
+	
+	
 	
 	
 	@PostMapping("/newGroup")

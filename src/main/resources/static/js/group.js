@@ -1,10 +1,16 @@
 $(() => {
 	$("#select-all-groups").on("change", selectAllGroupsCheckBoxHandler);
 	$("#delete-groups").on("click", deleteGroupsButtonHandler);
-	 $('.btn-edit-group').on('click', editGroupModalHandler);
+	$('.btn-edit-group').on('click', editGroupModalHandler);
+	$(".link-group").on("click", titleNameHandler);
 });
 
-
+function titleNameHandler(){
+	let groupName = $(".link-group").text();
+	console.log(groupName);
+	$("#title-name-group").append("<p>hola" + groupName + "</p>");
+	
+}
 
 function selectAllGroupsCheckBoxHandler() {
 	
