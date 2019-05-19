@@ -39,8 +39,8 @@
                                 <span class="title-section" th:text="${filename}">File</span>
                             </a>
                             <div class="row">
-                            	<button class="btn button content-button mt-3" th:if="${session.u.roles.equals('admin') == false}" data-toggle="modal" data-target="#shareModal" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">share</i>Share</button>
-                                <a th:href="@{/file/edit/{id}(id=${fileId})}" class="btn button content-button mt-3" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">edit</i>Edit Metadata</a>
+                            	<button class="btn button content-button mt-3" th:if="${session.u.roles.equals('admin') == false && permission.contains('r') == true}" data-toggle="modal" data-target="#shareModal" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">share</i>Share</button>
+                                <a th:href="@{/file/edit/{id}(id=${fileId})}" th:if="${session.u.roles.equals('admin') == true || permission.contains('w') == true}" class="btn button content-button mt-3" style="height: 40px; margin-right: 20px;"><i class="material-icons mr-2">edit</i>Edit Metadata</a>
                             </div>
                        	</div>
                         <div id="mediaplayer" class="row justify-content-center" th:switch="${mimetype}">

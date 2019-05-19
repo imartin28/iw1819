@@ -253,6 +253,13 @@ public class FileController {
 			
 			modelAndView.addObject("metadata", file.getMetadata());
 			
+			List<UserFile> permission = entityManager.createNamedQuery("findByIds", UserFile.class)
+					.setParameter("id_user", currentUser.getId())
+					.setParameter("id_file", fileId).getResultList();
+			if (!permission.isEmpty())
+				modelAndView.addObject("permission", permission.get(0).getPermission());
+			else modelAndView.addObject("permission", "r");
+			
 			List<Friend> friendships = entityManager.createNamedQuery("readFriendshipsOfUser", Friend.class)
 					.setParameter("userId", currentUser.getId()).getResultList();
 			modelAndView.addObject("friends", friendships);
@@ -290,7 +297,7 @@ public class FileController {
 				entityManager.persist(userFile);
 			}
 			else
-				err = "You have already shared your file with that friend";
+				err = "Your friend already has access to that file";
 		}
 		else
 			err = "Friend not found";
@@ -301,6 +308,11 @@ public class FileController {
 		modelAndView.addObject("mimetype", file.getMimetype().split("/")[0]);
 		modelAndView.addObject("tags", file.getTags());
 		modelAndView.addObject("metadata", file.getMetadata());
+		
+		List<UserFile> permission = entityManager.createNamedQuery("findByIds", UserFile.class)
+				.setParameter("id_user", user.getId())
+				.setParameter("id_file", fileId).getResultList();
+		modelAndView.addObject("permission", permission.get(0).getPermission());
 		
 		List<Friend> friendships = entityManager.createNamedQuery("readFriendshipsOfUser", Friend.class)
 				.setParameter("userId", user.getId()).getResultList();
