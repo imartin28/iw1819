@@ -2,15 +2,25 @@ $(() => {
 	$("#select-all-groups").on("change", selectAllGroupsCheckBoxHandler);
 	$("#delete-groups").on("click", deleteGroupsButtonHandler);
 	$('.btn-edit-group').on('click', editGroupModalHandler);
-	$(".link-group").on("click", titleNameHandler);
+	$("#btn-add-members").on("click", addMembersButtonHandler);
 });
+ 
 
-function titleNameHandler(){
-	let groupName = $(".link-group").text();
-	console.log(groupName);
-	$("#title-name-group").append("<p>hola" + groupName + "</p>");
+
+function addMembersButtonHandler(){
 	
+	let membersChecked = $("input[name='members-check']:checked");
+	
+	let array_IdsAddMembers = [];
+	
+	membersChecked.each(function(){
+		let member = $(this);		
+		array_IdsAddMembers.push(member.val());		
+	});
+
+	peticionAjaxConListaIds(array_IdsToDelete, "/groups/addMembers");
 }
+
 
 function selectAllGroupsCheckBoxHandler() {
 	
@@ -51,16 +61,16 @@ function deleteGroupsButtonHandler() {
 		array_IdsToDelete.push(group.val());		
 	});
 
-	deleteGroups(array_IdsToDelete);
+	peticionAjaxConListaIds(array_IdsToDelete, "/groups/deleteGroups");
 }
 
 
 
-function deleteGroups(array_IdsToDelete){
+function peticionAjaxConListaIds(arrayIds, url){
 	$.ajax({
 		type:"POST",
-		url:"/groups/deleteGroups",
-		data: JSON.stringify(array_IdsToDelete),
+		url: url,
+		data: JSON.stringify(arrayIds),
 		dataType: 'json',
 		headers: {
 			"Content-Type": "application/json",				

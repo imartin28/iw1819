@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,10 +40,18 @@ public class GroupController {
 		return "groups";
 	}
 	
-	@GetMapping("/{group.name}")
-	public String group(Model model, HttpSession session) {
+	@GetMapping("/{groupId}")
+	public String group(Model model, HttpSession session, @PathVariable Long groupId) {
+		
+		CGroup group = entityManager.createNamedQuery("findGroupById", CGroup.class).setParameter("id", groupId).getSingleResult();
+		Long userId = ((User) session.getAttribute("u")).getId();
+		List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
+		
+		model.addAttribute("group", group);
+		model.addAttribute("friends", friends);
 		
 		return "group";
+		
 	}
 	
 	
@@ -90,6 +99,15 @@ public class GroupController {
 		response.setStatus(200);
 		
 		return "{}";
+	}
+	
+	
+	@PostMapping("/addMembers")
+	@Transactional
+	public String addMember(@RequestBody List<Long> idsOfUsers) {
+		
+		return "";
+		
 	}
 	
 }

@@ -34,8 +34,8 @@ import es.ucm.fdi.iw.integration.impl.DAOFriendImpl;
 			"u.active = 1"),
 	@NamedQuery(name="readFriendsOfUser", query="SELECT user "
 			+ " FROM User user "
-			+ " WHERE user.id IN (SELECT friend.firstUser.id FROM Friend friend WHERE friend.secondUser.id = :userId) "
-			+ " OR user.id IN (SELECT friend2.secondUser.id FROM Friend friend2 WHERE friend2.firstUser.id = :userId)"),
+			+ " WHERE user.id IN (SELECT friend.firstUser.id FROM Friend friend WHERE friend.secondUser.id = :userId AND friend.accepted = 1) "
+			+ " OR user.id IN (SELECT friend2.secondUser.id FROM Friend friend2 WHERE friend2.firstUser.id = :userId AND friend2.accepted = 1)"),
 	
 	//Admin
 	@NamedQuery(name="User.listAdmin",

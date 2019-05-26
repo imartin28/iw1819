@@ -351,10 +351,13 @@ public class FileController {
 
 		CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
 		
+		
+		
 		if (currentTagId != null) {
 			Tag currentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", currentTagId)
 					.getSingleResult();
 			
+			fileToPersist.getTags().add(currentTag);
 			currentTag.getFiles().add(fileToPersist);
 		}
 		
