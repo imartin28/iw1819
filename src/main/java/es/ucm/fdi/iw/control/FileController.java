@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
@@ -18,7 +20,7 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.FileUtils;
-
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -418,7 +420,7 @@ public class FileController {
 		CFile file = fileService.findById(id);
 		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, file.getName());
 
-		File f = new File(file.getPath() + "/" + file.getId());
+		File f = new File(file.getPath());
 		InputStreamResource resource = new InputStreamResource(new FileInputStream(f));
 
 		return ResponseEntity.ok()
@@ -429,6 +431,31 @@ public class FileController {
 				// Contet-Length
 				.contentLength(f.length()) //
 				.body(resource);
+	}
+	
+	@PostMapping(value="/zip", produces="application/zip")
+	public void downloadZip(@RequestBody List<Long> ids, HttpServletResponse response) throws IOException {
+	    response.setStatus(HttpServletResponse.SC_OK);
+	    response.addHeader("Content-Disposition", "attachment; filename=\"m3_files.zip\"");
+	    
+	    ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream());
+	    
+	    List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class)
+				.setParameter("ids", ids).getResultList();
+
+	    for (int i = 0; i < files.size(); i++) {
+	    	File f = new File(files.get(i).getPath());
+	    	
+	        zipOutputStream.putNextEntry(new ZipEntry(files.get(i).getName()));
+	        FileInputStream fileInputStream = new FileInputStream(f);
+
+	        IOUtils.copy(fileInputStream, zipOutputStream);
+
+	        fileInputStream.close();
+	        zipOutputStream.closeEntry();
+	    }
+	    
+	    zipOutputStream.close();
 	}
 
 	@PostMapping("/modifyFileName")

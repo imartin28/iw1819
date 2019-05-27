@@ -130,7 +130,25 @@ function deleteFilesButtonHandler(){
 	deleteFiles(array_IdsToDelete);
 }
 
-
+function deleteFiles(array_IdsToDelete){
+	$.ajax({
+		type:"POST",
+		url:"/file/deleteFiles",
+		data: JSON.stringify(array_IdsToDelete),
+		dataType: 'json',
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(){
+			location.reload();
+			console.log("exito");
+		},
+		error : function(){
+			console.log("error");
+		}
+	});
+}
 
 function uploadFileButtonHandler(event) {
 	event.preventDefault();
@@ -205,11 +223,9 @@ function downloadFiles(array_IdsToDownload){
 
 	$.ajax({
 		type:"POST",
-		url:"",
+		url:"/file/zip",
 		data: JSON.stringify(array_IdsToDownload),
-		dataType: 'json',
-		headers: {
-			"Content-Type": "application/json",				
+		headers: {			
 			"X-CSRF-TOKEN": m3.csrf.value
 		},
 		success : function(){
@@ -224,24 +240,3 @@ function downloadFiles(array_IdsToDownload){
 	
 }
 
-
-
-function deleteFiles(array_IdsToDelete){
-	$.ajax({
-		type:"POST",
-		url:"/file/deleteFiles",
-		data: JSON.stringify(array_IdsToDelete),
-		dataType: 'json',
-		headers: {
-			"Content-Type": "application/json",				
-			"X-CSRF-TOKEN": m3.csrf.value
-		},
-		success : function(){
-			location.reload();
-			console.log("exito");
-		},
-		error : function(){
-			console.log("error");
-		}
-	});
-}

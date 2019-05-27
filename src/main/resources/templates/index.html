@@ -229,7 +229,7 @@
                            		<input type="checkbox" id="select-all-files">
                            		<div class="pl-2" >
 	                               	<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button-second "><i class="material-icons center-content">share</i></button>
-                            		<button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn button-second "><i class="material-icons center-content">archive</i></button>
+                            		<button type="button" data-toggle="tooltip" data-placement="bottom" id="download-files" class="btn button-second "><i class="material-icons center-content">archive</i></button>
                             		<button class="btn button-second" data-toggle="modal" data-target="#modalDeleteFiles"><i class="material-icons center-content">delete</i></button>
                            		</div>
                            	</div>
@@ -290,9 +290,6 @@
 		                            		<a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalViewAllTag' + file.id}">
 		                            			<i class=" mr-2 material-icons center-content color-icon icon-tag">bookmark</i>Tags
 		                            		</a>
-		                               		<a class="dropdown-item" href="#" data-toggle="modal">
-		                               			<i class=" mr-2 material-icons center-content color-icon">share</i>Share
-		                               		</a>
 		                            		<a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalAddToPlaylist' + file.id}">
 		                            			<i class=" mr-2 material-icons center-content color-icon">playlist_add</i>Add to a Playlist
 		                            		</a>
@@ -341,9 +338,9 @@
 								    <div class="modal-body">
 								    	<form method="POST" action="#" th:action="@{/file/deleteFile}">
 								        	<div class="form-group">
-						            			<label for="recipient-name" class="col-form-label" th:text="${'Are you sure you want to delete the file ' + file.name + ' from all sites ?' }"></label>
+						            			<label for="recipient-name" class="col-form-label" th:text='${"Are you sure you want to delete the file " + file.name + " ?" }'></label>
 						            			<input type="hidden" name="idFile" th:value="${file.id}">
-						            			<small class="text-center">To delete a file from a tag, click in the close button of the file's tag</small>
+						            			<br><small class="text-center">To delete a file from a tag, click in the close button of the file's tag</small>
 						          		  	</div>
 								          	<div class="modal-footer">						      	
 									        	<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
