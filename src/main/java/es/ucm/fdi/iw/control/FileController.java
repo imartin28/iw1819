@@ -460,24 +460,26 @@ public class FileController {
 	@PostMapping("/deleteFile")
 	@Transactional
 	public String postDeleteFile(@RequestParam("idFile") Long fileId, HttpSession session) {
+		User currentUser = (User) session.getAttribute("u");
 		CFile file = fileService.findById(fileId);
-		List<CFile> filesWithSameSha256 =  fileService.findAllBysha256(file.getSha256());
 		
-		for(Tag tag : file.getTags()) {
-			tag.getFiles().remove(file);
-		}
+		List<UserFile> permission = entityManager.createNamedQuery("findByIds", UserFile.class)
+				.setParameter("id_user", currentUser.getId())
+				.setParameter("id_file", fileId).getResultList();
 		
-		entityManager.remove(file);
-		
-		if (filesWithSameSha256.size() == 1) {
+		if (permission.get(0).getPermission().contains("w")) {
 			File f = new File(file.getPath());
-
+			
 			if (f.delete()) {
 				System.out.println(file.getName() + " is deleted!");
 			} else {
 				System.out.println("Delete operation is failed.");
 			}
-		} 
+			
+			fileService.deleteFile(file);
+		}
+		else
+			entityManager.remove(permission.get(0)); 
 	
 		return "redirect:/user/";
 	}
@@ -485,24 +487,34 @@ public class FileController {
 	@PostMapping("/deleteFiles")
 	@Transactional
 	@ResponseBody
-	public String deleteFiles(@RequestBody List<Long> ids, HttpServletResponse response) {
-		List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class).setParameter("ids", ids)
-				.getResultList();
+	public String deleteFiles(@RequestBody List<Long> ids, HttpSession session, HttpServletResponse response) {
+		User currentUser = (User) session.getAttribute("u");
+		List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class)
+				.setParameter("ids", ids).getResultList();
 
 		File f = null;
 
-		for (CFile file : files) {
-			f = new File(file.getPath());
-
-			if (f.delete()) {
-				System.out.println(file.getName() + " is deleted!");
-			} else {
-				System.out.println("Delete operation is failed.");
+		for (int i = 0; i < files.size(); i++) {
+			List<UserFile> permission = entityManager.createNamedQuery("findByIds", UserFile.class)
+					.setParameter("id_user", currentUser.getId())
+					.setParameter("id_file", files.get(i).getId()).getResultList();
+			
+			if (permission.get(0).getPermission().contains("w")) {
+				f = new File(files.get(i).getPath());
+				
+				if (f.delete()) {
+					System.out.println(files.get(i).getName() + " is deleted!");
+				} else {
+					System.out.println("Delete operation is failed.");
+				}
+				
+				fileService.deleteFile(files.get(i));
 			}
+			else
+				entityManager.remove(permission.get(0));
 		}
 
 		response.setStatus(200);
-		fileService.deleteFiles(files);
 		return "{}";
 	}
 
