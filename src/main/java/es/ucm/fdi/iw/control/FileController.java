@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -433,29 +434,43 @@ public class FileController {
 				.body(resource);
 	}
 	
-	@PostMapping(value="/zip", produces="application/zip")
-	public void downloadZip(@RequestBody List<Long> ids, HttpServletResponse response) throws IOException {
-	    response.setStatus(HttpServletResponse.SC_OK);
-	    response.addHeader("Content-Disposition", "attachment; filename=\"m3_files.zip\"");
+	@RequestMapping(value="/zip", produces="application/zip")
+	public void downloadZip(@RequestParam("idFiles") String json, HttpServletResponse response)
+			throws IOException {
+	    List<Long> ids = new ArrayList<Long>();
+	    try {
+			JSONArray idsJSON = new JSONArray(json);
+			for (int i = 0; i < idsJSON.length(); i++)
+				ids.add(idsJSON.getLong(i));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	    
-	    ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream());
-	    
-	    List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class)
-				.setParameter("ids", ids).getResultList();
+	    if (!ids.isEmpty()) {
+	    	response.setStatus(HttpServletResponse.SC_OK);
+		    response.addHeader("Content-Disposition", "attachment; filename=\"m3_files.zip\"");
+		    
+		    ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream());
+		    
+		    List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class)
+					.setParameter("ids", ids).getResultList();
 
-	    for (int i = 0; i < files.size(); i++) {
-	    	File f = new File(files.get(i).getPath());
-	    	
-	        zipOutputStream.putNextEntry(new ZipEntry(files.get(i).getName()));
-	        FileInputStream fileInputStream = new FileInputStream(f);
+		    for (int i = 0; i < files.size(); i++) {
+		    	File f = new File(files.get(i).getPath());
+		    	
+		        zipOutputStream.putNextEntry(new ZipEntry(files.get(i).getName()));
+		        FileInputStream fileInputStream = new FileInputStream(f);
 
-	        IOUtils.copy(fileInputStream, zipOutputStream);
+		        IOUtils.copy(fileInputStream, zipOutputStream);
 
-	        fileInputStream.close();
-	        zipOutputStream.closeEntry();
+		        fileInputStream.close();
+		        zipOutputStream.closeEntry();
+		    }
+		    
+		    zipOutputStream.close();
 	    }
-	    
-	    zipOutputStream.close();
+	    else
+	    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
 
 	@PostMapping("/modifyFileName")

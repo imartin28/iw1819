@@ -4,6 +4,7 @@ $(() => {
 	$(".custom-file-input").on("change", appearFileName);	 
 	$("#delete-files").on("click", deleteFilesButtonHandler);
 	$("#download-files").on("click", downloadFilesButtonHandler);
+	$("#compress-files").on("click", compressFilesButtonHandler);
 	//$(".file-upload").file_upload();
 	$("#select-all-files").on("change", selectAllFilesCheckBoxHandler);
 	$("#button-upload-file").on("click", uploadFileButtonHandler);
@@ -204,39 +205,28 @@ function uploadFile(sha256, file) {
 	});
 }
 
-
-function downloadFilesButtonHandler(){
+function downloadFilesButtonHandler() {
 	let filesChecked = $("input[name='file-check']:checked");
 	
 	let array_IdsToDownload = [];
 	
-	filesChecked.each(function(){
+	filesChecked.each(function() {
 		let file = $(this);		
 		array_IdsToDownload.push(file.val());		
 	});
-
-	downloadFiles(array_IdsToDownload);
+	
+	$("#idFiles").val(JSON.stringify(array_IdsToDownload));
 }
 
-
-function downloadFiles(array_IdsToDownload){
-
-	$.ajax({
-		type:"POST",
-		url:"/file/zip",
-		data: JSON.stringify(array_IdsToDownload),
-		headers: {			
-			"X-CSRF-TOKEN": m3.csrf.value
-		},
-		success : function(){
-			location.reload();
-			console.log("exito");
-		},
-		error : function(){
-			console.log("error");
-		}
-		
-	});
+function compressFilesButtonHandler() {
+	let inputs = $("input[name='file-check']");
 	
+	if (inputs !== null && inputs.length > 0) {
+		for (let i = 0; i < inputs.length; i++)
+			$(inputs[i]).prop("checked", false);
+	}
+	$("#select-all-files").prop("checked", false);
+	
+	$("#modalDownloadFiles").modal('hide');
 }
 

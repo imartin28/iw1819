@@ -228,8 +228,7 @@
                            	<div class="panel-select-all-and-options center-content">
                            		<input type="checkbox" id="select-all-files">
                            		<div class="pl-2" >
-	                               	<button type="button" data-toggle="tooltip" data-placement="bottom" title="Share" class="btn button-second "><i class="material-icons center-content">share</i></button>
-                            		<button type="button" data-toggle="tooltip" data-placement="bottom" id="download-files" class="btn button-second "><i class="material-icons center-content">archive</i></button>
+	                               	<button class="btn button-second" data-toggle="modal" data-target="#modalDownloadFiles" id="download-files"><i class="material-icons center-content">archive</i></button>
                             		<button class="btn button-second" data-toggle="modal" data-target="#modalDeleteFiles"><i class="material-icons center-content">delete</i></button>
                            		</div>
                            	</div>
@@ -323,7 +322,33 @@
 	                        	</form>
                 			</div>
                        	</div>
-                       
+                       	
+                       	<!-- Modal Download Files -->
+						<div class="modal fade" id="modalDownloadFiles" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+								    	<h5 class="modal-title" id="exampleModalLabel">Download files</h5>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								        	<span aria-hidden="true">&times;</span>
+								        </button>
+								    </div>
+								    <div class="modal-body">
+								    	<form method="POST" action="#" th:action="@{/file/zip}">
+								        	<div class="form-group">
+								        		<label class="col-form-label">Are you sure you want to download the selected files?</label>
+						            			<input type="hidden" id="idFiles" name="idFiles" value="[]">
+						            			<br><small class="text-center">Files will be compressed in a ZIP file</small>
+						          		  	</div>
+								          	<div class="modal-footer">						      	
+									        	<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+									        	<button type="submit" id="compress-files" class="btn button center-content"><i class="material-icons mr-2 ">save</i>Download files</button>
+								  	      	</div>
+								       	</form>
+								    </div>
+								</div>
+							</div>
+						</div>
                        
                        	<!-- Modal Delete File -->
                  		<div th:each="file : ${files}" class="modal fade" th:attr="id=${'modalDeleteFile' + file.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
