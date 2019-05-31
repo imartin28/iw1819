@@ -52,13 +52,6 @@ INSERT INTO USER
 VALUES ( 1, '', 'admin@admin.es', 'Admin', 'Admin', 'admin', '{bcrypt}$2a$04$2ao4NQnJbq3Z6UeGGv24a.wRRX0FGq2l5gcy2Pjd/83ps7YaBXk9C', 'admin', '/img/admin.png');
 
 
--- GROUPS
-
-INSERT INTO CGroup
-("NAME")
-VALUES ('Prueba');
-
-
 -- TAGS
 
 INSERT INTO TAG
@@ -92,6 +85,9 @@ VALUES ('#8CDE45', 'Pictures', null, 2, false);
 INSERT INTO TAG
 ("COLOR", "NAME", "PARENT_ID", "USER_ID", "PLAYLIST")
 VALUES ('#9FBFFF', 'Movies', null, 2, false);
+
+
+
 
 
 -- FRIEND

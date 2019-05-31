@@ -44,11 +44,14 @@ public class GroupController {
 	public String group(Model model, HttpSession session, @PathVariable Long groupId) {
 		
 		CGroup group = entityManager.createNamedQuery("findGroupById", CGroup.class).setParameter("id", groupId).getSingleResult();
-		Long userId = ((User) session.getAttribute("u")).getId();
-		List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
+		User user = ((User) session.getAttribute("u"));
+		List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", user.getId()).getResultList();
 		
+		String userLoggedPermission = group.getUsers().get(group.getUsers().indexOf(new CGroupUser(user, group, ""))).getPermission();
+					
 		model.addAttribute("group", group);
 		model.addAttribute("friends", friends);
+		model.addAttribute("userLoggedPermission", userLoggedPermission);
 		
 		return "group";
 		
@@ -104,9 +107,19 @@ public class GroupController {
 	
 	@PostMapping("/addMembers")
 	@Transactional
-	public String addMember(@RequestBody List<Long> idsOfUsers) {
+	public String addMember(@RequestBody List<Long> idsOfUsers, HttpServletResponse response) {
+		//se saca el ultimo elemento de la lista, que contiene el id del grupo.
+		Long idGroup = idsOfUsers.get(idsOfUsers.size()-1);
+		CGroup group = entityManager.createNamedQuery("findGroupById", CGroup.class).setParameter("id", idGroup).getSingleResult();
+		for(int i = 0; i < idsOfUsers.size() - 1; ++i) {
+			User user = entityManager.createNamedQuery("findUserById", User.class).setParameter("idUser", idsOfUsers.get(i)).getSingleResult();
+			CGroupUser cgroupUser = new CGroupUser(user, group, "user");
+			entityManager.persist(cgroupUser);
+		}
 		
-		return "";
+		response.setStatus(200);
+		
+		return "{}";
 		
 	}
 	

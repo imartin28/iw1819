@@ -27,6 +27,7 @@
     <script type="text/javascript" src="/js/index.js"></script>
     <script type="text/javascript" src="/js/file.js"></script>
     <script type="text/javascript" src="/js/tag.js"></script>
+    <script type="text/javascript" src="/js/group.js"></script>
   
 
     
@@ -37,7 +38,7 @@
         
     <nav th:replace="fragments/nav :: nav"></nav>
     
-    <div class="conatiner mt-4">
+    <div class="container mt-4 col-12">
 
         <div class="row">
             <div class="col-10 panel mx-auto">
@@ -56,17 +57,25 @@
                           	<span>Add Member</span>
 						</button>
                         <ul class="list-group list-group-flush w-100">                       
-                            <li th:each="member : ${group.users}" class="list-group-item py-0 d-flex justify-content-between align-items-center list-tags">
-                                <div class="d-flex align-items-center ">
+                            <li th:each="member : ${group.users}" class="list-group-item py-0 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
                                     <!-- <i class="material-icons icon-tag mr-2">local_offer</i>-->
-                                    <i class="material-icons icon-tag mr-2">bookmark</i>
-                                    <a class="remove-link-style " th:href="@{/user/profile?userId=__${session.u.id}__}" th:text="${member.user.name}"></a>
-                                </div>
-                                <button class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
-                                <div class="dropdown-menu">
-                                	
+                                    <i class="material-icons mr-2">person</i>
+                                    <a th:if="${member.user.id != session.u.id}" class="link mr-3" th:href="@{/user/profile?userId=__${member.id}__}" th:text="${member.user.name}"></a>
+                                    <a th:if="${member.user.id == session.u.id}" class="link mr-3" th:href="@{/user/profile?userId=__${member.id}__}">Tú</a>
                                     
-                                    <a class="dropdown-item  " href="#" data-toggle="modal" ><i class="material-icons mr-2 color-icon">delete_outline</i>Delete</a>
+                                    <span class="ml-5" th:if="${member.permission == 'admin'}" th:text="${member.permission}"></span>
+                                </div>
+                                <button th:if="${userLoggedPermission == 'admin'}" class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
+                                <div class="dropdown-menu">
+                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item" href="#" data-toggle="modal" ><i class="material-icons mr-2 color-icon">delete_outline</i>Delete from the group</a>
+                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item" href="#" data-toggle="modal" ><i class="material-icons mr-2 color-icon">tune</i>Change permissions</a>
+                                    <a th:if="${member.user.id == session.u.id}" class="dropdown-item" href="#" data-toggle="modal" ><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
+                                </div>
+                                
+                                <button th:if="${userLoggedPermission != 'admin' && member.user.id == session.u.id}" class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#" data-toggle="modal" ><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
                                 </div>
                             </li>
                         </ul>
@@ -111,7 +120,7 @@
 						      		 
 					      			<div class="modal-footer">						      	
 							        	<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
-							        	<button id="btn-add-members" form="new-tag-form" type="submit" class="btn button">Add members</button>
+							        	<button id="btn-add-members" type="submit" class="btn button">Add members</button>
 						  	      	</div>
 						    	</div>
 						  	</div>
@@ -121,32 +130,7 @@
             
                         
                         
-                        <!-- Modal Delete Tag-->
-						<div th:each="tag : ${tags}" class="modal fade" th:attr="id=${'modalDelete' + tag.id}" tabindex="-1" role="dialog" aria-labelledby="modalColor" aria-hidden="true">
-							<div class="modal-dialog" role="document">
-								<div class="modal-content">
-									<div class="modal-header">
-								        <h5 class="modal-title" id="exampleModalLabel" >Delete tag </h5>
-								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								          <span aria-hidden="true">&times;</span>
-								        </button>
-								    </div>
-								    <div class="modal-body">
-								    	<form method="POST" th:action="@{/tag/deleteTag}">
-								        	<div class="form-group">
-						            			<label for="recipient-name" class="col-form-label" th:text="${'Are you sure you want to delete the tag ' + tag.name + '?' }"> </label>
-						            			<input type="hidden" name="idTag" th:value="${tag.id}">
-						          		  	</div>
-
-									        <div class="modal-footer">						      	
-										    	<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
-										       	<button type="submit" class="btn button">Delete tag</button>
-									  	    </div>
-								        </form>
-								    </div>
-								 </div>
-							</div>
-						</div>
+                        
 								
 								
                     </div>
@@ -155,7 +139,7 @@
                     
                         <div id="folderView" class="row justify-content-center px-3 collapse multi-collapse show">
                         	<nav class="d-flex justify-content-between align-items-center border-bottom" aria-label="breadcrumb">                         
-                                 <h2 id="title-name-group" th:text="${group.name}"></h2>
+                                 <h2 id="title-name-group" th:text="${group.name}" th:attr="data-group-id=${group.id}"></h2>
                                 <div class="d-flex flex-column align-items-end">                              
 		                            <form id="fileSearchForm" class="center-content searchForm mb-2 px-3">
 		                                <input id="fileSearchInput" class="form-control" type="search" placeholder="Search a file" aria-label="Search">
@@ -174,100 +158,10 @@
                            		</div>
                            	</div>
                            
-                           	<div class="panel-grid-files " >
                            	
-                           		<div th:each="file : ${files}" class="panel-grid-files-element pb-3  my-2 droptarget dragtarget" ondrop="drop(event)" ondragover="allowDrop(event)" ondragstart="dragStartFileToPlaylist(event)" draggable="true" th:attr="data-file-id=${file.id}" > 
-                            	
-                               		<div class=" file-icon-checkbox p-1 ml-4 ">
-                                	
-                                   		<input type ="checkbox" th:value="${file.id}" name="file-check" class="mr-4 file-checkbox">       
-                                    	<a href="#" class="remove-link-style mr-3 icon-type" th:attr="data-mimetype=${file.mimetype}"> 
-	                                        <i th:if="${#strings.contains(file.mimetype, 'text')}" class="material-icons folder  color-icon " > insert_drive_file</i>
-	                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Audio.keyName)}" class="material-icons folder  color-icon " >music_note</i>
-	                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Image.keyName)}" class="material-icons folder  color-icon " >photo</i>
-	                                        <i th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Video.keyName)}" class="material-icons folder  color-icon " >videocam</i>
-                                    	</a>
-	                                    <!--  
-	                                    <script th:inline="javascript">
-						                 	window.addEventListener('load', () => {
-						                 		document.querySelector("#metadata" + [[${file.id}]]).innerText = JSON.parse([[${file.metadata}]]).name;						                 		
-						                 	});
-	                        			</script>
-	                        			-->
-	                        			<div class="file-name" >
-	                                       <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-5 dragtarget" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}, data-file-id=${file.id}" ondragstart="dragStartFileToPlaylist(event)" draggable="true"></a>  
-	                                    </div> 
-							     	</div>
-							       
-									<div class="center-content mt-1">
-										<div class="tags-style" th:each="tag : ${file.tags}" th:attr="style=${'background-color:' + tag.color}">
-											<i class="material-icons mr-1" th:if="${tag.playlist != null && tag.playlist}">playlist_play</i>
-											<span th:text="${tag.name}"></span>
-											<button type="button" class="remove-tag-from-file-button" th:attr="data-file-id=${file.id}, data-tag-id=${tag.id}">x</button>	
-										</div>
-									</div>
-                                	<div class="dropdown">
-										<button class="btn button-options-dropdown dropdown-toggle center-content mr-5" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<i class="material-icons">more_vert</i>
-										</button>
-										
-								    	<div th:attr="id=${'fileOptionButtons' + file.id}" class=" pl-2 dropdown-menu" aria-labelledby="dropdownMenuButton">
-		                            		<a class="dropdown-item playable" href="#" th:if="${#strings.contains(file.mimetype, 'text')}" th:attr="data-fileId=${file.id}"> 
-		                                        <i class="mr-2 material-icons center-content color-icon">insert_drive_file</i>Show
-	                                    	</a>
-	                                    	<a class="dropdown-item playable" href="#" th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Audio.keyName)}" th:attr="data-fileId=${file.id}"> 
-		                                        <i class="mr-2 material-icons center-content color-icon">music_note</i>Play
-	                                    	</a>
-	                                    	<a class="dropdown-item playable" href="#" th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Image.keyName)}" th:attr="data-fileId=${file.id}"> 
-		                                        <i class="mr-2 material-icons center-content color-icon">photo</i>Show
-	                                    	</a>
-	                                    	<a class="dropdown-item playable" href="#" th:if="${#strings.contains(file.mimetype, T(es.ucm.fdi.iw.model.FileType).Video.keyName)}" th:attr="data-fileId=${file.id}"> 
-		                                        <i  class="mr-2 material-icons center-content color-icon">videocam</i>Play
-	                                    	</a>
-		                            		<a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalEditNameFile' + file.id}">
-		                            			<i class=" mr-2 material-icons center-content color-icon">edit</i>Edit
-		                            		</a>
-		                            		<a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalViewAllTag' + file.id}">
-		                            			<i class=" mr-2 material-icons center-content color-icon icon-tag">bookmark</i>Tags
-		                            		</a>
-		                               		<a class="dropdown-item" href="#" data-toggle="modal">
-		                               			<i class=" mr-2 material-icons center-content color-icon">share</i>Share
-		                               		</a>
-		                            		<a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalAddToPlaylist' + file.id}">
-		                            			<i class=" mr-2 material-icons center-content color-icon">playlist_add</i>Add to a Playlist
-		                            		</a>
-		                            		<a class="dropdown-item" th:href="@{${'/file/download/' + file.id}}" target="_blank">
-		                            			<i class="color-icon mr-2 material-icons center-content">archive</i>Download
-		                            		</a>
-		                            		<a class="dropdown-item" href="#" data-toggle="modal" th:attr="data-target=${'#modalDeleteFile' + file.id}">
-		                            			<i class="mr-2 material-icons color-icon center-content">delete</i>Delete
-		                            		</a>
-	                            		</div>
-							   		</div>                                
-                               
-                            	</div>
-                            
-                          	</div>
-                        </div>
-                      
-                       	<div class="file-upload-wrapper border-upload-file mt-5 pb-4">  
-                        	<h3 class="center-content mt-4 pt-3 "><i class="material-icons folder color-icon">backup</i></h3>
-                    		<div class="custom-file mb-5 pb-5 ">
-	                        	<form th:if="${session.u != null}" method="POST" th:action="@{/file/upload}" enctype="multipart/form-data" >
-	                        		<input  type="file" class="custom-file-input file-upload input-file-now" id="customFile" name="file"/>
-	                        		<label class="custom-file-label" for="customFile">Drag and drop a file here or click to browse</label>
-	                        		
-	                        		<button type="submit" id="button-upload-file" class="btn button d-flex align-items-center mt-3 mx-auto"><i class="material-icons mr-2">unarchive</i>Upload File</button>
-	                        		<input type="hidden" th:value="@{session.u.id}" name="userId" id="userId">
-	                        		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-	                        		<input type="hidden" th:if="${tagsHierarchy != null && !#lists.isEmpty(tagsHierarchy)}" name="currentTagId" th:value="${tagsHierarchy[#lists.size(tagsHierarchy) - 1].id}" />
-	                        		<input type="hidden" th:if="${(tagsHierarchy == null || #lists.isEmpty(tagsHierarchy)) && parentTag != null}" name="currentTagId" th:value="${parentTag.id}" />
-	                        		<input type="hidden" th:if="${parentTag == null && tagsHierarchy == null}" th:name="currentTagId" th:value="null" />
-	                        	</form>
-                			</div>
-                       	</div>
+                       	
                        
-                        						
+                      </div>					
 								
 					  
 								
@@ -286,6 +180,14 @@
                                 <input id="tagSearchInput" class="form-control" type="search" placeholder="Search a message" aria-label="Search">
                                 <button class="btn button-search" type="submit"><i class="material-icons center-content">search</i></button>
                             </form> 
+                            
+                            <textarea class="form-control rounded-0 " id="textAreaChat" rows="10" readonly></textarea>
+                            <form id="chat-message-form" class="center-content searchForm mb-2 mt-4 px-3 w-100">
+                                <input id="chat-message-input" class="form-control" type="text" placeholder="Write a message" aria-label="Search">
+                                <button id="chat-message-submit-button" class="btn button-search " type="submit"><i class="material-icons center-content">send</i></button>
+                            </form> 
+                            
+                            
                         </div>
                         
                 	</div>

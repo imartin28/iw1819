@@ -17,8 +17,12 @@ function addMembersButtonHandler(){
 		let member = $(this);		
 		array_IdsAddMembers.push(member.val());		
 	});
-
-	peticionAjaxConListaIds(array_IdsToDelete, "/groups/addMembers");
+	
+	
+	let idGroup = $("#title-name-group").attr("data-group-id");
+	array_IdsAddMembers.push(idGroup);
+	
+	peticionAjaxConListaIds(array_IdsAddMembers, "/groups/addMembers");
 }
 
 
@@ -80,9 +84,10 @@ function peticionAjaxConListaIds(arrayIds, url){
 			location.reload();
 			console.log("exito");
 		},
-		error : function(){
-			console.log("error");
-		}
+		error: function (jqXHR, textStatus, errorThrown) {
+			 location.reload();
+            console.log("Se ha producido un error: " + errorThrown);
+       }
 	});
 }
 
