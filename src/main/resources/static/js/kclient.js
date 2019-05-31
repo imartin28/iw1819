@@ -160,12 +160,10 @@ const ws = {
  * Actions to perform once the page is fully loaded
  */
 window.addEventListener('load', () => {
-	document.querySelectorAll(".vote").forEach(e => addVoteListener(e));
-	document.querySelectorAll(".ask").forEach(e => addQuestionListener(e));
-	if (km.socketUrl !== false) {
-		ws.initialize(km.socketUrl);
+	//document.querySelectorAll(".vote").forEach(e => addVoteListener(e));
+	//document.querySelectorAll(".ask").forEach(e => addQuestionListener(e));
+	if (m3.socketUrl !== false) {
+		ws.initialize(m3.socketUrl);
 	}
-	window.setInterval(() => {
-		document.querySelectorAll(".delta").forEach(e => prettyDelta(e));
-	}, 5000);
+	
 });

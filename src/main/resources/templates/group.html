@@ -181,7 +181,7 @@
                                 <button class="btn button-search" type="submit"><i class="material-icons center-content">search</i></button>
                             </form> 
                             
-                            <textarea class="form-control rounded-0 " id="textAreaChat" rows="10" readonly></textarea>
+                            <textarea class="form-control rounded-0 " id="text-area-chat" rows="10" readonly></textarea>
                             <form id="chat-message-form" class="center-content searchForm mb-2 mt-4 px-3 w-100">
                                 <input id="chat-message-input" class="form-control" type="text" placeholder="Write a message" aria-label="Search">
                                 <button id="chat-message-submit-button" class="btn button-search " type="submit"><i class="material-icons center-content">send</i></button>
@@ -204,7 +204,31 @@
     </div>
 
 
-
+<script>
+	window.addEventListener('load', () => {
+		// envio	
+		const lineInput = document.getElementById("chat-message-input");
+		
+		
+		$("#chat-message-submit-button").on("click", (event) => {
+			console.log("ENVIANDO MENSAJE");
+			var text = lineInput.value;
+			ws.send(text);
+			lineInput.value = ""
+			return false;
+		});
+		
+		
+	
+		// recepcion
+		const lineOutput = $("#text-area-chat");
+		
+		ws.receive = (text) => {
+			console.log("MENSAJE RECIBIDO");
+			lineOutput.val(lineOutput.val() + '\n' + text); 
+		}
+	});
+	</script>
 		
 </body>
 </html>

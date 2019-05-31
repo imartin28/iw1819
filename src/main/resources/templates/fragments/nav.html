@@ -45,6 +45,13 @@
 				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 				<button type="submit" class="button" form="loginUser">flopezcarr@ucm.es</button>
  			</form>
+ 			
+ 			<form id="loginUser2" th:action="@{/login}" method="post" th:if="${session.u == null}">
+				<input type="hidden" name="username" value="guicor@ucm.es">
+				<input type="hidden" name="password" value="a">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+				<button type="submit" class="button" form="loginUser2">guicor@ucm.es</button>
+ 			</form>
  			<form id="loginAdmin" th:action="@{/login}" method="post" th:if="${session.u == null}">
 				<input type="hidden" name="username" value="admin">
 				<input type="hidden" name="password" value="a">

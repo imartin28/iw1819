@@ -3,9 +3,15 @@ $(() => {
 	$("#delete-groups").on("click", deleteGroupsButtonHandler);
 	$('.btn-edit-group').on('click', editGroupModalHandler);
 	$("#btn-add-members").on("click", addMembersButtonHandler);
+	$("#chat-message-submit-button").on("click", chatMessageSubmitButtonHandler);
 });
  
 
+
+
+function chatMessageSubmitButtonHandler(event) {
+	event.preventDefault();
+}
 
 function addMembersButtonHandler(){
 	
