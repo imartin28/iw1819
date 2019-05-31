@@ -85,7 +85,9 @@
 		<ul>
 			<li>
 				<p>
-					<a href="http://localhost:8080/user/profile?userId=1">Ver perfil</a> - vista que permite ver todos los datos del usuario indicado en la url mediante id, si el perfil es el del usuario de la sesión, permite modificarlo redirigiendo a <a href="localhost:8080/user/modifyProfile?userId=1">modificar perfil</a>
+					<a href="http://localhost:8080/user/profile?userId=1">Ver perfil</a> - vista que permite ver todos los datos del usuario indicado en la url mediante id.
+					Si el perfil es el del usuario de la sesión, permite modificarlo redirigiendo a <a href="localhost:8080/user/modifyProfile?userId=1">modificar perfil</a>
+					Además, se puede modificar el avatar del usuario eligiendo entre uno de los predeterminados o puede subir un fichero con uno personalizado.
 				</p>
 			</li>
 			<li>
@@ -101,14 +103,17 @@
 				<p>
 					<a href="http://localhost:8080/user/">Vista principal usuario</a> Permite ver el contenido subido por el usuario actual. Para ello el usuario debe haber inciado sesión, si no lo está se mostrará la pantalla de login.
 					El usuario puede subir archivos de distintos tamaños, puede subirlos tanto haciendo drag and drop como clicando en el botón. También puede editar el nombre, añadir tags, descargarlo y borrarlo. 
-					Si se suben varios archivos, se pueden seleccionar los que el usuario desee, así como seleccionar todos en el checkbox y eliminarlos.
+					Si se suben varios archivos, se pueden seleccionar los que el usuario desee, así como seleccionar todos en el checkbox y descargarlos en un archivo comprimido o eliminarlos.
 					Por otro lado, se pueden crear tags, darles un color, modificar tanto el nombre como el color, y borrarlos.
 					Si se pincha en el nombre de un archivo se puede ver su respectiva vista, donde se mostrará la imagen o se reproducirá el sonido o el video, en función del tipo de archivo.
 				</p>
 			</li>
 			<li>
 				<p>
-					<a href="http://localhost:8080/user/file">Ver fichero</a> vista de un fichero. Permite reproducir el contenido en caso de que sea un fichero de audio o vídeo, o su visualización en caso der una imagen.
+					<a href="http://localhost:8080/file/show/#">Ver fichero</a> - vista de un fichero. Permite reproducir el contenido en caso de que sea un fichero de audio o vídeo, o su visualización en caso der una imagen.
+					Se muestra información adicional como los tags asociados a ese fichero, así como la tabla de metadatos que el usuario haya añadido a dicho fichero.
+					Por otro lado, se puede compartir el fichero con un amigo para que pueda visualizar o reproducir el fichero.
+					Si el usuario de la sesión tiene privilegios de escritura sobre el fichero, puede editar los metadatos redirigiendo a <a href="localhost:8080/file/edit/#">editar metadatos</a>
 				</p>
 			</li>
 			<h5>Con acceso, vistas estáticas sin funcionalidad</h5>
@@ -130,11 +135,6 @@
 			<h5>Sin thymeleaf, sin acceso</h5>
 			<li>
 				<p>
-					<span class="text-underline">Compartir (share.html)</span> - vista para compartir archivos. Permite ver el archivo a compartir, buscar amigos y/o grupos, seleccionarlos y compartir el archivo con ellos.
-				</p>
-			</li>
-			<li>
-				<p>
 					<span class="text-underline">Chat (chats.html)</span> - vista de chat. Muestra la vista de chat de un grupo, permitiendo escribir un nuevo mensaje. Además muestra todos los archivos que los miembros del grupo 
 					han compartido, permitiendo al usuario actual compartir un nuevo archivo.
 				</p>
@@ -150,6 +150,11 @@
 			<li>
 				<p>
 					<a href="http://localhost:8080/admin/users">Administrador usuarios</a> - vista del administrador. Permite administrar usuarios (activar / desactivar).
+				</p>
+			</li>
+			<li>
+				<p>
+					<a href="http://localhost:8080/admin/files">Administrador ficheros</a> - vista del administrador. Permite administrar ficheros (modificar / eliminar).
 				</p>
 			</li>
 			<li>
