@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw.control;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -49,8 +50,15 @@ public class GroupController {
 		
 		String userLoggedPermission = group.getUsers().get(group.getUsers().indexOf(new CGroupUser(user, group, ""))).getPermission();
 					
+		List<User> friendsNotInGroup = new ArrayList<>();
+		for (User friend : friends) {
+			if (!group.getUsers().contains(new CGroupUser(friend, group, ""))) {
+				friendsNotInGroup.add(friend);
+			}
+		}
+		
 		model.addAttribute("group", group);
-		model.addAttribute("friends", friends);
+		model.addAttribute("friendsNotInGroup", friendsNotInGroup);
 		model.addAttribute("userLoggedPermission", userLoggedPermission);
 		
 		return "group";

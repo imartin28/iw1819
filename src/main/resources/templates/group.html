@@ -93,8 +93,8 @@
 						     		</div>
 									 <div class="modal-body px-5">
 										 
-											<ul class="list-group list-group-flush" th:if="${friends != null && friends.size() > 0}">
-												<li class=" d-flex flex-row" th:each=" friend : ${friends}">
+											<ul class="list-group list-group-flush" th:if="${friendsNotInGroup != null && friendsNotInGroup.size() > 0}">
+												<li class=" d-flex flex-row" th:each="friend : ${friendsNotInGroup}">
 													<label class="friendPicker">
 														<input type="checkbox" th:value="${friend.id}" name="members-check">
 														<span class="friendPicker">
@@ -111,7 +111,7 @@
 			
 											<div
 												class="d-flex flex-column justify-content-center align-items-center pt-4 pb-3 px-4"
-												th:if="${friends == null || friends.size() == 0}">
+												th:if="${friendsNotInGroup == null || friendsNotInGroup.size() == 0}">
 												<span>You haven't got any friends yet</span> <span><i
 													class="far fa-frown"></i></span>
 											</div>
@@ -208,12 +208,12 @@
 	window.addEventListener('load', () => {
 		// envio	
 		const lineInput = document.getElementById("chat-message-input");
-		
+		let groupId = $("#title-name-group").attr("data-group-id");
 		
 		$("#chat-message-submit-button").on("click", (event) => {
 			console.log("ENVIANDO MENSAJE");
 			var text = lineInput.value;
-			ws.send(text);
+			ws.send(text + " " + groupId);
 			lineInput.value = ""
 			return false;
 		});

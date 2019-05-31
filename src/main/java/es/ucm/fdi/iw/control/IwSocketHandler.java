@@ -48,7 +48,7 @@ public class IwSocketHandler extends TextWebSocketHandler {
     			+ userName);
 
     	// do something with message; for example, re-send it
-    	String payload = message.getPayload();
+    	String payload = message.getPayload().substring(0, message.getPayload().length() - 2);
     	
     	// Pattern pattern = Pattern.compile("\\s([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6})$", Pattern.CASE_INSENSITIVE);
     	// Matcher matcher = pattern.matcher(payload);
@@ -58,7 +58,9 @@ public class IwSocketHandler extends TextWebSocketHandler {
     		for (Map.Entry<String, IwSocketHandler.SocketHolder> user : users.entrySet()) {
     			sendText(user.getKey(), userName + " : " + payload);
     		}
+    		String groupIdString = message.getPayload().substring(message.getPayload().length() - 1, message.getPayload().length());
     		
+    		Long groupId = Long.getLong(groupIdString);
     		
     	}
     
