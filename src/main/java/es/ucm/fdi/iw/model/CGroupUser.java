@@ -5,8 +5,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQueries({
+@NamedQuery(name="findCGroupUserByUserIdAndGroupId", query="SELECT cgroupuser"
+		+ " FROM CGroupUser cgroupuser"
+		+ " WHERE group.id = :groupId "
+		+ " AND user.id = :userId")
+
+})
 public class CGroupUser {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -131,4 +131,17 @@ public class GroupController {
 		
 	}
 	
+	@PostMapping("/deleteMember")
+	@Transactional
+	public String deleteMember(@RequestParam Long userId, @RequestParam Long groupId, HttpServletResponse response) {
+		CGroupUser cGroupUser = entityManager.createNamedQuery("findCGroupUserByUserIdAndGroupId", CGroupUser.class).
+				setParameter("userId", userId).
+				setParameter("groupId", groupId).
+				getSingleResult();
+		
+		entityManager.remove(cGroupUser);
+		response.setStatus(200);
+		return "{}";
+	}
+	
 }

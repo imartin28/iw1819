@@ -4,6 +4,7 @@ $(() => {
 	$('.btn-edit-group').on('click', editGroupModalHandler);
 	$("#btn-add-members").on("click", addMembersButtonHandler);
 	$("#chat-message-submit-button").on("click", chatMessageSubmitButtonHandler);
+	$(".delete-user-from-group-button").on("click", deleteUserFromGroupButtonHandler);
 });
  
 
@@ -50,7 +51,7 @@ function selectAllGroupsCheckBoxHandler() {
 }
 
 
-function editGroupModalHandler(){
+function editGroupModalHandler() {
 
 	let groupId = $(this).attr('data-group-id');
 	let groupName = $(this).attr('data-group-name');
@@ -76,7 +77,7 @@ function deleteGroupsButtonHandler() {
 
 
 
-function peticionAjaxConListaIds(arrayIds, url){
+function peticionAjaxConListaIds(arrayIds, url) {
 	$.ajax({
 		type:"POST",
 		url: url,
@@ -92,6 +93,29 @@ function peticionAjaxConListaIds(arrayIds, url){
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 			 location.reload();
+            console.log("Se ha producido un error: " + errorThrown);
+       }
+	});
+}
+
+function deleteUserFromGroupButtonHandler() {
+	let userId = $(this).attr("data-user-id");
+	let groupId = $("#title-name-group").attr("data-group-id");
+	
+	$.ajax({
+		type:"POST",
+		url: "/groups/deleteMember",
+		data: {userId : userId, groupId : groupId},
+		dataType: 'json',
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(){
+			
+			console.log("exito");
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
             console.log("Se ha producido un error: " + errorThrown);
        }
 	});
