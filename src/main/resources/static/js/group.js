@@ -9,8 +9,59 @@ $(() => {
 	$(".change-permission-button").on("click", changePermissionButtonHandler);
 	$("#modal-btn-change-permission").on("click", changePermissionModalButtonHandler);
     $(".btn-view-members").on("click", showMembersHandler);
+    $("#search-group-input").keyup(searchGroupInputChangeHandler);
 });
  
+
+
+function searchGroupInputChangeHandler(){
+	
+	let groupName = $("#search-group-input").val();
+	
+	
+	$.ajax({
+		type:"GET",
+		url: "/groups/searchGroup/" + groupName,
+		dataType: 'json',
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(data){
+			showGroupsSearched(data);
+			
+			console.log("exito");
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			
+            console.log("Se ha producido un error: " + errorThrown);
+       }
+	});
+	
+}
+
+
+function showGroupsSearched(listGroups){
+	let elemento;
+	
+	$("#list-of-groups-ul").empty();       
+	listGroups.forEach(group =>{
+		elemento = "<li class='list-group-item'>" +
+				"<div class='btn-group dropright'>" +
+				"<input type ='checkbox' value='" + group.id + "' name='group-check' class='ml-1 mr-3 file-checkbox'>" +
+						"<i class='material-icons mr-3'>group</i><a class='d-flex align-items-center' href='" + group.id + "'>" +
+						" <span class='link link-group' href='' name='groupName' >" + group.name + "</span></a>" +
+								"<button class='btn no-bck' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='material-icons color-icon'>more_vert</i></button>" +
+								"<div class='dropdown-menu'>" +
+								"<a class='dropdown-item btn-edit-group' data-group-id='" + group.id + "' data-group-name='" + group.name + "' href='#' data-toggle='modal' data-target='#modalEditGroup'><i class='material-icons mr-2'>edit</i>Edit group</a>" +
+								"<a class='dropdown-item  btn-view-members' href='#'  data-group-id='" + group.id + "' data-toggle='modal' data-target='#modalShowMembers'><i class='material-icons mr-2'>remove_red_eye</i>View members</a>" +
+								"<a class='dropdown-item' href='#'><i class='material-icons mr-2'>share</i>Share with group</a>" +
+								"<a class='dropdown-item delete-user-in-session-from-group-button' href='#' th:attr='data-user-id=${session.u.id},  data-group-id='" + group.id + "'><i class='material-icons mr-2'>exit_to_app</i>Leave the group</a>" +
+								"</div></div></li>";
+          $("#list-of-groups-ul").append(elemento);              
+		
+	});
+}
 
 
 function showMembersHandler(){
@@ -51,10 +102,10 @@ function showMembersInModal(listOfMembers){
 		elemento = "<li class=' d-flex flex-row'>" +
 		"<label class='friendPicker'>" +
 		"<span class='friendPicker'>" +
-		"<img class='profile-image' src='" + member.avatar + "'>"+
-		"<span class='d-flex flex-column align-items-center mr-3'>" +
-		"<span class='link profile-name name'>" + member.name + "</span>" +
-		"<span class='nick text-center'>" + member.nickname  + "</span>" +
+			"<img class='profile-image' src='" + member.avatar + "'>"+
+			"<span class='d-flex flex-column align-items-center mr-3'>" +
+				"<span><a class='link profile-name name' href='/user/profile?userId=" + member.id + "'>" + member.name + "</a></span>" +
+				"<span class='nick text-center'>@" + member.nickname  + "</span>" +
 		"</span></span></label></li>";
 		$("#members-list").append(elemento);			 
 		

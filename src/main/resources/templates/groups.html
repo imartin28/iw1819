@@ -62,10 +62,10 @@
 		        <div class="add_group_and_search d-flex justify-content-around align-items-center pb-3 border-bottom">
 			        <button class="btn button add_group" data-toggle="modal" data-target="#modalNewGroup"><i class="material-icons mr-3">group_add</i> Create group</button>
 			        	
-			        <form class="form-inline center-content searchForm">
-	                    <input class="form-control" type="search" placeholder="Search a group">
+			        <div class="form-inline center-content searchForm">
+	                    <input id="search-group-input" class="form-control" type="search" placeholder="Search a group">
 	                    <button class="btn button button-search" type="submit"><i class="material-icons center-content">search</i></button>
-	                </form>
+	                </div>
 			    </div>
 
 
@@ -77,8 +77,8 @@
               		</div>            	
                </div>            
                            
-		        <ul th:each="group : ${groups}" class="list-group list-group-flush">
-		            <li class="list-group-item">
+		        <ul class="list-group list-group-flush" id="list-of-groups-ul">
+		            <li th:each="group : ${groups}" class="list-group-item">
 		            	<div class="btn-group dropright">	            	   
 		            		 
          				<input type ="checkbox" th:value="${group.id}" name="group-check" class="ml-1 mr-3 file-checkbox">

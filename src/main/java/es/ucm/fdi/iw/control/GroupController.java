@@ -24,6 +24,7 @@ import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.CGroup;
 import es.ucm.fdi.iw.model.CGroupUser;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.transfer.GroupTransfer;
 import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.PostChangePermissionInfo;
 import es.ucm.fdi.iw.util.PostDeleteMemberInfo;
@@ -195,4 +196,20 @@ public class GroupController {
 		return listaMembers;
 		
 	}
+	
+	
+	@GetMapping("/searchGroup/{groupName}")
+	public @ResponseBody List<GroupTransfer> searchGroup(Model model, HttpSession session, @PathVariable String groupName) {
+		
+		List<CGroup> groups = entityManager.createNamedQuery("findGroupByLetter", CGroup.class).setParameter("name", "%" + groupName + "%").getResultList(); 
+		List<GroupTransfer> listGroups = new ArrayList<>();
+		
+		
+		for(CGroup group : groups) {
+			listGroups.add(new GroupTransfer(group));
+		}
+		
+		return listGroups;
+	}
+	
 }
