@@ -68,14 +68,14 @@
                                 </div>
                                 <button th:if="${userLoggedPermission == 'admin'}" class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
                                 <div class="dropdown-menu">
-                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item delete-user-from-group-button" href="#" th:attr="data-user-id=${member.user.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Delete from the group</a>
-                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item change-permission-button" href="#" data-toggle="modal" data-target="#modalChangePermission" th:attr="data-user-id=${member.user.id}"><i class="material-icons mr-2 color-icon">tune</i>Change permissions</a>
-                                    <a th:if="${member.user.id == session.u.id}" class="dropdown-item delete-user-in-session-from-group-button" href="#" th:attr="data-user-id=${member.user.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
+                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item delete-user-from-group-button" href="#" th:attr="data-user-id=${member.user.id}, data-group-id=${group.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Delete from the group</a>
+                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item change-permission-button" href="#" data-toggle="modal" data-target="#modalChangePermission" th:attr="data-user-id=${member.user.id}, data-group-id=${group.id}"><i class="material-icons mr-2 color-icon">tune</i>Change permissions</a>
+                                    <a th:if="${member.user.id == session.u.id}" class="dropdown-item delete-user-in-session-from-group-button" href="#" th:attr="data-user-id=${member.user.id}, data-group-id=${group.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
                                 </div>
                                 
                                 <button th:if="${userLoggedPermission != 'admin' && member.user.id == session.u.id}" class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item delete-user-in-session-from-group-button" href="#" ><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
+                                    <a class="dropdown-item delete-user-in-session-from-group-button" href="#" th:attr="data-user-id=${member.user.id}, data-group-id=${group.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
                                 </div>
                             </li>
                         </ul>

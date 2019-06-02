@@ -147,6 +147,13 @@ public class GroupController {
 		// de la base de datos también el grupo
 		if (cGroupUser.getGroup().getUsers().size() == 1) {
 			entityManager.remove(cGroupUser.getGroup());
+		} else if (cGroupUser.getGroup().getUsers().size() == 2) {
+			// Si sólo se queda un usuario en el grupo se le pone como admin
+			for (CGroupUser cGroupUser2 : cGroupUser.getGroup().getUsers()) {
+				if (cGroupUser2.getId() != cGroupUser.getId()) {
+					cGroupUser2.setPermission("admin");
+				}
+			}
 		}
 		
 		entityManager.remove(cGroupUser);
@@ -165,6 +172,19 @@ public class GroupController {
 		cGroupUser.setPermission(postInfo.getPermission());
 		response.setStatus(200);
 		return "Todo correcto";
+	}
+	
+	@GetMapping("/getMembers/{groupId}")
+	public @ResponseBody List<String> getMembers(Model model, HttpSession session, @PathVariable Long groupId) {
+		List<String> membersNames = new ArrayList<>();
+		CGroup group = entityManager.createNamedQuery("findGroupById", CGroup.class).setParameter("id", groupId).getSingleResult();
+		
+		for (CGroupUser cgroupUser : group.getUsers()) {
+			membersNames.add(cgroupUser.getUser().getName());
+		}
+		
+		return membersNames;
+		
 	}
 	
 }

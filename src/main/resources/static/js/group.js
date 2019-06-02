@@ -8,6 +8,7 @@ $(() => {
 	$(".delete-user-in-session-from-group-button").on("click", deleteUserInSessionFromGroupButtonHandler);
 	$(".change-permission-button").on("click", changePermissionButtonHandler);
 	$("#modal-btn-change-permission").on("click", changePermissionModalButtonHandler);
+	$(".view-members-from-group-button").on("click", viewMembersButtonHandler);
 });
  
 
@@ -103,13 +104,13 @@ function peticionAjaxConListaIds(arrayIds, url) {
 
 function deleteUserInSessionFromGroupButtonHandler() {
 	let userId = $(this).attr("data-user-id");
-	let groupId = $("#title-name-group").attr("data-group-id");
+	let groupId = $(this).attr("data-group-id");
 	deleteMember(true, userId, groupId);
 }
 
 function deleteUserFromGroupButtonHandler() {
 	let userId = $(this).attr("data-user-id");
-	let groupId = $("#title-name-group").attr("data-group-id");
+	let groupId = $(this).attr("data-group-id");
 	deleteMember(false, userId, groupId);
 }
 
@@ -172,6 +173,51 @@ function changePermissionModalButtonHandler() {
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 			location.reload();
+            console.log("Se ha producido un error: " + errorThrown);
+       }
+	});
+}
+
+
+function viewMembersButtonHandler(event) {	
+	let groupId = $(this).attr("data-group-id");
+	showMembersOfTheGroup(groupId);
+}
+
+function appendLisToMembersUl(members) {
+	$("#members-list").empty();
+	
+	for (let i = 0; i < members.length; ++i) {
+		let elementOfTheList = "<li class='d-flex flex-row'>";
+		elementOfTheList += "<label class='friendPicker'>";
+		elementOfTheList += "<span class='friendPicker'>";
+		elementOfTheList += "<span class='d-flex flex-column align-items-center mr-3'>";
+		elementOfTheList += "<span class='link profile-name name'>" + members[i] + "</span>";
+		
+		
+		$("#members-list").append(elementOfTheList);
+		
+	}	
+	
+	$("#modalShowMembers").modal('toggle');
+}
+
+function showMembersOfTheGroup(groupId) {
+	$.ajax({
+		type:"GET",
+		url: "/groups/getMembers/" + groupId,
+		data: {groupId : groupId},
+		dataType: 'json',
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(data) {
+			appendLisToMembersUl(data);
+			console.log(data);
+			console.log("exito");
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
             console.log("Se ha producido un error: " + errorThrown);
        }
 	});
