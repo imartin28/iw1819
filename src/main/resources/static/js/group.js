@@ -6,6 +6,8 @@ $(() => {
 	$("#chat-message-submit-button").on("click", chatMessageSubmitButtonHandler);
 	$(".delete-user-from-group-button").on("click", deleteUserFromGroupButtonHandler);
 	$(".delete-user-in-session-from-group-button").on("click", deleteUserInSessionFromGroupButtonHandler);
+	$(".change-permission-button").on("click", changePermissionButtonHandler);
+	$("#modal-btn-change-permission").on("click", changePermissionModalButtonHandler);
 });
  
 
@@ -142,3 +144,39 @@ function deleteMember(isUserInSession, userId, groupId) {
        }
 	});
 }
+
+
+function changePermissionButtonHandler() {
+	let userId = $(this).attr("data-user-id");
+	
+	$("#modalChangePermission").find("#change-permission-user-id").val(userId);
+}
+
+function changePermissionModalButtonHandler() {
+	let userId = $("#modalChangePermission").find("#change-permission-user-id").val();
+	let permission = $("#permission-select").find(":selected").text();
+	let groupId = $("#title-name-group").attr("data-group-id");
+	
+	$.ajax({
+		type:"POST",
+		url: "/groups/changePermission",
+		data: JSON.stringify({userId : userId, permission : permission, groupId : groupId}),
+		dataType: 'json',
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(){
+			location.reload();
+			console.log("exito");
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			location.reload();
+            console.log("Se ha producido un error: " + errorThrown);
+       }
+	});
+}
+
+
+
+

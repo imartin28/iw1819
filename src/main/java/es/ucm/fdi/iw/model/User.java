@@ -77,7 +77,7 @@ public class User {
 	@OneToMany(targetEntity=UserFile.class, mappedBy="user", cascade=CascadeType.ALL)
 	private List<UserFile> files;
 	
-	@OneToMany(targetEntity=CGroupUser.class, mappedBy="user", cascade=CascadeType.ALL)
+	@OneToMany(targetEntity=CGroupUser.class, mappedBy="user")
 	private List<CGroupUser> groups;
 	
 	@OneToMany(targetEntity=Message.class, mappedBy="sender")

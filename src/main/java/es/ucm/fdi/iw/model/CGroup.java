@@ -40,7 +40,7 @@ public class CGroup {
 	private String name;
 	
 	
-	@OneToMany(targetEntity=CGroupUser.class, mappedBy="group", cascade=CascadeType.ALL)
+	@OneToMany(targetEntity=CGroupUser.class, mappedBy="group")
 	private List<CGroupUser> users;
 
 	@ManyToMany(targetEntity=CFile.class)

@@ -68,14 +68,14 @@
                                 </div>
                                 <button th:if="${userLoggedPermission == 'admin'}" class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
                                 <div class="dropdown-menu">
-                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item delete-user-from-group-button" href="#" data-toggle="modal" th:attr="data-user-id=${member.user.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Delete from the group</a>
-                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item" href="#" data-toggle="modal" ><i class="material-icons mr-2 color-icon">tune</i>Change permissions</a>
-                                    <a th:if="${member.user.id == session.u.id}" class="dropdown-item delete-user-in-session-from-group-button" href="#" data-toggle="modal" th:attr="data-user-id=${member.user.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
+                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item delete-user-from-group-button" href="#" th:attr="data-user-id=${member.user.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Delete from the group</a>
+                                    <a th:if="${member.user.id != session.u.id}" class="dropdown-item change-permission-button" href="#" data-toggle="modal" data-target="#modalChangePermission" th:attr="data-user-id=${member.user.id}"><i class="material-icons mr-2 color-icon">tune</i>Change permissions</a>
+                                    <a th:if="${member.user.id == session.u.id}" class="dropdown-item delete-user-in-session-from-group-button" href="#" th:attr="data-user-id=${member.user.id}"><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
                                 </div>
                                 
                                 <button th:if="${userLoggedPermission != 'admin' && member.user.id == session.u.id}" class="btn no-bck" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons color-icon">menu</i></button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item delete-user-in-session-from-group-button" href="#" data-toggle="modal" ><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
+                                    <a class="dropdown-item delete-user-in-session-from-group-button" href="#" ><i class="material-icons mr-2 color-icon">delete_outline</i>Leave the group</a>
                                 </div>
                             </li>
                         </ul>
@@ -124,15 +124,37 @@
 						  	      	</div>
 						    	</div>
 						  	</div>
+						</div>	
+						
+						
+						
+						<!-- Modal Change permission -->
+						<div class="modal fade" id="modalChangePermission" tabindex="-1" role="dialog" aria-hidden="true">
+						  	<div class="modal-dialog" role="document">
+						    	<div class="modal-content">
+						      		<div class="modal-header">
+						        		<h5 class="modal-title" id="modalChangePermissionLabel">Change permission</h5>
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          <span aria-hidden="true">&times;</span>
+								        </button>
+						     		</div>
+									 <div class="modal-body px-5">
+										 
+										<select id="permission-select">
+										  <option value="admin">admin</option>
+										  <option value="user">user</option>
+										</select>	
+										<input type="hidden" id="change-permission-user-id">
+										
+									</div>
+						      		 
+					      			<div class="modal-footer">						      	
+							        	<button type="button" class="btn button-second" data-dismiss="modal">Cancel</button>
+							        	<button id="modal-btn-change-permission" type="submit" class="btn button">Change permission</button>
+						  	      	</div>
+						    	</div>
+						  	</div>
 						</div>
-                        
-                        
-            
-                        
-                        
-                        
-								
-								
                     </div>
 
                     <div class="col-6">

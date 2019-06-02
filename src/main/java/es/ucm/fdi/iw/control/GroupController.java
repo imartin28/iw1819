@@ -24,6 +24,7 @@ import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.CGroup;
 import es.ucm.fdi.iw.model.CGroupUser;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.util.PostChangePermissionInfo;
 import es.ucm.fdi.iw.util.PostDeleteMemberInfo;
 
 @Controller()
@@ -149,6 +150,19 @@ public class GroupController {
 		}
 		
 		entityManager.remove(cGroupUser);
+		response.setStatus(200);
+		return "Todo correcto";
+	}
+	
+	@PostMapping("/changePermission")
+	@Transactional
+	public @ResponseBody String changePermission(@RequestBody PostChangePermissionInfo postInfo, HttpServletResponse response) {
+		CGroupUser cGroupUser = entityManager.createNamedQuery("findCGroupUserByUserIdAndGroupId", CGroupUser.class).
+				setParameter("userId", postInfo.getUserId()).
+				setParameter("groupId", postInfo.getGroupId()).
+				getSingleResult();
+		
+		cGroupUser.setPermission(postInfo.getPermission());
 		response.setStatus(200);
 		return "Todo correcto";
 	}
