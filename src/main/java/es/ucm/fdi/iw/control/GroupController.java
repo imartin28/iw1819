@@ -24,6 +24,7 @@ import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.CGroup;
 import es.ucm.fdi.iw.model.CGroupUser;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.PostChangePermissionInfo;
 import es.ucm.fdi.iw.util.PostDeleteMemberInfo;
 
@@ -174,17 +175,24 @@ public class GroupController {
 		return "Todo correcto";
 	}
 	
-	@GetMapping("/getMembers/{groupId}")
-	public @ResponseBody List<String> getMembers(Model model, HttpSession session, @PathVariable Long groupId) {
-		List<String> membersNames = new ArrayList<>();
+	
+	
+	
+	@GetMapping("/viewMembers/{groupId}")
+	public @ResponseBody List<UserTransfer> members(Model model, HttpSession session, @PathVariable Long groupId) {
+		
 		CGroup group = entityManager.createNamedQuery("findGroupById", CGroup.class).setParameter("id", groupId).getSingleResult();
 		
-		for (CGroupUser cgroupUser : group.getUsers()) {
-			membersNames.add(cgroupUser.getUser().getName());
+		List<CGroupUser> listCGroupUser = group.getUsers();
+		
+		List<UserTransfer> listaMembers = new ArrayList<>();
+		
+		for(CGroupUser user : listCGroupUser) {
+			listaMembers.add(new UserTransfer(user.getUser()));
 		}
 		
-		return membersNames;
+		
+		return listaMembers;
 		
 	}
-	
 }
