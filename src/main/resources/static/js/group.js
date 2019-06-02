@@ -5,6 +5,7 @@ $(() => {
 	$("#btn-add-members").on("click", addMembersButtonHandler);
 	$("#chat-message-submit-button").on("click", chatMessageSubmitButtonHandler);
 	$(".delete-user-from-group-button").on("click", deleteUserFromGroupButtonHandler);
+	$(".delete-user-in-session-from-group-button").on("click", deleteUserInSessionFromGroupButtonHandler);
 });
  
 
@@ -98,27 +99,46 @@ function peticionAjaxConListaIds(arrayIds, url) {
 	});
 }
 
+function deleteUserInSessionFromGroupButtonHandler() {
+	let userId = $(this).attr("data-user-id");
+	let groupId = $("#title-name-group").attr("data-group-id");
+	deleteMember(true, userId, groupId);
+}
+
 function deleteUserFromGroupButtonHandler() {
 	let userId = $(this).attr("data-user-id");
 	let groupId = $("#title-name-group").attr("data-group-id");
+	deleteMember(false, userId, groupId);
+}
+
+function deleteMember(isUserInSession, userId, groupId) {
+	
 	
 	$.ajax({
 		type:"POST",
 		url: "/groups/deleteMember",
-		data: {userId : userId, groupId : groupId},
+		data: JSON.stringify({userId : userId, groupId : groupId}),
 		dataType: 'json',
 		headers: {
 			"Content-Type": "application/json",				
 			"X-CSRF-TOKEN": m3.csrf.value
 		},
 		success : function(){
+			if (isUserInSession) {
+				window.location = "http://localhost:8080/groups/";
+			} else {
+				location.reload();
+			}
 			
 			console.log("exito");
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
+			if (isUserInSession) {
+				window.location = "http://localhost:8080/groups/";
+			} else {
+				location.reload();
+			}
             console.log("Se ha producido un error: " + errorThrown);
        }
 	});
 }
-
-

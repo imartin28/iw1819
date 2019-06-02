@@ -24,6 +24,7 @@ import es.ucm.fdi.iw.model.CFile;
 import es.ucm.fdi.iw.model.CGroup;
 import es.ucm.fdi.iw.model.CGroupUser;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.util.PostDeleteMemberInfo;
 
 @Controller()
 @RequestMapping("groups")
@@ -133,15 +134,23 @@ public class GroupController {
 	
 	@PostMapping("/deleteMember")
 	@Transactional
-	public String deleteMember(@RequestParam Long userId, @RequestParam Long groupId, HttpServletResponse response) {
+	public @ResponseBody String deleteMember(@RequestBody PostDeleteMemberInfo postInfo, HttpServletResponse response) {
 		CGroupUser cGroupUser = entityManager.createNamedQuery("findCGroupUserByUserIdAndGroupId", CGroupUser.class).
-				setParameter("userId", userId).
-				setParameter("groupId", groupId).
+				setParameter("userId", postInfo.getUserId()).
+				setParameter("groupId", postInfo.getGroupId()).
 				getSingleResult();
+		
+		
+		
+		// Si el miembro a borrar es el último del grupo entonces se elimina 
+		// de la base de datos también el grupo
+		if (cGroupUser.getGroup().getUsers().size() == 1) {
+			entityManager.remove(cGroupUser.getGroup());
+		}
 		
 		entityManager.remove(cGroupUser);
 		response.setStatus(200);
-		return "{}";
+		return "Todo correcto";
 	}
 	
 }
