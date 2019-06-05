@@ -198,16 +198,24 @@ public class GroupController {
 	}
 	
 	
-	@GetMapping("/searchGroup/{groupName}")
-	public @ResponseBody List<GroupTransfer> searchGroup(Model model, HttpSession session, @PathVariable String groupName) {
+	@GetMapping("/searchGroup")
+	public @ResponseBody List<GroupTransfer> searchGroup(Model model, HttpSession session, @RequestParam String groupName) {
 		
 		List<CGroup> groups = entityManager.createNamedQuery("findGroupByLetter", CGroup.class).setParameter("name", "%" + groupName + "%").getResultList(); 
 		List<GroupTransfer> listGroups = new ArrayList<>();
 		
-		
-		for(CGroup group : groups) {
-			listGroups.add(new GroupTransfer(group));
+		if(groups.size() > 0) {
+			for(CGroup group : groups) {
+				listGroups.add(new GroupTransfer(group));
+			}
+		}else {
+			Long userId = ((User) session.getAttribute("u")).getId();
+			List<CGroup> allGroups = entityManager.createNamedQuery("readAllGroupsOfUser", CGroup.class).setParameter("userId", userId).getResultList();
+			for(CGroup group : allGroups) {
+				listGroups.add(new GroupTransfer(group));
+			}
 		}
+		
 		
 		return listGroups;
 	}
