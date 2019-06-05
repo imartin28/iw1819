@@ -1,115 +1,6 @@
 
 
 
-/*
- * Listens to the specified form, and posts to the vote API when
- * its value changes.
- * 
- * @param {Element} e, a form to listen to  
- * @returns nothing 
- */
-function addVoteListener(e) {
-	const input = e.querySelector("input[type=range]");
-	const numeric = e.querySelector(".numeric");
-	const headers = {
-		"Content-Type": "application/json",
-		"X-CSRF-TOKEN": km.csrf.value
-	};
-	input.onchange = () => {
-		numeric.innerText = input.value;
-		fetch(e.action, {
-			method: 'POST',
-			headers: headers,
-			body: JSON.stringify({value: input.value})
-		}).then(response => console.log(response));
-	};
-	const button = e.querySelector(".delq");
-	if (button) {
-		button.onclick = () => {
-			const target = e.action.replace(/\/v\//, '/d/')
-			console.log("removing q: ", target);
-			fetch(target, {
-				method: 'POST',
-				headers: headers,
-			}).then(response => console.log(response));
-			return false;
-		}
-	}
-}
-
-/**
- * Listens to the specified form, and posts new questions when they 
- * are submitted.
- * 
- * @param {Element} e, a form to listen to  
- * @returns nothing 
- */
-function addQuestionListener(e) {
-	const button = e.querySelector("button");
-	const textarea = e.querySelector("textarea");
-	const headers = {
-		"Content-Type": "application/json",				
-		"X-CSRF-TOKEN": km.csrf.value
-	};
-	e.onsubmit = () => {
-		const body = JSON.stringify({
-			text: textarea.value, 
-			poll: document.getElementById('poll_t').checked ? 'true' : 'false' 
-		});
-		console.log("asking ", body);
-		fetch(e.action, {
-			method: 'POST',
-			headers: headers,
-			body: body				
-		}).then(response => {
-			e.reset();
-			console.log(response)
-		});
-		return false;	
-	}
-}
-
-/**
- * Creates a new voting form based on a question's data. Also
- * appends it wherever it should go.
- * 
- * @param data (as returned by the server after adding a question)
- * @returns nothing
- */
-function addQuestion(data) {
-	const questionDiv = document.createElement("div");
-	const canDelete = (data.author.id == km.userId) || km.admin;
-	const deleteButton = canDelete ?
-		'	<button class="delq">🗑</button>' :
-		'	<!-- cannot delete -->';
-	console.log(deleteButton, canDelete, data.author.id, km.userId, km.admin);
-	questionDiv.classList.add("question");
-	questionDiv.id = "q_" + data.id;
-	questionDiv.innerHTML = [
-		'<form class="vote" action="' + km.voteApiUrl + data.id + '" method="post">',
-		'	<div class="metadata">',
-		'		<span class="delta" data-timestamp="' + Number(new Date(data.time)) + '">??</span>',
-		'		<img class="userthumb" alt="' + data.author.login + '" ', 
-		'			 src="/user/' + data.author.id + '/photo">',
-		'	</div>',
-		'	<div class="bars">',
-		'	<div class="me">',
-		'		<span class="barlabel">👤</span>',
-		'		<input type="range" name="vote" min="0" max="100" value="0"/>',
-		'		<span class="numeric">??</span>',
-		'	</div>',
-		'	<div class="others">',
-		'		<span class="barlabel">👥 ×0</span>',
-		'		<input disabled type="range" min="0" max="100" value="0"/>',
-		'		<span class="numeric">??</span>',
-		'	</div>',
-		'	</div>',
-		'	<span class="qtext">' + data.text + '</span>',
-		deleteButton,
-		'</form>'].join('\n');	
-	document.querySelector(data.poll ? ".polls" : ".questions").append(questionDiv);
-	addVoteListener(questionDiv.querySelector(".vote"));
-}
 
 /**
  * WebSocket API, which only works once initialized
@@ -119,7 +10,8 @@ const ws = {
 	/**
 	 * WebSocket, or null if none connected
 	 */
-	socket: null,
+	//socket: null,
+	  socket: [],
 	
 	/**
 	 * Sends a string to the server via the websocket.
@@ -127,8 +19,15 @@ const ws = {
 	 * @returns nothing
 	 */
 	send: (text) => {
-		if (ws.socket != null) {
-			ws.socket.send(text);
+		if (ws.socket.length > 0) {
+			ws.socket[0].send(text);
+		}
+	},
+	
+	
+	sendFriendshipRequestNotification: (text) =>{
+		if (ws.socket.length > 0) {
+			ws.socket[1].send(text);
 		}
 	},
 
@@ -140,18 +39,25 @@ const ws = {
 		console.log(text);
 	},
 	
+	
+	
+	receiveFriendshipRequest: (text) => {
+		console.log(text);
+	},
 	/**
 	 * Attempts to establish communication with the specified
 	 * web-socket endpoint. If successfull, will call 
 	 * @returns
 	 */
-	initialize: (endpoint) => {
+	initialize: () => {
 		try {
-			ws.socket = new WebSocket(endpoint);
-			ws.socket.onmessage = (e) => ws.receive(e.data);
-			console.log("Connected to WS '" + endpoint + "'")
+			ws.socket.push(new WebSocket("ws://localhost:8080/ws"));
+			ws.socket.push(new WebSocket("ws://localhost:8080/friendship"));
+			ws.socket[0].onmessage = (e) => ws.receive(e.data);
+			ws.socket[1].onmessage = (e) => ws.receiveFriendshipRequest(e.data);
+			//console.log("Connected to WS '" + endpoint + "'")
 		} catch (e) {
-			console.log("Error, connection to WS '" + endpoint + "' FAILED: ", e);
+			console.log("Error, connection to WS FAILED: ", e);
 		}
 	}
 } 
@@ -162,8 +68,8 @@ const ws = {
 window.addEventListener('load', () => {
 	//document.querySelectorAll(".vote").forEach(e => addVoteListener(e));
 	//document.querySelectorAll(".ask").forEach(e => addQuestionListener(e));
-	if (m3.socketUrl !== false) {
-		ws.initialize(m3.socketUrl);
-	}
-	
+	//if (m3.socketUrl !== false) {
+		//ws.initialize(m3.socketUrl);
+	//}
+	ws.initialize();
 });

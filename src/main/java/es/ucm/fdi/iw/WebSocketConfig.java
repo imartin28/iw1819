@@ -7,6 +7,8 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import es.ucm.fdi.iw.control.IwSocketHandler;
+import es.ucm.fdi.iw.control.IwSocketHandlerFriendshipRequest;
+
 
 @Configuration
 @EnableWebSocket
@@ -15,8 +17,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(iwWebSocket(), "/ws");
+        registry.addHandler(iwWebSocketHandlerFriendshipRequest(), "/friendship");
     }
 
+    
+     
     /**
      * Bean for websocket-manager retrieval.
      * 
@@ -28,5 +33,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Bean
     public IwSocketHandler iwWebSocket() {
         return new IwSocketHandler();
+    }
+    
+    
+    
+    @Bean
+    public IwSocketHandlerFriendshipRequest iwWebSocketHandlerFriendshipRequest() {
+        return new IwSocketHandlerFriendshipRequest();
     }
 }
