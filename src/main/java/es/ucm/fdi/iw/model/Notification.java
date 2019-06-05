@@ -5,12 +5,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
+@NamedQueries({
+@NamedQuery(name="findAllNotificationsByUserId", query="SELECT notification "
+		+ " FROM Notification notification"
+		+ " WHERE notification.user.id = :userId ")
+
+})
 public class Notification {
 	
-
+	
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,6 +27,20 @@ public class Notification {
 	@ManyToOne(targetEntity=User.class)
 	private User user;
 	private String text;
+	
+	
+	
+	
+	public Notification() {
+		
+	}
+	
+	public Notification(User user, String text) {
+		 
+		this.user = user;
+		this.text = text;
+	}
+	
 	
 	public long getId() {
 		return id;

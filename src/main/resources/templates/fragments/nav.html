@@ -93,7 +93,31 @@
 		 -->
 		 
 		<script src="/js/nav.js"></script>
-
+<script>
+	window.addEventListener('load', () => {
+		// envio	
+	
+		console.log("he entrado en window");
+		$("#send-friendship-request").on("click", (event) => {
+			$("#formFriendRequest").submit();
+			let userCurrentEmail = $("#currentUser").val();
+			let userReceiverEmail = $("#userReceiver").val();
+			
+			console.log("NOTIFICACION ENVIADA");
+			ws.sendFriendshipRequestNotification(userCurrentEmail + " " + userReceiverEmail);
+			
+			return false;
+		});
+		
+		
+	
+		
+		ws.receiveFriendshipRequest = (text) => {
+			console.log("NOTIFICACION RECIBIDA");
+			$("#notifications").append("<div style='color : white'>" + text +"</div>");
+		}
+	});
+	</script> 
 	</nav>
 	
 	<div class="row justify-content-center py-2" style="background-color: #545659;" th:if="${session.u != null}">

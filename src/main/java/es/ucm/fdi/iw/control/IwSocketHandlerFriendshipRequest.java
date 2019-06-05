@@ -42,27 +42,20 @@ public class IwSocketHandlerFriendshipRequest extends TextWebSocketHandler {
 	
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
-    	String userName = session.getPrincipal().getName();
-    	log.info("received message: " 
-    			+ message.getPayload() + " from " 
-    			+ userName);
 
-    	// do something with message; for example, re-send it
-    	String payload = message.getPayload().substring(0, message.getPayload().length() - 2);
+    	String userName = session.getPrincipal().getName();
     	
-    	// Pattern pattern = Pattern.compile("\\s([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6})$", Pattern.CASE_INSENSITIVE);
-    	// Matcher matcher = pattern.matcher(payload);
-    	// String destination = matcher.group();
     	
-    	if (users.containsKey(userName)) {
-    		for (Map.Entry<String, IwSocketHandlerFriendshipRequest.SocketHolder> user : users.entrySet()) {
-    			sendText(user.getKey(), userName + " : " + payload);
-    		}
-    		String groupIdString = message.getPayload().substring(message.getPayload().length() - 1, message.getPayload().length());
-    		
-    		Long groupId = Long.getLong(groupIdString);
-    		
+    	String[] emails = message.getPayload().split(" ");
+    	String userReceiver = emails[1];
+    	
+    	if(users.containsKey(userReceiver)) {
+    		String textToSend = userName + " te ha enviado una solicitud de amistad";
+    		sendText(userReceiver, textToSend);
     	}
+    	
+    	
+    	
     
     	
     }

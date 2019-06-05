@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import es.ucm.fdi.iw.model.Friend;
+import es.ucm.fdi.iw.model.Notification;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.service.UserService;
 import es.ucm.fdi.iw.util.StringUtil;
@@ -57,9 +58,16 @@ public class FriendController {
 		String err = "User not found";
 		User friendRequestUser = null;
 		
+		
+		
+		
+		
 		if(userId != null) {
 			friendRequestUser = userService.findById(userId);
 			User userLogged = (User) session.getAttribute("u");
+			
+			
+			saveNotificationInBD(friendRequestUser, userLogged.getEmail() + " te ha enviado una solicitud de amistad");
 			
 			if(userLogged != null && friendRequestUser != null && userLogged.getId() != friendRequestUser.getId()) {
 				List<User> friends = entityManager.createNamedQuery("readFriendsOfUser", User.class).setParameter("userId", userId).getResultList();
@@ -98,6 +106,18 @@ public class FriendController {
 		
 		return modelAndView;
 	}
+	
+	
+	
+	private void saveNotificationInBD(User userReceiverNotification, String message) {
+		Notification notification = new Notification(userReceiverNotification, message);
+		
+		entityManager.persist(notification);
+		
+	}
+	
+	
+	
 	
 	@PostMapping("/resolveFriendRequest")
 	@Transactional

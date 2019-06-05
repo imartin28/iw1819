@@ -6,7 +6,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+     <script type="text/javascript" src="/js/search-user.js"></script>
     <title>M3- Friend Request Modal</title>
 </head>
 
@@ -30,7 +30,8 @@
 				    	<form id="formFriendRequest" method="POST" th:action="@{/user/addFriendRequest}">
 				    	
 				    		<input type="hidden" th:id="userId" th:name="userId">
-				    		
+				    		<input type="hidden" id="currentUser" th:value="${session.u.email}">
+				    		<input type="hidden" id="userReceiver">
 				        	<div class="form-group">
 		            			<label for="tagNameEdit" class="col-form-label">Send a message to <span id="userNameSpan" class="nick"></span></label>
 		            			<textarea th:id="message" th:name="message" class="form-control" rows="3" placeholder="Write a message"></textarea>
@@ -39,7 +40,7 @@
 				        </form>
 				 	</div>
 					<div class="modal-footer d-flex justify-content-around align-items-center">						      	
-			        	<button type="submit" form="formFriendRequest" class="btn button center-content"><i class="material-icons mr-2">person_add</i>Send request</button>
+			        	<button id="send-friendship-request" type="submit" form="formFriendRequest" class="btn button center-content"><i class="material-icons mr-2">person_add</i>Send request</button>
 			        	<button type="button" class="btn button delete center-content" data-dismiss="modal"><i class="material-icons mr-1">close</i>Cancel</button>
 		  	      	</div>		      
 				</div>
@@ -47,6 +48,9 @@
 		</div>
 	
 	</th:block>
+       
+       
+       
           
 </body>
 </html>

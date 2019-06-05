@@ -52,9 +52,11 @@ const ws = {
 	initialize: () => {
 		try {
 			ws.socket.push(new WebSocket("ws://localhost:8080/ws"));
-			ws.socket.push(new WebSocket("ws://localhost:8080/friendship"));
 			ws.socket[0].onmessage = (e) => ws.receive(e.data);
+			console.log("Connected to WS ws://localhost:8080/ws");
+			ws.socket.push(new WebSocket("ws://localhost:8080/friendship"));
 			ws.socket[1].onmessage = (e) => ws.receiveFriendshipRequest(e.data);
+			console.log("Connected to WS ws://localhost:8080/friendship");
 			//console.log("Connected to WS '" + endpoint + "'")
 		} catch (e) {
 			console.log("Error, connection to WS FAILED: ", e);

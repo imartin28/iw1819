@@ -12,6 +12,7 @@
 	<!-- Put additional css and js sources -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">    
     <link rel="stylesheet" type="text/css" href="/css/style_index.css"/>
+    <script type="text/javascript" src="/js/search-user.js"></script>
     
     <title>M3- Friends</title>
 </head>
@@ -50,7 +51,7 @@
 			            
 			            <th:block th:if="${session.u != null && session.u.id != user.id && ((session.friendIds != null && session.friendIds.size() > 0 && !#lists.contains(session.friendIds, user.id)) || session.friendIds == null || session.friendIds.size() == 0)}">
             
-			            <button class="btn button d-flex flex-row align-items-center btnFriendRequest " th:attr="data-user-session-id=${session.u.id}, data-user-receiver-id=${user.id}" >
+			            <button class="btn button d-flex flex-row align-items-center btnFriendRequest " th:attr="data-user-receiver-email=${user.email}" >
 			                
 			            	<i class="material-icons mr-2">person_add</i>Add friend
 			            </button>
@@ -72,30 +73,8 @@
 	</div>
 	
 	<th:block th:replace="fragments/friendRequest :: friendRequest"></th:block>
+      
   
-   <script>
-	window.addEventListener('load', () => {
-		// envio	
-		
-		$(".btnFriendRequest").on("click", (event) => {
-			let userCurrentId = $(this).attr("data-user-session-id");
-			let userReceiverId = $(this).attr("data-user-receiver-id");
-			
-			ws.sendFriendshipRequestNotification(userCurrentId + " " + userReceiverId);
-			
-			return false;
-		});
-		
-		
-	
-		// recepcion
-		const lineOutput = $("#text-area-chat");
-		
-		ws.receive = (text) => {
-			console.log("MENSAJE RECIBIDO");
-			lineOutput.val(lineOutput.val() + '\n' + text); 
-		}
-	});
-	</script>       
+     
 </body>
 </html>

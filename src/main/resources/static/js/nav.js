@@ -49,7 +49,41 @@ $(function() {
 
 
 function notificationsHandler(){
-	$("#notifications").append("<div>hola</div>");
+	
+	
+	
+	$.ajax({
+		type:"GET",
+		url: "/user/notifications",
+		
+		headers: {
+			"Content-Type": "application/json",				
+			"X-CSRF-TOKEN": m3.csrf.value
+		},
+		success : function(data){
+			showNotifications(data);
+			
+			console.log("exito");
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			
+            console.log("Se ha producido un error: " + errorThrown);
+       }
+	});
+	
+	
+	
+}
+
+
+function showNotifications(listNotifications){
+	
+	
+	
+	listNotifications.forEach(notification =>{
+		
+		$("#notifications").append("<div style='color : white'>" + notification["text"] +"</div>");
+	});
 	
 }
 	
