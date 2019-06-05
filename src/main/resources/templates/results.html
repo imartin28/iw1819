@@ -77,13 +77,11 @@
 	window.addEventListener('load', () => {
 		// envio	
 		
-		
-		
 		$(".btnFriendRequest").on("click", (event) => {
 			let userCurrentId = $(this).attr("data-user-session-id");
 			let userReceiverId = $(this).attr("data-user-receiver-id");
 			
-			ws.send(userCurrentId + " " + userReceiverId);
+			ws.sendFriendshipRequestNotification(userCurrentId + " " + userReceiverId);
 			
 			return false;
 		});

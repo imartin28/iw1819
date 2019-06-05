@@ -15,6 +15,9 @@
 		<link rel="stylesheet" href="/css/nav.css">
 		
 	    <div class="navbar-nav flex-nowrap">
+	 
+	    
+	    <div id="notifications"><i class="material-icons">notifications</i></div>
 	    	<a th:href="@{/}"><img class="mx-3 my-1" src="/img/logoM3.png" width="40px" height="40px"></a>
 	    	<th:block th:if="${session.u != null && !session.u.hasRole('admin')}">
 

@@ -1,6 +1,10 @@
 "use strict"
 $(function() {
 	
+	  $("#notifications").on("click", notificationsHandler);
+	
+	
+	
 	$("#btnTogglePlayer").click(function() {
 		let icon = $(this).find("i");
 	    if($(icon).text() === "keyboard_arrow_right") {//hide
@@ -39,4 +43,13 @@ $(function() {
 	});	
 	
 });
+
+
+
+
+
+function notificationsHandler(){
+	$("#notifications").append("<div>hola</div>");
+	
+}
 	
