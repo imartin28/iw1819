@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +29,10 @@ import javax.persistence.OneToMany;
 		+ " WHERE file.id IN :ids "),
 @NamedQuery(name="deleteInBatch", query="DELETE "
 		+ " FROM CFile file"
-		+ " WHERE file.id IN :ids ")
+		+ " WHERE file.id IN :ids "),
+@NamedQuery(name="readAllFilesByUserIdOrderedByDate", query="SELECT cf "
+		+ " FROM UserFile uf JOIN uf.file cf"
+		+ " WHERE uf.user.id = :id_currentUser ORDER BY cf.uploadDate DESC")
 })
 public class CFile {
 	
@@ -39,6 +43,7 @@ public class CFile {
 	
 	private String sha256;
 	private String name;
+	private Date uploadDate;
 	private String path;
 	private String mimetype;
 	private String extension;
@@ -63,13 +68,64 @@ public class CFile {
 	public CFile(String sha256, String name, Long size, String mimetype) {
 		this.sha256 = sha256;
 		this.name = name;
+		this.uploadDate = new Date();
 		this.extension = getExtension(this.name);
 		this.size = size;
 		this.mimetype = mimetype;
 		this.metadata = "{}";
 	}
-
 	
+	
+	
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getSha256() {
+		return sha256;
+	}
+
+	public void setSha256(String sha256) {
+		this.sha256 = sha256;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getUploadDate() {
+		return uploadDate;
+	}
+
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getMimetype() {
+		return mimetype;
+	}
+
+	public void setMimetype(String mimetype) {
+		this.mimetype = mimetype;
+	}
+
 	public String getExtension() {
 		return extension;
 	}
@@ -86,41 +142,14 @@ public class CFile {
 		this.size = size;
 	}
 
-	public String getMimetype() {
-		return mimetype;
+	public String getMetadata() {
+		return metadata;
 	}
 
-	public void setMimetype(String mimetype) {
-		this.mimetype = mimetype;
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	public String getPath() {
-		return path;
-	}
-
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-	
-	public String getSha256() {
-		return sha256;
-	}
-
-	public void setSha256(String sha256) {
-		this.sha256 = sha256;
-	}
-	
 	public List<UserFile> getFilePermissions() {
 		return filePermissions;
 	}
@@ -145,22 +174,7 @@ public class CFile {
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
-	
-	public String getMetadata() {
-		return metadata;
-	}
 
-	public void setMetadata(String metadata) {
-		this.metadata = metadata;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
 
 	public List<String> tagNameList() {
 		List<String> strings = new ArrayList<String>(tags.size());

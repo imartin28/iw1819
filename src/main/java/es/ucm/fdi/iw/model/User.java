@@ -39,6 +39,7 @@ import es.ucm.fdi.iw.integration.impl.DAOFriendImpl;
 	@NamedQuery(name="findUserById", query="SELECT user "
 			+ "FROM User user "
 			+ "WHERE user.id = :idUser"),
+	
 	//Admin
 	@NamedQuery(name="User.listAdmin",
 	query="SELECT u FROM User u "
