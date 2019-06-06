@@ -255,12 +255,12 @@
 	                        			</script>
 	                        			-->
 	                        			<div class="file-name" >
-	                                       <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-5 dragtarget" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}, data-file-id=${file.id}" ondragstart="dragStartFileToPlaylist(event)" draggable="true"></a>  
+	                                       <a th:href="@{/file/show/{id}(id=${file.id})}" class="remove-link-style mr-3 dragtarget" th:text="${file.name}" th:attr="id = ${'metadata' + file.id}, data-file-id=${file.id}" ondragstart="dragStartFileToPlaylist(event)" draggable="true"></a>  
 	                                    </div> 
 							     	</div>
 							       
 									<div class="center-content mt-1">
-										<div class="tags-style" th:each="tag : ${file.tags}" th:attr="style=${'background-color:' + tag.color}">
+										<div class="tags-style d-flex flex-row" th:each="tag : ${file.tags}" th:attr="style=${'background-color:' + tag.color}">
 											<i class="material-icons mr-1" th:if="${tag.playlist != null && tag.playlist}">playlist_play</i>
 											<span th:text="${tag.name}"></span>
 											<button type="button" class="remove-tag-from-file-button" th:attr="data-file-id=${file.id}, data-tag-id=${tag.id}">x</button>	

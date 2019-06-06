@@ -70,9 +70,12 @@ $(function() {
     		$("#player-title > a > i:contains('image')").addClass("d-none");
     		$("#player-title > a > i:contains('music_video')").removeClass("d-none");
     		$("#player-title > a > i:contains('videocam')").addClass("d-none");
-    		$("#mediaplayer").find("img").addClass("d-none");
+    		$("#mediaplayer").find("img").removeClass("d-none");
     		$("#mediaplayer").find("audio").removeClass("d-none");
     		$("#mediaplayer").find("video").addClass("d-none");
+    		
+    		$("#mediaplayer").find("img").attr("src", "/img/music.png");
+
     		let source = $("#mediaplayer").find("audio > source");
     		$(source).attr("type", file.mimetype);
     		$(source).attr("src", file.url);
@@ -101,6 +104,10 @@ $(function() {
     		$(video).get(0).load();
     		$(video).get(0).play();
     	}
+    	
+		let playIcon = $("#play-stop").find(".fas");
+		$(playIcon).removeClass("fa-play");
+		$(playIcon).addClass("fa-pause");
     	
     	if($(".playlist-container").hasClass("d-flex")) {
     		$(".playlist-container").removeClass("d-flex");
@@ -133,6 +140,20 @@ $(function() {
     			if(i == 0)
     				firstElem = playlistItem;
     			
+    			let type = playlist.files[i].mimetype.split("/")[0];
+    			if(typeof type !== 'undefined' && type !== null) {
+    				if(type === "image" && typeof playlist.files[i].url !== 'undefined' && playlist.files[i].url !== null) {
+    					$(playlistItem).find(".thumbnail").attr("src", playlist.files[i].url);
+    				}
+    				else if(type === "audio") {
+    					$(playlistItem).find(".thumbnail").attr("src", "/img/muisc.png");
+    				}
+    				else if(type === "video") {
+    					$(playlistItem).find(".thumbnail").attr("src", "/img/video.png");
+    				}
+    			}
+        			
+    			
     			$("#playlist-items").append(playlistItem, playlistItem);
     		}
     		
@@ -142,5 +163,45 @@ $(function() {
     	
     	$(".playlist-container").removeClass("d-none");
     }
+    
+    $("#play-stop").click(function() {
+
+    	let img = $("#mediaplayer").find("img");
+    	let audio = $("#mediaplayer").find("audio");
+    	let video = $("#mediaplayer").find("video");
+    	
+    	let playIcon = $(this).find(".fa-play");
+    	
+    	if(!$(audio).hasClass("d-none")) {
+    		if($(playIcon).length > 0) {
+    			$(playIcon).removeClass("fa-play");
+    			$(playIcon).addClass("fa-pause");
+    			$(audio).get(0).pause();
+    		}
+    		else {
+    			playIcon = $(this).find(".fa-pause");
+    			$(playIcon).removeClass("fa-pause");
+    			$(playIcon).addClass("fa-play");
+    			$(audio).get(0).play();
+    		}
+    	}
+    	else if(!$(video).hasClass("d-none")) {
+    		if($(playIcon).length > 0) {
+    			$(playIcon).removeClass("fa-play");
+    			$(playIcon).addClass("fa-pause");
+    			$(video).get(0).play();
+    		}
+    		else {
+    			playIcon = $(this).find(".fa-pause");
+    			$(playIcon).removeClass("fa-pause");
+    			$(playIcon).addClass("fa-play");
+    			$(video).get(0).pause();
+    		}
+    	}
+    	else if(!$(img).hasClass("d-none")){
+    		
+    	}
+        
+    });
     
 });

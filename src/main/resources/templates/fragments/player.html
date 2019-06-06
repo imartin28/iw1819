@@ -35,15 +35,15 @@
 	                        
 	                    </div>
 	                    
-	                     <div id="mediaplayer" class="row justify-content-center">
+	                     <div id="mediaplayer" class="row d-flex flex-column justify-content-center align-items-center">
 	                        
-	                       	<img class="d-none" src="/file/contents/" max-width="50%" max-height="50%">
+	                       	<img class="img-player d-none" src="/file/contents/">
 	                       	
 	                        <audio class="d-none" controls>
 	                        	<source src="/file/contents/" type="audio/mpeg">
 	                        </audio>
 	                           
-	                        <video class="d-none" width="50%" height="50%" id="videoPlay" controls autoplay>
+	                        <video class="d-none position-relative" width="50%" height="50%" id="videoPlay" controls autoplay>
 	                          	<source src="/file/contents/" type="video/mp4">
 	                        </video>
 	                           
@@ -62,7 +62,7 @@
                 <div class="d-flex flex-row">
                     <button class="btn d-none"><i class="fas fa-random"></i></button>
                     <button class="btn"><i class="fas fa-step-backward"></i></button>
-                    <button class="btn"><i class="fas fa-play"></i></button>
+                    <button class="btn" id="play-stop"><i class="fas fa-play"></i></button>
                     <button class="btn"><i class="fas fa-step-forward"></i></button>
                     <button class="btn d-none"><i class="fas fa-redo-alt"></i></button>
                 </div>
@@ -95,7 +95,7 @@
 	            <div id="playlist-items" class="my-2">
 	                
 	                <div id="playlist-item-clone" class="flex-row my-1 d-none">
-	                    <img class="thumbnail" src="https://via.placeholder.com/100/09f/fff.png">
+	                    <img class="thumbnail img-thumbnail-player" src="https://via.placeholder.com/100/09f/fff.png">
 	                    <div class="multim-info w-100 d-flex flex-row justify-content-between align-items-center">
 	                        <div class="d-flex flex-column justify-content-center px-2 py-1">
 	                            <span class="info-title px-3" data-href="/file/contents/">Lovers on the sun</span>
