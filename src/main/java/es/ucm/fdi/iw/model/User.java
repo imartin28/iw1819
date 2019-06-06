@@ -34,8 +34,11 @@ import es.ucm.fdi.iw.integration.impl.DAOFriendImpl;
 			"u.active = 1"),
 	@NamedQuery(name="readFriendsOfUser", query="SELECT user "
 			+ " FROM User user "
-			+ " WHERE user.id IN (SELECT friend.firstUser.id FROM Friend friend WHERE friend.secondUser.id = :userId) "
-			+ " OR user.id IN (SELECT friend2.secondUser.id FROM Friend friend2 WHERE friend2.firstUser.id = :userId)"),
+			+ " WHERE user.id IN (SELECT friend.firstUser.id FROM Friend friend WHERE friend.secondUser.id = :userId AND friend.accepted = 1) "
+			+ " OR user.id IN (SELECT friend2.secondUser.id FROM Friend friend2 WHERE friend2.firstUser.id = :userId AND friend2.accepted = 1)"),
+	@NamedQuery(name="findUserById", query="SELECT user "
+			+ "FROM User user "
+			+ "WHERE user.id = :idUser"),
 	
 	//Admin
 	@NamedQuery(name="User.listAdmin",
@@ -75,7 +78,7 @@ public class User {
 	@OneToMany(targetEntity=UserFile.class, mappedBy="user", cascade=CascadeType.ALL)
 	private List<UserFile> files;
 	
-	@OneToMany(targetEntity=CGroupUser.class, mappedBy="user", cascade=CascadeType.ALL)
+	@OneToMany(targetEntity=CGroupUser.class, mappedBy="user", cascade=CascadeType.REMOVE)
 	private List<CGroupUser> groups;
 	
 	@OneToMany(targetEntity=Message.class, mappedBy="sender")

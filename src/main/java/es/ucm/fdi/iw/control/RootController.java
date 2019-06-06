@@ -140,7 +140,7 @@ public class RootController {
 					}
 					else {
 						user.setAvatar("/img/avatar-1.png");
-						user.addRole("user");
+						user.setRoles("user");
 						hasPermission = true;
 					}
 					

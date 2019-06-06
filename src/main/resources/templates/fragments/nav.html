@@ -15,6 +15,9 @@
 		<link rel="stylesheet" href="/css/nav.css">
 		
 	    <div class="navbar-nav flex-nowrap">
+	 
+	    
+	    <div id="notifications"><i class="material-icons">notifications</i></div>
 	    	<a th:href="@{/}"><img class="mx-3 my-1" src="/img/logoM3.png" width="40px" height="40px"></a>
 	    	<th:block th:if="${session.u != null && !session.u.hasRole('admin')}">
 
@@ -44,6 +47,13 @@
 				<input type="hidden" name="password" value="a">
 				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 				<button type="submit" class="button" form="loginUser">flopezcarr@ucm.es</button>
+ 			</form>
+ 			
+ 			<form id="loginUser2" th:action="@{/login}" method="post" th:if="${session.u == null}">
+				<input type="hidden" name="username" value="guicor@ucm.es">
+				<input type="hidden" name="password" value="a">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+				<button type="submit" class="button" form="loginUser2">guicor@ucm.es</button>
  			</form>
  			<form id="loginAdmin" th:action="@{/login}" method="post" th:if="${session.u == null}">
 				<input type="hidden" name="username" value="admin">
@@ -83,7 +93,31 @@
 		 -->
 		 
 		<script src="/js/nav.js"></script>
-
+<script>
+	window.addEventListener('load', () => {
+		// envio	
+	
+		console.log("he entrado en window");
+		$("#send-friendship-request").on("click", (event) => {
+			$("#formFriendRequest").submit();
+			let userCurrentEmail = $("#currentUser").val();
+			let userReceiverEmail = $("#userReceiver").val();
+			
+			console.log("NOTIFICACION ENVIADA");
+			ws.sendFriendshipRequestNotification(userCurrentEmail + " " + userReceiverEmail);
+			
+			return false;
+		});
+		
+		
+	
+		
+		ws.receiveFriendshipRequest = (text) => {
+			console.log("NOTIFICACION RECIBIDA");
+			$("#notifications").append("<div style='color : white'>" + text +"</div>");
+		}
+	});
+	</script> 
 	</nav>
 	
 	<div class="row justify-content-center py-2" style="background-color: #545659;" th:if="${session.u != null}">

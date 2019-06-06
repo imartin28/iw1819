@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,6 +37,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.CFile;
+import es.ucm.fdi.iw.model.Notification;
 import es.ucm.fdi.iw.model.Tag;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserFile;
@@ -44,6 +47,7 @@ import es.ucm.fdi.iw.serializer.UserSerializer;
 import es.ucm.fdi.iw.service.FileService;
 import es.ucm.fdi.iw.service.FriendService;
 import es.ucm.fdi.iw.service.UserService;
+import es.ucm.fdi.iw.transfer.NotificationTransfer;
 import es.ucm.fdi.iw.transfer.UserTransfer;
 import es.ucm.fdi.iw.util.DateUtil;
 import es.ucm.fdi.iw.util.StringUtil;
@@ -90,7 +94,8 @@ public class UserController {
 	@GetMapping("/")
 	public String index(Model model, HttpSession session) {	
 		Long id_currentUser = ((User) session.getAttribute("u")).getId();
-		List<CFile> files_currentUser = entityManager.createNamedQuery("FilesUser", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
+		List<CFile> files_currentUser = entityManager.createNamedQuery("readAllFilesByUserIdOrderedByDate", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
+		//List<CFile> files_currentUser = entityManager.createNamedQuery("FilesUser", CFile.class).setParameter("id_currentUser", id_currentUser).getResultList();
 		List<Tag> tags = entityManager.createNamedQuery("readTagsByUser", Tag.class).setParameter("userId", id_currentUser).getResultList();
 		
 		System.out.println(files_currentUser);
@@ -573,6 +578,23 @@ public class UserController {
 	@GetMapping("/history")
 	public String history(Model model) {
 		return "history";
+	}
+	
+	
+	
+	@GetMapping("/notifications")
+	public @ResponseBody List<NotificationTransfer> getNotifications(Model model, HttpSession session) {
+		
+		Long userId = ((User) session.getAttribute("u")).getId();
+		
+		List<Notification> notificationInBd = entityManager.createNamedQuery("findAllNotificationsByUserId", Notification.class).setParameter("userId", userId).getResultList();
+		List<NotificationTransfer> listNotificaciones = new ArrayList<>();		
+		
+		for(Notification notificacion : notificationInBd) {
+			listNotificaciones.add(new NotificationTransfer(notificacion));
+		}
+		
+		return listNotificaciones;
 	}
 	
 }

@@ -2,6 +2,8 @@ package es.ucm.fdi.iw.control;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,17 +48,23 @@ public class IwSocketHandler extends TextWebSocketHandler {
     			+ userName);
 
     	// do something with message; for example, re-send it
-    	String payload = message.getPayload();
-    	if (payload.startsWith("@")) {
-    		String dest = payload.substring(1, payload.indexOf(' '));
-    		if (users.containsKey(dest)) {
-    			sendText(dest, userName + ": " + payload.substring(payload.indexOf(' ')+1));
-    		} else if (dest.equals("all")) {
-    			for (String u : users.keySet()) {
-    				sendText(u, userName + " shouts: " + payload.substring(payload.indexOf(' ')+1));
-    			}
+    	String payload = message.getPayload().substring(0, message.getPayload().length() - 2);
+    	
+    	// Pattern pattern = Pattern.compile("\\s([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6})$", Pattern.CASE_INSENSITIVE);
+    	// Matcher matcher = pattern.matcher(payload);
+    	// String destination = matcher.group();
+    	
+    	if (users.containsKey(userName)) {
+    		for (Map.Entry<String, IwSocketHandler.SocketHolder> user : users.entrySet()) {
+    			sendText(user.getKey(), userName + " : " + payload);
     		}
+    		String groupIdString = message.getPayload().substring(message.getPayload().length() - 1, message.getPayload().length());
+    		
+    		Long groupId = Long.getLong(groupIdString);
+    		
     	}
+    
+    	
     }
     
     /**

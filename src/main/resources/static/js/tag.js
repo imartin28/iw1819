@@ -10,6 +10,7 @@ $(() => {
     $("#add-tags-to-file-button").on("click", addTagsToFileButtonHandler);
     $("#add-file-to-playlists-button").on("click", addTagsToFileButtonHandler);
     $(".remove-tag-from-file-button").on("click", removeTagFromFileButtonHandler);
+  
 });
 
 

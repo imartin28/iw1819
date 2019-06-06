@@ -2,6 +2,7 @@ package es.ucm.fdi.iw.transfer;
 
 import java.util.Date;
 
+import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.util.DateUtil;
 
 public class UserTransfer {
@@ -36,6 +37,15 @@ public class UserTransfer {
 		
 	}
 
+	
+	public UserTransfer(User user) {
+		this.avatar = user.getAvatar();
+		this.name = user.getName();
+		this.lastName = user.getLastName();
+		this.nickname = user.getNickname();
+		this.id = user.getId();
+	}
+	
 	public UserTransfer(String email, String nickname, String name, String lastName, Date birthdate, String description, String avatar) {
 		this.email = email;
 		this.nickname = nickname;

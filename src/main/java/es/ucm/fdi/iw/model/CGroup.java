@@ -29,7 +29,10 @@ import javax.persistence.OneToMany;
 		+ " WHERE group.id IN :ids "),
 @NamedQuery(name="findGroupById", query="SELECT group"
 		+ " FROM CGroup group"
-		+ " WHERE group.id = :id ")
+		+ " WHERE group.id = :id "),
+@NamedQuery(name="findGroupByLetter", query="SELECT group"
+		+ " FROM CGroup group"
+		+ " WHERE group.name LIKE :name" )
 
 })
 public class CGroup {
@@ -40,7 +43,7 @@ public class CGroup {
 	private String name;
 	
 	
-	@OneToMany(targetEntity=CGroupUser.class, mappedBy="group", cascade=CascadeType.ALL)
+	@OneToMany(targetEntity=CGroupUser.class, mappedBy="group", cascade=CascadeType.REMOVE)
 	private List<CGroupUser> users;
 
 	@ManyToMany(targetEntity=CFile.class)

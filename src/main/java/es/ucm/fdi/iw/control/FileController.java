@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
@@ -18,9 +20,10 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.FileUtils;
-
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -351,10 +354,13 @@ public class FileController {
 
 		CFile fileToPersist = new CFile(sha256, file.getOriginalFilename(), file.getSize(), file.getContentType());
 		
+		
+		
 		if (currentTagId != null) {
 			Tag currentTag = (Tag) entityManager.createNamedQuery("findById", Tag.class).setParameter("id", currentTagId)
 					.getSingleResult();
 			
+			fileToPersist.getTags().add(currentTag);
 			currentTag.getFiles().add(fileToPersist);
 		}
 		
@@ -415,7 +421,7 @@ public class FileController {
 		CFile file = fileService.findById(id);
 		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, file.getName());
 
-		File f = new File(file.getPath() + "/" + file.getId());
+		File f = new File(file.getPath());
 		InputStreamResource resource = new InputStreamResource(new FileInputStream(f));
 
 		return ResponseEntity.ok()
@@ -426,6 +432,45 @@ public class FileController {
 				// Contet-Length
 				.contentLength(f.length()) //
 				.body(resource);
+	}
+	
+	@RequestMapping(value="/zip", produces="application/zip")
+	public void downloadZip(@RequestParam("idFiles") String json, HttpServletResponse response)
+			throws IOException {
+	    List<Long> ids = new ArrayList<Long>();
+	    try {
+			JSONArray idsJSON = new JSONArray(json);
+			for (int i = 0; i < idsJSON.length(); i++)
+				ids.add(idsJSON.getLong(i));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	    
+	    if (!ids.isEmpty()) {
+	    	response.setStatus(HttpServletResponse.SC_OK);
+		    response.addHeader("Content-Disposition", "attachment; filename=\"m3_files.zip\"");
+		    
+		    ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream());
+		    
+		    List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class)
+					.setParameter("ids", ids).getResultList();
+
+		    for (int i = 0; i < files.size(); i++) {
+		    	File f = new File(files.get(i).getPath());
+		    	
+		        zipOutputStream.putNextEntry(new ZipEntry(files.get(i).getName()));
+		        FileInputStream fileInputStream = new FileInputStream(f);
+
+		        IOUtils.copy(fileInputStream, zipOutputStream);
+
+		        fileInputStream.close();
+		        zipOutputStream.closeEntry();
+		    }
+		    
+		    zipOutputStream.close();
+	    }
+	    else
+	    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
 
 	@PostMapping("/modifyFileName")
@@ -457,24 +502,26 @@ public class FileController {
 	@PostMapping("/deleteFile")
 	@Transactional
 	public String postDeleteFile(@RequestParam("idFile") Long fileId, HttpSession session) {
+		User currentUser = (User) session.getAttribute("u");
 		CFile file = fileService.findById(fileId);
-		List<CFile> filesWithSameSha256 =  fileService.findAllBysha256(file.getSha256());
 		
-		for(Tag tag : file.getTags()) {
-			tag.getFiles().remove(file);
-		}
+		List<UserFile> permission = entityManager.createNamedQuery("findByIds", UserFile.class)
+				.setParameter("id_user", currentUser.getId())
+				.setParameter("id_file", fileId).getResultList();
 		
-		entityManager.remove(file);
-		
-		if (filesWithSameSha256.size() == 1) {
+		if (permission.get(0).getPermission().contains("w")) {
 			File f = new File(file.getPath());
-
+			
 			if (f.delete()) {
 				System.out.println(file.getName() + " is deleted!");
 			} else {
 				System.out.println("Delete operation is failed.");
 			}
-		} 
+			
+			fileService.deleteFile(file);
+		}
+		else
+			entityManager.remove(permission.get(0)); 
 	
 		return "redirect:/user/";
 	}
@@ -482,24 +529,34 @@ public class FileController {
 	@PostMapping("/deleteFiles")
 	@Transactional
 	@ResponseBody
-	public String deleteFiles(@RequestBody List<Long> ids, HttpServletResponse response) {
-		List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class).setParameter("ids", ids)
-				.getResultList();
+	public String deleteFiles(@RequestBody List<Long> ids, HttpSession session, HttpServletResponse response) {
+		User currentUser = (User) session.getAttribute("u");
+		List<CFile> files = entityManager.createNamedQuery("findAllById", CFile.class)
+				.setParameter("ids", ids).getResultList();
 
 		File f = null;
 
-		for (CFile file : files) {
-			f = new File(file.getPath());
-
-			if (f.delete()) {
-				System.out.println(file.getName() + " is deleted!");
-			} else {
-				System.out.println("Delete operation is failed.");
+		for (int i = 0; i < files.size(); i++) {
+			List<UserFile> permission = entityManager.createNamedQuery("findByIds", UserFile.class)
+					.setParameter("id_user", currentUser.getId())
+					.setParameter("id_file", files.get(i).getId()).getResultList();
+			
+			if (permission.get(0).getPermission().contains("w")) {
+				f = new File(files.get(i).getPath());
+				
+				if (f.delete()) {
+					System.out.println(files.get(i).getName() + " is deleted!");
+				} else {
+					System.out.println("Delete operation is failed.");
+				}
+				
+				fileService.deleteFile(files.get(i));
 			}
+			else
+				entityManager.remove(permission.get(0));
 		}
 
 		response.setStatus(200);
-		fileService.deleteFiles(files);
 		return "{}";
 	}
 
